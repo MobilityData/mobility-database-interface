@@ -1,2 +1,8 @@
+# IDE & Environment
 *.iml
 .idea
+env/
+
+# Python
+__pycache__/
+*.py[cod]
