@@ -5,7 +5,7 @@ class ApiRequestManager:
 
     def __init__(self):
         self.session = None
-        self.url = 'https://www.wikidata.org/w/api.php'
+        self.url = 'http://staging.mobilitydatabase.org/w/api.php'
 
     def __get_session(self):
         if self.session is None:
