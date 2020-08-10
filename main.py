@@ -1,10 +1,16 @@
 from repository.gtfs_data_repository import GtfsDataRepository
 from request_manager.api_request_manager import ApiRequestManager
 from request_manager.sparql_request_manager import SparqlRequestManager
+from usecase.compare_feeds_stops import CompareFeedsStops
 
 # Loads feed in memory
 data = GtfsDataRepository('citcrc.zip')
 data.display_feed()
+feed = data.get_feed()
+
+# Compare feeds' stops
+compare_feeds_stops = CompareFeedsStops(feed, feed)
+compare_feeds_stops.execute()
 
 # Get data for a specific entity from Wikibase image
 api_request_manager = ApiRequestManager()

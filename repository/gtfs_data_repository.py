@@ -10,3 +10,6 @@ class GtfsDataRepository:
 
     def display_feed(self):
         print(self.feed)
+
+    def get_feed(self):
+        return self.feed
