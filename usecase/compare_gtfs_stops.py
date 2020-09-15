@@ -1,10 +1,10 @@
 from heuristic.stops_longitude_latitude_too_close import StopsLongitudeLatitudeTooClose
 
 
-class CompareFeedsStops:
-    def __init__(self, feed_1, feed_2):
-        self.stops_1 = feed_1.get_stops()
-        self.stops_2 = feed_2.get_stops()
+class CompareGtfsStops:
+    def __init__(self, gtfs_1, gtfs_2):
+        self.stops_1 = gtfs_1.get_stops()
+        self.stops_2 = gtfs_2.get_stops()
 
     def execute(self):
         stops_longitude_latitude_too_close = StopsLongitudeLatitudeTooClose()
