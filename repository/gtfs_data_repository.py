@@ -3,13 +3,12 @@ import gtfs_kit as gtfs_kit
 
 
 class GtfsDataRepository:
-    def __init__(self, feed_path):
-        data_dir = '../data/'
-        feed_path = Path(data_dir + feed_path)
-        self.feed = gtfs_kit.read_feed(feed_path, dist_units='km')
+    def __init__(self, dataset_path):
+        dataset_path = Path(dataset_path)
+        self.feed = gtfs_kit.read_feed(dataset_path, dist_units='km')
 
-    def display_feed(self):
+    def display_dataset(self):
         print(self.feed)
 
-    def get_feed(self):
+    def get_dataset(self):
         return self.feed

@@ -1,11 +1,12 @@
 import requests
+from utilities import external_utils
 
 
 class ApiRequestManager:
 
     def __init__(self):
         self.session = None
-        self.url = 'http://staging.mobilitydatabase.org/w/api.php'
+        self.url = external_utils.get_db_api_url()
 
     def __get_session(self):
         if self.session is None:

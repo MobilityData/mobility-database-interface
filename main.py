@@ -3,14 +3,14 @@ from request_manager.api_request_manager import ApiRequestManager
 from request_manager.sparql_request_manager import SparqlRequestManager
 from usecase.compare_gtfs_stops import CompareGtfsStops
 
-# Loads feed in memory
-data = GtfsDataRepository('citcrc.zip')
-data.display_feed()
-feed = data.get_feed()
+# Loads dataset in memory
+data = GtfsDataRepository('../data/citcrc.zip')
+data.display_dataset()
+dataset = data.get_dataset()
 
-# Compare feeds' stops
-compare_feeds_stops = CompareGtfsStops(feed, feed)
-compare_feeds_stops.execute()
+# Compare dataset stops
+compare_dataset_stops = CompareGtfsStops(dataset, dataset)
+compare_dataset_stops.execute()
 
 # Get data for a specific entity from Wikibase image
 api_request_manager = ApiRequestManager()
