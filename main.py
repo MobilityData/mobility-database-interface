@@ -12,40 +12,38 @@ dataset = data.get_dataset()
 compare_dataset_stops = CompareGtfsStops(dataset, dataset)
 compare_dataset_stops.execute()
 
-# Get data for a specific entity from Wikibase image
-api_request_manager = ApiRequestManager()
-
-params = {
-    "action": "wbgetentities",
-    "ids": "Q57",
-    "languages": "en",
-    "format": "json"
-}
-
-api_request = api_request_manager.get_request(params=params)
-print(api_request.json())
-
 # Get all data from Wikibase image
 # Can be also use to get all related data to an entity,
 # i.e. all sub-entities of "Public transport operator", like STM, MBTA, etc.
 sparql_request_manager = SparqlRequestManager()
 
-query_wikidata = """
-SELECT ?item ?itemLabel 
-WHERE 
-{
-  ?item wdt:P31 wd:Q178512.
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-}"""
-
-query_mobility_database = """
+#Get STM bus lines
+query = """
 SELECT *
 WHERE 
 {
-  ?a ?b ?c
+  ?a 
+  <http://wikibase.svc/prop/statement/P27>
+  <http://wikibase.svc/entity/Q61>
 }"""
 
-sparql_request = sparql_request_manager.get_request(query_mobility_database)
+sparql_request = sparql_request_manager.get_request(query)
 
+results = []
 for result in sparql_request["results"]["bindings"]:
     print(result)
+    print(result['a']['value'][37:40])
+    results.append(result['a']['value'][37:40])
+
+# Get data for a specific entity from Wikibase image
+api_request_manager = ApiRequestManager()
+
+for result in results:
+    params = {
+        "action": "wbgetentities",
+        "ids": "%s" % result,
+        "languages": "en",
+        "format": "json"
+    }
+    api_request = api_request_manager.get_request(params=params)
+    print(api_request.json())
