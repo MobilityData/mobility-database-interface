@@ -15,7 +15,7 @@ class SparqlRequestManager:
             self.sparql_service = SPARQLWrapper(self.url, agent=user_agent)
         return self.sparql_service
 
-    def get_request(self, query):
+    def get_response(self, query):
         sparql = self.__get_sparql_service()
         sparql.setQuery(query)
         sparql.setReturnFormat(JSON)

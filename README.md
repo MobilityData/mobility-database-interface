@@ -44,6 +44,8 @@ To deactivate your virtual environment, enter the following command:
 $ deactivate
 ```
 
+If you are working with Intellij, it is possible to use this virtual environment within the IDE. To do so, follow the instructions to create a virtual environment in Intellij [here](https://www.jetbrains.com/help/idea/creating-virtual-environment.html).
+
 ## Related
 
 - [gtfs-kit library](https://pypi.org/project/gtfs-kit/)
