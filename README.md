@@ -25,8 +25,8 @@ The repository does not contain the GTFS data, it must be downloaded.
 To correctly use and run this project, you must install all requirements. It is suggested to set up a virtual environment before proceeding to requirements installation. To set up and activate a python 3 virtual environment, enter the following commands:
 ```
 $ pip install virtualenv
-$ virtualenv -p python3 ENVNAME
-$ source ENVNAME/bin/activate
+$ virtualenv -p python3 [ENVNAME]
+$ source [ENVNAME]/bin/activate
 ```
 
 Once your virtual environment is activated, enter the following command to install the project requirements:

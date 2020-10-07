@@ -2,7 +2,7 @@ import unittest
 from heuristic.stops_longitude_latitude_too_close import StopsLongitudeLatitudeTooClose
 
 
-class TestStringMethods(unittest.TestCase):
+class StopsLongitudeLatitudeTooCloseTest(unittest.TestCase):
 
     def test_none_stop1_should_return_none(self):
         stop_1 = None
