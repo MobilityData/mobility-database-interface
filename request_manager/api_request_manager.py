@@ -13,6 +13,6 @@ class ApiRequestManager:
             self.session = requests.Session()
         return self.session
 
-    def get_request(self, params):
+    def get_response(self, params):
         session = self.__get_session()
         return session.get(url=self.url, params=params)

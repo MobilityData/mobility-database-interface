@@ -25,8 +25,8 @@ The repository does not contain the GTFS data, it must be downloaded.
 To correctly use and run this project, you must install all requirements. It is suggested to set up a virtual environment before proceeding to requirements installation. To set up and activate a python 3 virtual environment, enter the following commands:
 ```
 $ pip install virtualenv
-$ virtualenv -p python3 ENVNAME
-$ source ENVNAME/bin/activate
+$ virtualenv -p python3 [ENVNAME]
+$ source [ENVNAME]/bin/activate
 ```
 
 Once your virtual environment is activated, enter the following command to install the project requirements:
@@ -43,6 +43,8 @@ To deactivate your virtual environment, enter the following command:
 ```
 $ deactivate
 ```
+
+If you are working with Intellij, it is possible to use this virtual environment within the IDE. To do so, follow the instructions to create a virtual environment in Intellij [here](https://www.jetbrains.com/help/idea/creating-virtual-environment.html).
 
 ## Related
 

@@ -1,51 +1,77 @@
+import argparse
 from repository.gtfs_data_repository import GtfsDataRepository
 from request_manager.api_request_manager import ApiRequestManager
 from request_manager.sparql_request_manager import SparqlRequestManager
 from usecase.compare_gtfs_stops import CompareGtfsStops
 
-# Loads dataset in memory
-data = GtfsDataRepository('../data/citcrc.zip')
-data.display_dataset()
-dataset = data.get_dataset()
 
-# Compare dataset stops
-compare_dataset_stops = CompareGtfsStops(dataset, dataset)
-compare_dataset_stops.execute()
+def load_dataset(dataset_path):
+    data = GtfsDataRepository(dataset_path)
+    data.display_dataset()
+    return data.get_dataset()
 
-# Get data for a specific entity from Wikibase image
-api_request_manager = ApiRequestManager()
 
-params = {
-    "action": "wbgetentities",
-    "ids": "Q57",
-    "languages": "en",
-    "format": "json"
-}
+def compare_dataset_stops(dataset):
+    compare_dataset_stops = CompareGtfsStops(dataset, dataset)
+    compare_dataset_stops.execute()
 
-api_request = api_request_manager.get_request(params=params)
-print(api_request.json())
 
-# Get all data from Wikibase image
-# Can be also use to get all related data to an entity,
-# i.e. all sub-entities of "Public transport operator", like STM, MBTA, etc.
-sparql_request_manager = SparqlRequestManager()
+def print_items_by_query(query):
+    # Get all data from Wikibase image
+    # Can be also use to get all related data to an entity,
+    # i.e. all sub-entities of "Public transport operator", like STM, MBTA, etc.
+    sparql_request_manager = SparqlRequestManager()
+    sparql_response = sparql_request_manager.get_response(query)
+    results = []
+    for result in sparql_response["results"]["bindings"]:
+        #print(result)
+        #print(result['a']['value'][37:40])
+        results.append(result['a']['value'][37:40])
 
-query_wikidata = """
-SELECT ?item ?itemLabel 
-WHERE 
-{
-  ?item wdt:P31 wd:Q178512.
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-}"""
+    # Get data for a specific entity from Wikibase image
+    api_request_manager = ApiRequestManager()
+    for result in results:
+        params = {
+            "action": "wbgetentities",
+            "ids": "%s" % result,
+            "languages": "en",
+            "format": "json"
+        }
+        api_request = api_request_manager.get_response(params=params)
+        print(api_request.json())
 
-query_mobility_database = """
-SELECT *
-WHERE 
-{
-  ?a ?b ?c
-}"""
 
-sparql_request = sparql_request_manager.get_request(query_mobility_database)
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='MobilityDatabase Interface Script')
+    parser.add_argument('-d', '--dataset_path', action='store', dest='dataset_path', required=True,
+                        help='Path to the GTFS dataset zip to verify')
+    args = vars(parser.parse_args())
 
-for result in sparql_request["results"]["bindings"]:
-    print(result)
+    # Loads dataset in memory
+    dataset = load_dataset(args['dataset_path'])
+
+    # Compare dataset stops
+    compare_dataset_stops(dataset)
+
+    # Query for all data
+    query_all = """
+    SELECT *
+    WHERE 
+    {
+      ?a 
+      ?b
+      ?c
+    }"""
+
+    # Query for STM bus lines
+    query_stm = """
+    SELECT *
+    WHERE 
+    {
+      ?a 
+      <http://wikibase.svc/prop/statement/P27>
+      <http://wikibase.svc/entity/Q61>
+    }"""
+
+    # Print items for the requested query
+    print_items_by_query(query_stm)
