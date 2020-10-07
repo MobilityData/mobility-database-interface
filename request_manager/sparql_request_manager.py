@@ -16,7 +16,8 @@ class SparqlRequestManager:
         return self.sparql_service
 
     def get_response(self, query):
-        sparql = self.__get_sparql_service()
-        sparql.setQuery(query)
-        sparql.setReturnFormat(JSON)
-        return sparql.query().convert()
+        if query is not None:
+            sparql = self.__get_sparql_service()
+            sparql.setQuery(query)
+            sparql.setReturnFormat(JSON)
+            return sparql.query().convert()

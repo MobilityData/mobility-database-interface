@@ -14,5 +14,6 @@ class ApiRequestManager:
         return self.session
 
     def get_response(self, params):
-        session = self.__get_session()
-        return session.get(url=self.url, params=params)
+        if params is not None:
+            session = self.__get_session()
+            return session.get(url=self.url, params=params).json()
