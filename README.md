@@ -37,7 +37,7 @@ or with Apt (Linux) :
 $ sudo apt-get install python3.8
 ```
 
-If Pip is not installed on your computer, get it with the following command :
+If Pip is not installed on your computer, get it with the following commands :
 ```
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 sudo python get-pip.py
