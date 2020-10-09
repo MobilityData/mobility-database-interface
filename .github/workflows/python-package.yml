@@ -29,10 +29,11 @@ jobs:
         pip install flake8 pytest wheel
         sudo add-apt-repository ppa:ubuntugis/ppa
         sudo apt-get update
-        sudo apt-get install libgdal-dev
+        sudo apt-get install gdal-bin
+        sudo apt-get install libgdal-dev libgdal1h
         export CPLUS_INCLUDE_PATH=/usr/include/gdal
         export C_INCLUDE_PATH=/usr/include/gdal
-        pip install gdal --install-option="--include-dirs=/usr/include/gdal/"
+        pip install GDAL==$(gdal-config --version) --global-option=build_ext --global-option="-I/usr/include/gdal" 
         sudo apt-get install libspatialindex-dev
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
