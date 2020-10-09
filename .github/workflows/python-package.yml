@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [3.5, 3.6, 3.7, 3.8]
+        python-version: [3.6, 3.7, 3.8]
 
     steps:
     - uses: actions/checkout@v2
@@ -29,7 +29,13 @@ jobs:
         sudo apt-get install libgdal-dev
         pip install GDAL==$(gdal-config --version) --global-option=build_ext --global-option="-I/usr/include/gdal" 
         sudo apt-get install libspatialindex-dev
-        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        sudo add-apt-repository ppa:ubuntugis/ppa
+        sudo apt-get update
+        sudo apt-get install gdal-bin python3-gdal
+        sudo apt-get install libgdal-dev
+        pip install GDAL==$(gdal-config --version) --global-option=build_ext --global-option="-I/usr/include/gdal"
+        sudo apt-get install libspatialindex-dev
+        if [ -f requirements_ci.txt ]; then pip install -r requirements_ci.txt; fi
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
