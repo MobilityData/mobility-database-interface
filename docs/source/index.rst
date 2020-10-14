@@ -21,13 +21,23 @@ Source documentation
 .. automodule:: main
 
 
-:mod:`heuristic.stops_longitude_latitude_too_close` -- HTML forms definitions
+:mod:`heuristic.stops_longitude_latitude_too_close`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: heuristic.stops_longitude_latitude_too_close
    :members:
    :undoc-members:
    :show-inheritance:
+
+
+:mod:`repository.gtfs_data_repository`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: repository.gtfs_data_repository
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 
 

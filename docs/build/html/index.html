@@ -41,7 +41,7 @@
 <span id="main-main-package"></span><h3><a class="reference internal" href="#module-main" title="main"><code class="xref py py-mod docutils literal notranslate"><span class="pre">main</span></code></a> – Main package<a class="headerlink" href="#module-main" title="Permalink to this headline">¶</a></h3>
 </div>
 <div class="section" id="module-heuristic.stops_longitude_latitude_too_close">
-<span id="heuristic-stops-longitude-latitude-too-close-html-forms-definitions"></span><h3><a class="reference internal" href="#module-heuristic.stops_longitude_latitude_too_close" title="heuristic.stops_longitude_latitude_too_close"><code class="xref py py-mod docutils literal notranslate"><span class="pre">heuristic.stops_longitude_latitude_too_close</span></code></a> – HTML forms definitions<a class="headerlink" href="#module-heuristic.stops_longitude_latitude_too_close" title="Permalink to this headline">¶</a></h3>
+<span id="heuristic-stops-longitude-latitude-too-close"></span><h3><a class="reference internal" href="#module-heuristic.stops_longitude_latitude_too_close" title="heuristic.stops_longitude_latitude_too_close"><code class="xref py py-mod docutils literal notranslate"><span class="pre">heuristic.stops_longitude_latitude_too_close</span></code></a><a class="headerlink" href="#module-heuristic.stops_longitude_latitude_too_close" title="Permalink to this headline">¶</a></h3>
 <dl class="py class">
 <dt id="heuristic.stops_longitude_latitude_too_close.StopsLongitudeLatitudeTooClose">
 <em class="property">class </em><code class="sig-prename descclassname">heuristic.stops_longitude_latitude_too_close.</code><code class="sig-name descname">StopsLongitudeLatitudeTooClose</code><a class="headerlink" href="#heuristic.stops_longitude_latitude_too_close.StopsLongitudeLatitudeTooClose" title="Permalink to this definition">¶</a></dt>
@@ -59,6 +59,31 @@
 :param stop_2: Second stop to compare.
 :param min_distance_meter: Minimum distance threshold in meter. Default at 5m.
 :returns: <cite>boolean</cite>. True if the two stops are closer than the <code class="docutils literal notranslate"><span class="pre">min_distance_meter</span></code>, false otherwise.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-repository.gtfs_data_repository">
+<span id="repository-gtfs-data-repository"></span><h3><a class="reference internal" href="#module-repository.gtfs_data_repository" title="repository.gtfs_data_repository"><code class="xref py py-mod docutils literal notranslate"><span class="pre">repository.gtfs_data_repository</span></code></a><a class="headerlink" href="#module-repository.gtfs_data_repository" title="Permalink to this headline">¶</a></h3>
+<dl class="py class">
+<dt id="repository.gtfs_data_repository.GtfsDataRepository">
+<em class="property">class </em><code class="sig-prename descclassname">repository.gtfs_data_repository.</code><code class="sig-name descname">GtfsDataRepository</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dataset_path</span></em><span class="sig-paren">)</span><a class="headerlink" href="#repository.gtfs_data_repository.GtfsDataRepository" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt id="repository.gtfs_data_repository.GtfsDataRepository.display_dataset">
+<code class="sig-name descname">display_dataset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#repository.gtfs_data_repository.GtfsDataRepository.display_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Print the dataset loaded in memory.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="repository.gtfs_data_repository.GtfsDataRepository.get_dataset">
+<code class="sig-name descname">get_dataset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#repository.gtfs_data_repository.GtfsDataRepository.get_dataset" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The dataset loaded in memory.</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
