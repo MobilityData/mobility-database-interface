@@ -8,9 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
-      - name: Create documentation directory
-        run: |
-          if [ ! -d "./docs" ]; then mkdir docs; fi
       - name: Generate documentation
         uses: ammaraskar/sphinx-action@master
         with:
