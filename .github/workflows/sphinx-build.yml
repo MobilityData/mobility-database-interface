@@ -12,3 +12,7 @@ jobs:
         uses: ammaraskar/sphinx-action@master
         with:
           docs-folder: "docs/"
+      - name: Documentation artifact
+        uses: actions/upload-artifact@v1
+          with:
+            path: docs/_build/html/
