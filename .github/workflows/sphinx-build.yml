@@ -13,7 +13,7 @@ jobs:
         python-version: [3.8]
 
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v2
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
@@ -30,9 +30,8 @@ jobs:
           sudo apt-get install libspatialindex-dev
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Generate documentation
-        uses: ammaraskar/sphinx-action@master
-        with:
-          docs-folder: "docs/"
+        run: |
+          cd docs && make html
       - uses: actions/upload-artifact@v1
         with:
           name: Documentation artifact
