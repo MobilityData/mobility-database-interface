@@ -7,6 +7,9 @@ env/
 __pycache__/
 *.py[cod]
 
+# Sphinx
+docs/build/*
+
 # Mac
 */.DS_Store
 .DS_Store
