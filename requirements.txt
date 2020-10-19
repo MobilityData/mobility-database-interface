@@ -12,7 +12,7 @@ Fiona==1.8.16
 flake8==3.8.4
 folium==0.8.3
 geographiclib==1.50
-geopandas==0.8.1
+geopandas==0.6.3
 geopy==2.0.0
 gtfs-kit==5.0.0
 idna==2.10
