@@ -12,7 +12,23 @@
 To be added
 
 ## Getting Started
-To be added
+
+Before getting started, make sure to correctly install the requirements, as described in the [Installation](#Installation) section.
+
+To run the project, enter the following commands, including the path to the dataset you want to process  :
+```
+$ (env) python main.py -d $DATASETPATH
+```
+
+To run tests for this project, enter the following commands :
+```
+$ (env) pytest
+```
+
+To manually generate a test report for the project, enter the following commands :
+```
+$ (env) pytest --html=report.html
+```
 
 ### Prerequisites
 
@@ -68,7 +84,7 @@ Note that you will also need the [gtfs-kit library](https://pypi.org/project/gtf
 
 To deactivate your virtual environment, enter the following command:
 ```
-(end) $ deactivate
+(env) $ deactivate
 ```
 
 If you are working with Intellij, it is possible to use this virtual environment within the IDE. To do so, follow the instructions to create a virtual environment in Intellij [here](https://www.jetbrains.com/help/idea/creating-virtual-environment.html).
