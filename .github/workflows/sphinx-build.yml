@@ -1,4 +1,4 @@
-name: "Pull Request Docs Check"
+name: "Sphinx Docs CI"
 on:
   push:
     branches: [ master ]
@@ -32,7 +32,8 @@ jobs:
       - name: Generate documentation
         run: |
           cd docs && make html
-      - uses: actions/upload-artifact@v1
+      - name: Upload artifact
+        uses: actions/upload-artifact@v1
         with:
-          name: Documentation artifact
+          name: Mobility-Database-Interface_documentation-v$GITHUB_RUN_ID.GITHUB_RUN_NUMBER
           path: docs/build/html/
