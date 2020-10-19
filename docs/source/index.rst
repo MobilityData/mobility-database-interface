@@ -39,6 +39,41 @@ Source documentation
    :show-inheritance:
 
 
+:mod:`request_manager.api_request_manager`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: request_manager.api_request_manager
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+:mod:`request_manager.sparql_request_manager`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: request_manager.sparql_request_manager
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+:mod:`usecase.compare_gtfs_stops`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: usecase.compare_gtfs_stops
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+:mod:`utilities.external_utils`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: utilities.external_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 
 
 Indices and tables
