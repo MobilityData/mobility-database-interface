@@ -36,5 +36,5 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-artifact@v1
         with:
-          name: Mobility-Database-Interface_documentation-v$GITHUB_RUN_ID.GITHUB_RUN_NUMBER
+          name: Mobility-Database-Interface_documentation-v${{ env.GITHUB_RUN_ID }}.${{ env.GITHUB_RUN_NUMBER }}
           path: docs/build/html/
