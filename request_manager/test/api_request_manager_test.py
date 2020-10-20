@@ -4,6 +4,8 @@ from request_manager.api_request_manager import ApiRequestManager
 
 
 def ignore_resource_warnings(test_func):
+    """Removes the resource warning raised by testing sessions without closing them (normal class behaviour).
+    """
     def test(self, *args, **kwargs):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore", ResourceWarning)
@@ -13,14 +15,14 @@ def ignore_resource_warnings(test_func):
 
 class ApiRequestManagerTest(unittest.TestCase):
 
-    def test_request_with_none_params_should_return_none(self):
+    def test_none_response_for_request_with_none_params(self):
         params = None
 
         under_test = ApiRequestManager()
         self.assertIsNone(under_test.get_response(params))
 
     @ignore_resource_warnings
-    def test_request_with_non_existent_entity_should_return_error(self):
+    def test_error_response_for_request_with_non_existent_entity(self):
         params = {
             "action": "wbgetentities",
             "ids": "non_existent",
@@ -34,7 +36,7 @@ class ApiRequestManagerTest(unittest.TestCase):
         self.assertEqual(response['error']['code'], 'no-such-entity')
 
     @ignore_resource_warnings
-    def test_request_with_non_existent_action_should_return_error(self):
+    def test_error_response_for_request_with_non_existent_action(self):
         params = {
             "action": "non_existent",
             "ids": "Q66",
@@ -48,7 +50,7 @@ class ApiRequestManagerTest(unittest.TestCase):
         self.assertEqual(response['error']['code'], 'unknown_action')
 
     @ignore_resource_warnings
-    def test_request_with_non_existent_language_should_return_warning(self):
+    def test_warning_response_for_request_with_non_existent_language(self):
         params = {
             "action": "wbgetentities",
             "ids": "Q66",
@@ -63,7 +65,7 @@ class ApiRequestManagerTest(unittest.TestCase):
                          'Unrecognized value for parameter "languages": non_existent.')
 
     @ignore_resource_warnings
-    def test_request_with_existent_params_should_return_response(self):
+    def test_normal_response_for_request_with_existent_params(self):
         params = {
             "action": "wbgetentities",
             "ids": "Q66",

@@ -4,13 +4,13 @@ from request_manager.sparql_request_manager import SparqlRequestManager
 
 class SparqlRequestManagerTest(unittest.TestCase):
 
-    def test_request_with_none_query_should_return_none(self):
+    def test_none_response_for_request_with_none_query(self):
         query = None
 
         under_test = SparqlRequestManager()
         self.assertIsNone(under_test.get_response(query))
 
-    def test_request_with_no_query_item_specified_should_return_3_items_per_result(self):
+    def test_response_with_3_items_per_result_for_request_with_no_query_item_specified(self):
         query = """
                 SELECT *
                 WHERE 
@@ -25,7 +25,7 @@ class SparqlRequestManagerTest(unittest.TestCase):
         self.assertEqual(list(response.keys())[0], 'head')
         self.assertEqual(response['head']['vars'], ['a', 'b', 'c'])
 
-    def test_request_with_existent_query_item_a_specified_should_return_b_and_c_items_per_result(self):
+    def test_response_with_b_and_c_items_per_result_for_request_with_existent_query_item_a_specified(self):
         query = """
                 SELECT *
                 WHERE 
@@ -41,7 +41,7 @@ class SparqlRequestManagerTest(unittest.TestCase):
         self.assertEqual(response['head']['vars'], ['b', 'c'])
         self.assertNotEqual(response['results']['bindings'], [])
 
-    def test_request_with_non_existent_query_item_a_specified_should_return_empty_result(self):
+    def test_response_with_empty_result_for_request_with_non_existent_query_item_a_specified(self):
         query = """
                 SELECT *
                 WHERE 
@@ -57,7 +57,7 @@ class SparqlRequestManagerTest(unittest.TestCase):
         self.assertEqual(response['head']['vars'], ['b', 'c'])
         self.assertEqual(response['results']['bindings'], [])
 
-    def test_request_with_existent_query_item_b_specified_should_return_a_and_c_items_per_result(self):
+    def test_response_with_a_and_c_items_per_result_with_request_with_existent_query_item_b_specified(self):
         query = """
                 SELECT *
                 WHERE 
@@ -73,7 +73,7 @@ class SparqlRequestManagerTest(unittest.TestCase):
         self.assertEqual(response['head']['vars'], ['a', 'c'])
         self.assertNotEqual(response['results']['bindings'], [])
 
-    def test_request_with_non_existent_query_item_b_specified_should_return_empty_result(self):
+    def test_response_with_empty_result_for_request_with_non_existent_query_item_b_specified(self):
         query = """
                 SELECT *
                 WHERE 
@@ -89,7 +89,7 @@ class SparqlRequestManagerTest(unittest.TestCase):
         self.assertEqual(response['head']['vars'], ['a', 'c'])
         self.assertEqual(response['results']['bindings'], [])
 
-    def test_request_with_existent_query_item_c_specified_should_return_a_and_b_items_per_result(self):
+    def test_response_with_a_and_b_items_per_result_for_request_with_existent_query_item_c_specified(self):
         query = """
                 SELECT *
                 WHERE 
@@ -105,7 +105,7 @@ class SparqlRequestManagerTest(unittest.TestCase):
         self.assertEqual(response['head']['vars'], ['a', 'b'])
         self.assertNotEqual(response['results']['bindings'], [])
 
-    def test_request_with_non_existent_query_item_c_specified_should_return_empty_result(self):
+    def test_response_with_empty_result_for_request_with_non_existent_query_item_c_specified(self):
         query = """
                 SELECT *
                 WHERE 
@@ -121,7 +121,7 @@ class SparqlRequestManagerTest(unittest.TestCase):
         self.assertEqual(response['head']['vars'], ['a', 'b'])
         self.assertEqual(response['results']['bindings'], [])
 
-    def test_request_with_existent_query_items_a_and_b_specified_should_return_c_item_per_result(self):
+    def test_response_with_c_item_per_result_for_request_with_existent_query_items_a_and_b_specified(self):
         query = """
                 SELECT *
                 WHERE 
@@ -137,7 +137,7 @@ class SparqlRequestManagerTest(unittest.TestCase):
         self.assertEqual(response['head']['vars'], ['c'])
         self.assertNotEqual(response['results']['bindings'], [])
 
-    def test_request_with_existent_query_items_a_and_c_specified_should_return_b_item_per_result(self):
+    def test_response_with_b_item_per_result_for_request_with_existent_query_items_a_and_c_specified(self):
         query = """
                 SELECT *
                 WHERE 
@@ -153,7 +153,7 @@ class SparqlRequestManagerTest(unittest.TestCase):
         self.assertEqual(response['head']['vars'], ['b'])
         self.assertNotEqual(response['results']['bindings'], [])
 
-    def test_request_with_existent_query_items_b_and_c_specified_should_return_a_item_per_result(self):
+    def test_response_with_a_item_per_result_for_request_with_existent_query_items_b_and_c_specified(self):
         query = """
                 SELECT *
                 WHERE 
@@ -169,7 +169,7 @@ class SparqlRequestManagerTest(unittest.TestCase):
         self.assertEqual(response['head']['vars'], ['a'])
         self.assertNotEqual(response['results']['bindings'], [])
 
-    def test_request_with_3_existent_query_items_specified_should_return_no_result(self):
+    def test_response_with_no_result_for_request_with_3_existent_query_items_specified(self):
         query = """
                 SELECT *
                 WHERE 
