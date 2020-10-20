@@ -48,4 +48,5 @@ jobs:
       with:
         name: Mobility-Database-Interface_test-report-v${{ github.run_id }}.${{ github.run_number }}
         path: |
+          assets/
           report.html
