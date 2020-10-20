@@ -25,7 +25,8 @@ class SparqlRequestManager:
         :param query: The query to make to the SPARQL service.
         :return: The response returned by the SPARQL service.
         """
-        sparql = self.__get_sparql_service()
-        sparql.setQuery(query)
-        sparql.setReturnFormat(JSON)
-        return sparql.query().convert()
+        if query is not None:
+            sparql = self.__get_sparql_service()
+            sparql.setQuery(query)
+            sparql.setReturnFormat(JSON)
+            return sparql.query().convert()

@@ -23,5 +23,6 @@ class ApiRequestManager:
         :param params: The params for the query to make to the API.
         :return: The response returned by the API.
         """
-        session = self.__get_session()
-        return session.get(url=self.url, params=params)
+        if params is not None:
+            session = self.__get_session()
+            return session.get(url=self.url, params=params).json()

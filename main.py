@@ -38,7 +38,7 @@ def print_items_by_query(query):
             "format": "json"
         }
         api_request = api_request_manager.get_response(params=params)
-        print(api_request.json())
+        print(api_request)
 
 
 if __name__ == "__main__":

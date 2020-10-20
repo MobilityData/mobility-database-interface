@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Python package
+name: Python CI
 
 on:
   push:
@@ -33,10 +33,18 @@ jobs:
         sudo apt-get install libgdal-dev
         pip install GDAL==$(gdal-config --version) --global-option=build_ext --global-option="-I/usr/include/gdal"
         sudo apt-get install libspatialindex-dev
-        if [ -f requirements_ci.txt ]; then pip install -r requirements_ci.txt; fi
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
         # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+    - name: Test with pytest
+      run: |
+        pytest --html=mobility-database-interface-test-report.html --self-contained-html
+    - name: Upload artifact
+      uses: actions/upload-artifact@v1
+      with:
+        name: Mobility-Database-Interface_test-report-v${{ github.run_id }}.${{ github.run_number }}
+        path: mobility-database-interface-test-report.html
