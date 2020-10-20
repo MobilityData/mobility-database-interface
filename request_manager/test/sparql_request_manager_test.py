@@ -1,16 +1,19 @@
-import unittest
+from unittest import TestCase, mock
 from request_manager.sparql_request_manager import SparqlRequestManager
 
 
-class SparqlRequestManagerTest(unittest.TestCase):
+class SparqlRequestManagerTest(TestCase):
 
-    def test_none_response_for_request_with_none_query(self):
+    @mock.patch('request_manager.sparql_client.SparqlClient')
+    def test_none_response_for_request_with_none_query(self, mock_sparql_client):
         query = None
 
-        under_test = SparqlRequestManager()
-        self.assertIsNone(under_test.get_response(query))
+        under_test = SparqlRequestManager(mock_sparql_client)
+        self.assertIsNone(under_test.execute_get(query))
+        mock_sparql_client.assert_not_called()
 
-    def test_response_with_3_items_per_result_for_request_with_no_query_item_specified(self):
+    @mock.patch('request_manager.sparql_client.SparqlClient')
+    def test_response_with_3_items_per_result_for_request_with_no_query_item_specified(self, mock_sparql_client):
         query = """
                 SELECT *
                 WHERE 
@@ -19,13 +22,15 @@ class SparqlRequestManagerTest(unittest.TestCase):
                    ?b
                    ?c
                 }"""
+        mock_sparql_client.get.return_value = 'testing'
 
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['a', 'b', 'c'])
+        under_test = SparqlRequestManager(mock_sparql_client)
+        response = under_test.execute_get(query)
+        self.assertEqual(response, 'testing')
+        mock_sparql_client.get.assert_called_once()
 
-    def test_response_with_b_and_c_items_per_result_for_request_with_existent_query_item_a_specified(self):
+    @mock.patch('request_manager.sparql_client.SparqlClient')
+    def test_response_with_b_and_c_items_per_result_for_request_with_existent_query_item_a_specified(self, mock_sparql_client):
         query = """
                 SELECT *
                 WHERE 
@@ -34,14 +39,15 @@ class SparqlRequestManagerTest(unittest.TestCase):
                    ?b
                    ?c
                 }"""
+        mock_sparql_client.get.return_value = 'testing'
 
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['b', 'c'])
-        self.assertNotEqual(response['results']['bindings'], [])
+        under_test = SparqlRequestManager(mock_sparql_client)
+        response = under_test.execute_get(query)
+        self.assertEqual(response, 'testing')
+        mock_sparql_client.get.assert_called_once()
 
-    def test_response_with_empty_result_for_request_with_non_existent_query_item_a_specified(self):
+    @mock.patch('request_manager.sparql_client.SparqlClient')
+    def test_response_with_empty_result_for_request_with_non_existent_query_item_a_specified(self, mock_sparql_client):
         query = """
                 SELECT *
                 WHERE 
@@ -50,14 +56,15 @@ class SparqlRequestManagerTest(unittest.TestCase):
                    ?b
                    ?c
                 }"""
+        mock_sparql_client.get.return_value = 'testing'
 
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['b', 'c'])
-        self.assertEqual(response['results']['bindings'], [])
+        under_test = SparqlRequestManager(mock_sparql_client)
+        response = under_test.execute_get(query)
+        self.assertEqual(response, 'testing')
+        mock_sparql_client.get.assert_called_once()
 
-    def test_response_with_a_and_c_items_per_result_with_request_with_existent_query_item_b_specified(self):
+    @mock.patch('request_manager.sparql_client.SparqlClient')
+    def test_response_with_a_and_c_items_per_result_with_request_with_existent_query_item_b_specified(self, mock_sparql_client):
         query = """
                 SELECT *
                 WHERE 
@@ -66,14 +73,15 @@ class SparqlRequestManagerTest(unittest.TestCase):
                    <http://wikibase.svc/prop/statement/P27>
                    ?c
                 }"""
+        mock_sparql_client.get.return_value = 'testing'
 
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['a', 'c'])
-        self.assertNotEqual(response['results']['bindings'], [])
+        under_test = SparqlRequestManager(mock_sparql_client)
+        response = under_test.execute_get(query)
+        self.assertEqual(response, 'testing')
+        mock_sparql_client.get.assert_called_once()
 
-    def test_response_with_empty_result_for_request_with_non_existent_query_item_b_specified(self):
+    @mock.patch('request_manager.sparql_client.SparqlClient')
+    def test_response_with_empty_result_for_request_with_non_existent_query_item_b_specified(self, mock_sparql_client):
         query = """
                 SELECT *
                 WHERE 
@@ -82,14 +90,15 @@ class SparqlRequestManagerTest(unittest.TestCase):
                    <http://wikibase.svc/prop/statement/non-existent>
                    ?c
                 }"""
+        mock_sparql_client.get.return_value = 'testing'
 
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['a', 'c'])
-        self.assertEqual(response['results']['bindings'], [])
+        under_test = SparqlRequestManager(mock_sparql_client)
+        response = under_test.execute_get(query)
+        self.assertEqual(response, 'testing')
+        mock_sparql_client.get.assert_called_once()
 
-    def test_response_with_a_and_b_items_per_result_for_request_with_existent_query_item_c_specified(self):
+    @mock.patch('request_manager.sparql_client.SparqlClient')
+    def test_response_with_a_and_b_items_per_result_for_request_with_existent_query_item_c_specified(self, mock_sparql_client):
         query = """
                 SELECT *
                 WHERE 
@@ -98,14 +107,15 @@ class SparqlRequestManagerTest(unittest.TestCase):
                    ?b
                    <http://wikibase.svc/entity/Q61>
                 }"""
+        mock_sparql_client.get.return_value = 'testing'
 
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['a', 'b'])
-        self.assertNotEqual(response['results']['bindings'], [])
+        under_test = SparqlRequestManager(mock_sparql_client)
+        response = under_test.execute_get(query)
+        self.assertEqual(response, 'testing')
+        mock_sparql_client.get.assert_called_once()
 
-    def test_response_with_empty_result_for_request_with_non_existent_query_item_c_specified(self):
+    @mock.patch('request_manager.sparql_client.SparqlClient')
+    def test_response_with_empty_result_for_request_with_non_existent_query_item_c_specified(self, mock_sparql_client):
         query = """
                 SELECT *
                 WHERE 
@@ -114,14 +124,15 @@ class SparqlRequestManagerTest(unittest.TestCase):
                    ?b
                    <http://wikibase.svc/entity/non-existent>
                 }"""
+        mock_sparql_client.get.return_value = 'testing'
 
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['a', 'b'])
-        self.assertEqual(response['results']['bindings'], [])
+        under_test = SparqlRequestManager(mock_sparql_client)
+        response = under_test.execute_get(query)
+        self.assertEqual(response, 'testing')
+        mock_sparql_client.get.assert_called_once()
 
-    def test_response_with_c_item_per_result_for_request_with_existent_query_items_a_and_b_specified(self):
+    @mock.patch('request_manager.sparql_client.SparqlClient')
+    def test_response_with_c_item_per_result_for_request_with_existent_query_items_a_and_b_specified(self, mock_sparql_client):
         query = """
                 SELECT *
                 WHERE 
@@ -130,14 +141,15 @@ class SparqlRequestManagerTest(unittest.TestCase):
                    <http://wikibase.svc/prop/statement/P27>
                    ?c
                 }"""
+        mock_sparql_client.get.return_value = 'testing'
 
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['c'])
-        self.assertNotEqual(response['results']['bindings'], [])
+        under_test = SparqlRequestManager(mock_sparql_client)
+        response = under_test.execute_get(query)
+        self.assertEqual(response, 'testing')
+        mock_sparql_client.get.assert_called_once()
 
-    def test_response_with_b_item_per_result_for_request_with_existent_query_items_a_and_c_specified(self):
+    @mock.patch('request_manager.sparql_client.SparqlClient')
+    def test_response_with_b_item_per_result_for_request_with_existent_query_items_a_and_c_specified(self, mock_sparql_client):
         query = """
                 SELECT *
                 WHERE 
@@ -146,14 +158,15 @@ class SparqlRequestManagerTest(unittest.TestCase):
                    ?b
                    <http://wikibase.svc/entity/Q61>
                 }"""
+        mock_sparql_client.get.return_value = 'testing'
 
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['b'])
-        self.assertNotEqual(response['results']['bindings'], [])
+        under_test = SparqlRequestManager(mock_sparql_client)
+        response = under_test.execute_get(query)
+        self.assertEqual(response, 'testing')
+        mock_sparql_client.get.assert_called_once()
 
-    def test_response_with_a_item_per_result_for_request_with_existent_query_items_b_and_c_specified(self):
+    @mock.patch('request_manager.sparql_client.SparqlClient')
+    def test_response_with_a_item_per_result_for_request_with_existent_query_items_b_and_c_specified(self, mock_sparql_client):
         query = """
                 SELECT *
                 WHERE 
@@ -162,14 +175,15 @@ class SparqlRequestManagerTest(unittest.TestCase):
                    <http://wikibase.svc/prop/statement/P27>
                    <http://wikibase.svc/entity/Q61>
                 }"""
+        mock_sparql_client.get.return_value = 'testing'
 
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['a'])
-        self.assertNotEqual(response['results']['bindings'], [])
+        under_test = SparqlRequestManager(mock_sparql_client)
+        response = under_test.execute_get(query)
+        self.assertEqual(response, 'testing')
+        mock_sparql_client.get.assert_called_once()
 
-    def test_response_with_no_result_for_request_with_3_existent_query_items_specified(self):
+    @mock.patch('request_manager.sparql_client.SparqlClient')
+    def test_response_with_no_result_for_request_with_3_existent_query_items_specified(self, mock_sparql_client):
         query = """
                 SELECT *
                 WHERE 
@@ -178,9 +192,9 @@ class SparqlRequestManagerTest(unittest.TestCase):
                    <http://wikibase.svc/prop/statement/P27>
                    <http://wikibase.svc/entity/Q61>
                 }"""
+        mock_sparql_client.get.return_value = 'testing'
 
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], [])
-        self.assertEqual(response['results']['bindings'], [{}])
+        under_test = SparqlRequestManager(mock_sparql_client)
+        response = under_test.execute_get(query)
+        self.assertEqual(response, 'testing')
+        mock_sparql_client.get.assert_called_once()

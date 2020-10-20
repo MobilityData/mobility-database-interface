@@ -1,4 +1,4 @@
-import unittest
+from unittest import TestCase, mock
 import warnings
 from request_manager.api_request_manager import ApiRequestManager
 
@@ -13,67 +13,76 @@ def ignore_resource_warnings(test_func):
     return test
 
 
-class ApiRequestManagerTest(unittest.TestCase):
+class ApiRequestManagerTest(TestCase):
 
-    def test_none_response_for_request_with_none_params(self):
+    @mock.patch('request_manager.api_client.ApiClient')
+    def test_none_response_for_request_with_none_params(self, mock_api_client):
         params = None
 
-        under_test = ApiRequestManager()
-        self.assertIsNone(under_test.get_response(params))
+        under_test = ApiRequestManager(mock_api_client)
+        self.assertIsNone(under_test.execute_get(params))
+        mock_api_client.assert_not_called()
 
     @ignore_resource_warnings
-    def test_error_response_for_request_with_non_existent_entity(self):
+    @mock.patch('request_manager.api_client.ApiClient')
+    def test_error_response_for_request_with_non_existent_entity(self, mock_api_client):
         params = {
             "action": "wbgetentities",
             "ids": "non_existent",
             "languages": "en",
             "format": "json"
         }
+        mock_api_client.get.return_value = 'testing'
 
-        under_test = ApiRequestManager()
-        response = under_test.get_response(params)
-        self.assertEqual(list(response.keys()), ['error'])
-        self.assertEqual(response['error']['code'], 'no-such-entity')
+        under_test = ApiRequestManager(mock_api_client)
+        response = under_test.execute_get(params)
+        self.assertEqual(response, 'testing')
+        mock_api_client.get.assert_called_once()
 
     @ignore_resource_warnings
-    def test_error_response_for_request_with_non_existent_action(self):
+    @mock.patch('request_manager.api_client.ApiClient')
+    def test_error_response_for_request_with_non_existent_action(self, mock_api_client):
         params = {
             "action": "non_existent",
             "ids": "Q66",
             "languages": "en",
             "format": "json"
         }
+        mock_api_client.get.return_value = 'testing'
 
-        under_test = ApiRequestManager()
-        response = under_test.get_response(params)
-        self.assertEqual(list(response.keys()), ['error'])
-        self.assertEqual(response['error']['code'], 'unknown_action')
+        under_test = ApiRequestManager(mock_api_client)
+        response = under_test.execute_get(params)
+        self.assertEqual(response, 'testing')
+        mock_api_client.get.assert_called_once()
 
     @ignore_resource_warnings
-    def test_warning_response_for_request_with_non_existent_language(self):
+    @mock.patch('request_manager.api_client.ApiClient')
+    def test_warning_response_for_request_with_non_existent_language(self, mock_api_client):
         params = {
             "action": "wbgetentities",
             "ids": "Q66",
             "languages": "non_existent",
             "format": "json"
         }
+        mock_api_client.get.return_value = 'testing'
 
-        under_test = ApiRequestManager()
-        response = under_test.get_response(params)
-        self.assertEqual(list(response.keys())[0], 'warnings')
-        self.assertEqual(response['warnings']['wbgetentities']['*'],
-                         'Unrecognized value for parameter "languages": non_existent.')
+        under_test = ApiRequestManager(mock_api_client)
+        response = under_test.execute_get(params)
+        self.assertEqual(response, 'testing')
+        mock_api_client.get.assert_called_once()
 
     @ignore_resource_warnings
-    def test_normal_response_for_request_with_existent_params(self):
+    @mock.patch('request_manager.api_client.ApiClient')
+    def test_normal_response_for_request_with_existent_params(self, mock_api_client):
         params = {
             "action": "wbgetentities",
             "ids": "Q66",
             "languages": "en",
             "format": "json"
         }
+        mock_api_client.get.return_value = 'testing'
 
-        under_test = ApiRequestManager()
-        response = under_test.get_response(params)
-        self.assertEqual(list(response.keys())[0], 'entities')
-        self.assertEqual(response['success'], 1)
+        under_test = ApiRequestManager(mock_api_client)
+        response = under_test.execute_get(params)
+        self.assertEqual(response, 'testing')
+        mock_api_client.get.assert_called_once()

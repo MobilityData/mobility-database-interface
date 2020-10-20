@@ -1,28 +1,19 @@
-import requests
-from utilities import external_utils
 
 
 class ApiRequestManager:
 
-    def __init__(self):
+    def __init__(self, client):
         """Constructor for ``ApiRequestManager``.
         """
-        self.session = None
-        self.url = external_utils.get_db_api_url()
+        try:
+            self._api_client = client
+        except Exception as e:
+            raise e
 
-    def __get_session(self):
-        """Get the session for the API. Initialize the session if set at none.
-        :return: The session for the API.
-        """
-        if self.session is None:
-            self.session = requests.Session()
-        return self.session
-
-    def get_response(self, params):
-        """Get a response for a query made to the API of the database.
-        :param params: The params for the query to make to the API.
-        :return: The response returned by the API.
+    def execute_get(self, params):
+        """Execute GET request with the API client.
+        :param params: The params for the request to make to the API client.
+        :return: The response returned by the API client.
         """
         if params is not None:
-            session = self.__get_session()
-            return session.get(url=self.url, params=params).json()
+            return self._api_client.get(params)
