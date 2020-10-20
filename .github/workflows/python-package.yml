@@ -42,11 +42,9 @@ jobs:
         flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
     - name: Test with pytest
       run: |
-        pytest --html=report.html
-        ls
+        pytest --html=mobility-database-interface-test-report.html --self-contained-html
     - name: Upload artifact
       uses: actions/upload-artifact@v1
       with:
         name: Mobility-Database-Interface_test-report-v${{ github.run_id }}.${{ github.run_number }}
-        path: |
-          report.html
+        path: mobility-database-interface-test-report.html
