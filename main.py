@@ -1,8 +1,8 @@
 import argparse
 from repository.gtfs_data_repository import GtfsDataRepository
-from request_manager.api_request_manager import ApiRequestManager
-from request_manager.sparql_request_manager import SparqlRequestManager
+from request_manager.request_manager_containers import Configs, Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
+from utilities import external_utils
 
 
 def load_dataset(dataset_path):
@@ -20,8 +20,8 @@ def print_items_by_query(query):
     # Get all data from Wikibase image
     # Can be also use to get all related data to an entity,
     # i.e. all sub-entities of "Public transport operator", like STM, MBTA, etc.
-    sparql_request_manager = SparqlRequestManager()
-    sparql_response = sparql_request_manager.get_response(query)
+    sparql_request_manager = Managers.staging_sparql_request_manager()
+    sparql_response = sparql_request_manager.execute_get(query)
     results = []
     for result in sparql_response["results"]["bindings"]:
         #print(result)
@@ -29,7 +29,7 @@ def print_items_by_query(query):
         results.append(result['a']['value'][37:40])
 
     # Get data for a specific entity from Wikibase image
-    api_request_manager = ApiRequestManager()
+    api_request_manager = Managers.staging_api_request_manager()
     for result in results:
         params = {
             "action": "wbgetentities",
@@ -37,7 +37,7 @@ def print_items_by_query(query):
             "languages": "en",
             "format": "json"
         }
-        api_request = api_request_manager.get_response(params=params)
+        api_request = api_request_manager.execute_get(params=params)
         print(api_request)
 
 

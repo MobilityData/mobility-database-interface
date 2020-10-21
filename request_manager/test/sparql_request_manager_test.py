@@ -1,16 +1,30 @@
-import unittest
+from unittest import TestCase, mock
 from request_manager.sparql_request_manager import SparqlRequestManager
 
 
-class SparqlRequestManagerTest(unittest.TestCase):
+class SparqlRequestManagerTest(TestCase):
 
-    def test_none_response_for_request_with_none_query(self):
+    def test_sparql_request_manager_initialized_with_none_sparql_client_should_raise_exception(self):
+        self.assertRaises(TypeError, SparqlRequestManager, None)
+
+    @mock.patch('request_manager.sparql_client.SparqlClient')
+    def test_sparql_request_manager_initialized_with_sparql_client_should_not_raise_exception(self, mock_sparql_client):
+        under_test = SparqlRequestManager(mock_sparql_client)
+
+        self.assertIsInstance(under_test, SparqlRequestManager)
+        mock_sparql_client.assert_not_called()
+
+    @mock.patch('request_manager.sparql_client.SparqlClient')
+    def test_sparql_get_request_with_none_query_should_return_none(self, mock_sparql_client):
         query = None
 
-        under_test = SparqlRequestManager()
-        self.assertIsNone(under_test.get_response(query))
+        under_test = SparqlRequestManager(mock_sparql_client)
 
-    def test_response_with_3_items_per_result_for_request_with_no_query_item_specified(self):
+        self.assertIsNone(under_test.execute_get(query))
+        mock_sparql_client.assert_not_called()
+
+    @mock.patch('request_manager.sparql_client.SparqlClient')
+    def test_sparql_get_request_with_none_service_should_raise_exception(self, mock_sparql_client):
         query = """
                 SELECT *
                 WHERE 
@@ -20,167 +34,32 @@ class SparqlRequestManagerTest(unittest.TestCase):
                    ?c
                 }"""
 
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['a', 'b', 'c'])
+        mock_sparql_client.get_service.return_value = None
+        under_test = SparqlRequestManager(mock_sparql_client)
 
-    def test_response_with_b_and_c_items_per_result_for_request_with_existent_query_item_a_specified(self):
+        self.assertRaises(AttributeError, under_test.execute_get, query)
+        mock_sparql_client.get_service.assert_called_once()
+
+    @mock.patch('request_manager.sparql_client.SparqlClient')
+    @mock.patch('SPARQLWrapper.SPARQLWrapper')
+    @mock.patch('SPARQLWrapper.Wrapper.QueryResult')
+    def test_sparql_get_request_with_query_and_session_should_return_response(self, mock_sparql_client,
+                                                                            mock_service, mock_response):
         query = """
                 SELECT *
                 WHERE 
                 {
-                   <http://wikibase.svc/entity/statement/Q66-ea3ad33f-423c-6a84-1833-487a28ef5738>
+                   ?a 
                    ?b
                    ?c
                 }"""
 
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['b', 'c'])
-        self.assertNotEqual(response['results']['bindings'], [])
+        mock_response.convert.return_value = "test_response"
+        mock_service.query.return_value = mock_response
+        mock_sparql_client.get_service.return_value = mock_service
+        under_test = SparqlRequestManager(mock_sparql_client)
 
-    def test_response_with_empty_result_for_request_with_non_existent_query_item_a_specified(self):
-        query = """
-                SELECT *
-                WHERE 
-                {
-                   <http://wikibase.svc/entity/statement/non-existent>
-                   ?b
-                   ?c
-                }"""
-
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['b', 'c'])
-        self.assertEqual(response['results']['bindings'], [])
-
-    def test_response_with_a_and_c_items_per_result_with_request_with_existent_query_item_b_specified(self):
-        query = """
-                SELECT *
-                WHERE 
-                {
-                   ?a
-                   <http://wikibase.svc/prop/statement/P27>
-                   ?c
-                }"""
-
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['a', 'c'])
-        self.assertNotEqual(response['results']['bindings'], [])
-
-    def test_response_with_empty_result_for_request_with_non_existent_query_item_b_specified(self):
-        query = """
-                SELECT *
-                WHERE 
-                {
-                   ?a
-                   <http://wikibase.svc/prop/statement/non-existent>
-                   ?c
-                }"""
-
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['a', 'c'])
-        self.assertEqual(response['results']['bindings'], [])
-
-    def test_response_with_a_and_b_items_per_result_for_request_with_existent_query_item_c_specified(self):
-        query = """
-                SELECT *
-                WHERE 
-                {
-                   ?a
-                   ?b
-                   <http://wikibase.svc/entity/Q61>
-                }"""
-
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['a', 'b'])
-        self.assertNotEqual(response['results']['bindings'], [])
-
-    def test_response_with_empty_result_for_request_with_non_existent_query_item_c_specified(self):
-        query = """
-                SELECT *
-                WHERE 
-                {
-                   ?a
-                   ?b
-                   <http://wikibase.svc/entity/non-existent>
-                }"""
-
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['a', 'b'])
-        self.assertEqual(response['results']['bindings'], [])
-
-    def test_response_with_c_item_per_result_for_request_with_existent_query_items_a_and_b_specified(self):
-        query = """
-                SELECT *
-                WHERE 
-                {
-                   <http://wikibase.svc/entity/statement/Q66-ea3ad33f-423c-6a84-1833-487a28ef5738>
-                   <http://wikibase.svc/prop/statement/P27>
-                   ?c
-                }"""
-
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['c'])
-        self.assertNotEqual(response['results']['bindings'], [])
-
-    def test_response_with_b_item_per_result_for_request_with_existent_query_items_a_and_c_specified(self):
-        query = """
-                SELECT *
-                WHERE 
-                {
-                   <http://wikibase.svc/entity/statement/Q66-ea3ad33f-423c-6a84-1833-487a28ef5738>
-                   ?b
-                   <http://wikibase.svc/entity/Q61>
-                }"""
-
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['b'])
-        self.assertNotEqual(response['results']['bindings'], [])
-
-    def test_response_with_a_item_per_result_for_request_with_existent_query_items_b_and_c_specified(self):
-        query = """
-                SELECT *
-                WHERE 
-                {
-                   ?a
-                   <http://wikibase.svc/prop/statement/P27>
-                   <http://wikibase.svc/entity/Q61>
-                }"""
-
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], ['a'])
-        self.assertNotEqual(response['results']['bindings'], [])
-
-    def test_response_with_no_result_for_request_with_3_existent_query_items_specified(self):
-        query = """
-                SELECT *
-                WHERE 
-                {
-                   <http://wikibase.svc/entity/statement/Q66-ea3ad33f-423c-6a84-1833-487a28ef5738>
-                   <http://wikibase.svc/prop/statement/P27>
-                   <http://wikibase.svc/entity/Q61>
-                }"""
-
-        under_test = SparqlRequestManager()
-        response = under_test.get_response(query)
-        self.assertEqual(list(response.keys())[0], 'head')
-        self.assertEqual(response['head']['vars'], [])
-        self.assertEqual(response['results']['bindings'], [{}])
+        self.assertEqual(under_test.execute_get(query), "test_response")
+        mock_sparql_client.get_service.assert_called_once()
+        mock_service.query.assert_called_once()
+        mock_response.convert.assert_called_once()

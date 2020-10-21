@@ -1,79 +1,86 @@
-import unittest
-import warnings
+from unittest import TestCase, mock
+from requests import exceptions
 from request_manager.api_request_manager import ApiRequestManager
 
 
-def ignore_resource_warnings(test_func):
-    """Removes the resource warning raised by testing sessions without closing them (normal class behaviour).
-    """
-    def test(self, *args, **kwargs):
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", ResourceWarning)
-            test_func(self, *args, **kwargs)
-    return test
+class ApiRequestManagerTest(TestCase):
 
+    def test_api_request_manager_initialized_with_none_api_client_should_raise_exception(self):
+        self.assertRaises(TypeError, ApiRequestManager, None)
 
-class ApiRequestManagerTest(unittest.TestCase):
+    @mock.patch('request_manager.api_client.ApiClient')
+    def test_api_request_manager_initialized_with_api_client_should_not_raise_exception(self, mock_api_client):
+        under_test = ApiRequestManager(mock_api_client)
 
-    def test_none_response_for_request_with_none_params(self):
+        self.assertIsInstance(under_test, ApiRequestManager)
+        mock_api_client.assert_not_called()
+
+    @mock.patch('request_manager.api_client.ApiClient')
+    def test_api_get_request_with_none_params_should_return_none(self, mock_api_client):
         params = None
 
-        under_test = ApiRequestManager()
-        self.assertIsNone(under_test.get_response(params))
+        under_test = ApiRequestManager(mock_api_client)
 
-    @ignore_resource_warnings
-    def test_error_response_for_request_with_non_existent_entity(self):
+        self.assertIsNone(under_test.execute_get(params))
+        mock_api_client.assert_not_called()
+
+    @mock.patch('request_manager.api_client.ApiClient')
+    def test_api_get_request_with_none_session_should_raise_exception(self, mock_api_client):
         params = {
-            "action": "wbgetentities",
-            "ids": "non_existent",
+            "action": "test-action",
+            "ids": "test",
             "languages": "en",
             "format": "json"
         }
 
-        under_test = ApiRequestManager()
-        response = under_test.get_response(params)
-        self.assertEqual(list(response.keys()), ['error'])
-        self.assertEqual(response['error']['code'], 'no-such-entity')
+        mock_api_client.get_session.return_value = None
+        mock_api_client.get_url.return_value = "http://test.com"
+        under_test = ApiRequestManager(mock_api_client)
 
-    @ignore_resource_warnings
-    def test_error_response_for_request_with_non_existent_action(self):
+        self.assertRaises(AttributeError, under_test.execute_get, params)
+        mock_api_client.get_session.assert_called_once()
+        mock_api_client.get_url.assert_called_once()
+
+    @mock.patch('request_manager.api_client.ApiClient')
+    @mock.patch('requests.Session')
+    def test_api_get_request_with_none_URL_should_return_none(self, mock_api_client, mock_session):
         params = {
-            "action": "non_existent",
-            "ids": "Q66",
+            "action": "test-action",
+            "ids": "test",
             "languages": "en",
             "format": "json"
         }
 
-        under_test = ApiRequestManager()
-        response = under_test.get_response(params)
-        self.assertEqual(list(response.keys()), ['error'])
-        self.assertEqual(response['error']['code'], 'unknown_action')
+        mock_session.get.side_effect = exceptions.MissingSchema
+        mock_api_client.get_session.return_value = mock_session
+        mock_api_client.get_url.return_value = None
+        under_test = ApiRequestManager(mock_api_client)
 
-    @ignore_resource_warnings
-    def test_warning_response_for_request_with_non_existent_language(self):
+        self.assertRaises(exceptions.MissingSchema, under_test.execute_get, params)
+        mock_api_client.get_session.assert_called_once()
+        mock_api_client.get_url.assert_called_once()
+        mock_session.get.assert_called_once()
+
+    @mock.patch('request_manager.api_client.ApiClient')
+    @mock.patch('requests.Session')
+    @mock.patch('requests.Response')
+    def test_api_get_request_with_params_session_and_url_should_return_response(self, mock_api_client,
+                                                                            mock_session, mock_response):
         params = {
-            "action": "wbgetentities",
-            "ids": "Q66",
-            "languages": "non_existent",
-            "format": "json"
-        }
-
-        under_test = ApiRequestManager()
-        response = under_test.get_response(params)
-        self.assertEqual(list(response.keys())[0], 'warnings')
-        self.assertEqual(response['warnings']['wbgetentities']['*'],
-                         'Unrecognized value for parameter "languages": non_existent.')
-
-    @ignore_resource_warnings
-    def test_normal_response_for_request_with_existent_params(self):
-        params = {
-            "action": "wbgetentities",
-            "ids": "Q66",
+            "action": "test-action",
+            "ids": "test",
             "languages": "en",
             "format": "json"
         }
 
-        under_test = ApiRequestManager()
-        response = under_test.get_response(params)
-        self.assertEqual(list(response.keys())[0], 'entities')
-        self.assertEqual(response['success'], 1)
+        mock_response.json.return_value = "test_response"
+        mock_session.get.return_value = mock_response
+        mock_api_client.get_session.return_value = mock_session
+        mock_api_client.get_url.return_value = "http://test.com"
+        under_test = ApiRequestManager(mock_api_client)
+
+        self.assertEqual(under_test.execute_get(params), "test_response")
+        mock_api_client.get_session.assert_called_once()
+        mock_api_client.get_url.assert_called_once()
+        mock_session.get.assert_called_once()
+        mock_response.json.assert_called_once()
