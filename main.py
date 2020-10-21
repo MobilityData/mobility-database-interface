@@ -20,8 +20,7 @@ def print_items_by_query(query):
     # Get all data from Wikibase image
     # Can be also use to get all related data to an entity,
     # i.e. all sub-entities of "Public transport operator", like STM, MBTA, etc.
-    Configs.config.override({"url": "{0}".format(external_utils.get_db_query_service_url())})
-    sparql_request_manager = Managers.sparql_request_manager()
+    sparql_request_manager = Managers.staging_sparql_request_manager()
     sparql_response = sparql_request_manager.execute_get(query)
     results = []
     for result in sparql_response["results"]["bindings"]:
@@ -30,8 +29,7 @@ def print_items_by_query(query):
         results.append(result['a']['value'][37:40])
 
     # Get data for a specific entity from Wikibase image
-    Configs.config.override({"url": "{0}".format(external_utils.get_db_api_url())})
-    api_request_manager = Managers.api_request_manager()
+    api_request_manager = Managers.staging_api_request_manager()
     for result in results:
         params = {
             "action": "wbgetentities",
