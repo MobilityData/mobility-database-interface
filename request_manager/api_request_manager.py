@@ -6,7 +6,9 @@ class ApiRequestManager:
         """Constructor for ``ApiRequestManager``.
         """
         try:
-            self._api_client = client
+            if client is None:
+                raise TypeError("Client must be a valid ApiClient.")
+            self.__api_client = client
         except Exception as e:
             raise e
 
@@ -16,4 +18,11 @@ class ApiRequestManager:
         :return: The response returned by the API client.
         """
         if params is not None:
-            return self._api_client.get(params)
+            try:
+                session = self.__api_client.get_session()
+                url = self.__api_client.get_url()
+                response = session.get(url=url, params=params).json()
+            except Exception as e:
+                raise e
+            else:
+                return response

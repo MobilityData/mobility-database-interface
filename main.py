@@ -1,6 +1,6 @@
 import argparse
 from repository.gtfs_data_repository import GtfsDataRepository
-from request_manager.request_manager_containers import Configs, Clients, Managers
+from request_manager.request_manager_containers import Configs, Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
 from utilities import external_utils
 

@@ -1,3 +1,4 @@
+from SPARQLWrapper import JSON
 
 
 class SparqlRequestManager:
@@ -6,7 +7,9 @@ class SparqlRequestManager:
         """Constructor for ``SparqlRequestManager``.
         """
         try:
-            self._sparql_client = client
+            if client is None:
+                raise TypeError("Client must be a valid ApiClient.")
+            self.__sparql_client = client
         except Exception as e:
             raise e
 
@@ -16,4 +19,12 @@ class SparqlRequestManager:
         :return: The response returned by the SPARQL service.
         """
         if query is not None:
-            return self._sparql_client.get(query)
+            try:
+                service = self.__sparql_client.get_service()
+                service.setQuery(query)
+                service.setReturnFormat(JSON)
+                response = service.query().convert()
+            except Exception as e:
+                raise e
+            else:
+                return response

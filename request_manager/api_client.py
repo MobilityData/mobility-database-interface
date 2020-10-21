@@ -6,23 +6,29 @@ class ApiClient:
     def __init__(self, config):
         """Constructor for ``ApiClient``.
         """
-        self.session = None
-        self.config = config
+        self.__session = None
+        try:
+            self.__url = config['url']
+        except Exception as e:
+            raise e
 
     def __get_session(self):
-        """Get the session for the API client. Initialize the session if set at none.
-        :return: The session for the API client.
+        """Private getter for the session of the API client. Initialize the session if set at none.
+        :return: The session of the API client.
         """
-        if self.session is None:
-            self.session = requests.Session()
-        return self.session
+        if self.__session is None:
+            self.__session = requests.Session()
+        return self.__session
 
-    def get(self, params):
-        """GET request for a request made to the API of the database.
-        :param params: The params for the request to make to the API.
-        :return: The response returned by the API.
+    def get_session(self):
+        """Public getter for the session of the API client.
+        :return: The session of the API client.
         """
-        session = self.__get_session()
-        url = self.config.get('url')
-        return session.get(url=url, params=params).json()
+        return self.__get_session()
+
+    def get_url(self):
+        """Getter for the URL of the API client.
+        :return: The URL of the API client.
+        """
+        return self.__url
 
