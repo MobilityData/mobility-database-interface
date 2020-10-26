@@ -63,7 +63,7 @@ if __name__ == "__main__":
       ?c
     }"""
 
-    # Query for STM bus lines
+    # Query for STM bus lines 
     query_stm = """
     SELECT *
     WHERE 
