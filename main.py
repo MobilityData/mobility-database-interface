@@ -53,7 +53,7 @@ if __name__ == "__main__":
     # Compare dataset stops
     compare_dataset_stops(dataset)
 
-    # Query for all data
+    # Query for all data 
     query_all = """
     SELECT *
     WHERE 
