@@ -3,6 +3,7 @@ from repository.gtfs_data_repository import GtfsDataRepository
 from request_manager.request_manager_containers import Configs, Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
 from utilities import external_utils
+from usecase.download_dataset import DownloadDataset
 
 
 def load_dataset(dataset_path):
@@ -37,7 +38,7 @@ def print_items_by_query(query):
             "languages": "en",
             "format": "json"
         }
-        api_request = api_request_manager.execute_get(params=params)
+        api_request = api_request_manager.execute_get(params)
         print(api_request)
 
 
@@ -48,10 +49,10 @@ if __name__ == "__main__":
     args = vars(parser.parse_args())
 
     # Loads dataset in memory
-    dataset = load_dataset(args['dataset_path'])
+    #dataset = load_dataset(args['dataset_path'])
 
     # Compare dataset stops
-    compare_dataset_stops(dataset)
+    #compare_dataset_stops(dataset)
 
     # Query for all data
     query_all = """
@@ -74,4 +75,8 @@ if __name__ == "__main__":
     }"""
 
     # Print items for the requested query
-    print_items_by_query(query_stm)
+    #print_items_by_query(query_stm)
+
+    download_dataset = DownloadDataset(Managers.staging_api_request_manager(),
+                                       Managers.staging_sparql_request_manager())
+    download_dataset.execute()
