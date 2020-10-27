@@ -1,15 +1,17 @@
 import argparse
 from repository.gtfs_data_repository import GtfsDataRepository
-from request_manager.request_manager_containers import Configs, Managers
+from request_manager.request_manager_containers import Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
 from utilities import external_utils
 from usecase.download_dataset import DownloadDataset
+from usecase.extract_sources_url import ExtractSourcesUrl
 
 
 def load_dataset(dataset_path):
-    data = GtfsDataRepository(dataset_path)
-    data.display_dataset()
-    return data.get_dataset()
+    data = GtfsDataRepository()
+    data.add_dataset("test", dataset_path)
+    data.display_dataset("test")
+    return data.get_datasets()
 
 
 def compare_dataset_stops(dataset):
@@ -48,6 +50,16 @@ if __name__ == "__main__":
                         help='Path to the GTFS dataset zip to verify')
     args = vars(parser.parse_args())
 
+    # Initialise GtfsDataRepository
+    gtfs_data_repository = GtfsDataRepository()
+
+    # Download datasets in memory
+    extractSourcesUrl = ExtractSourcesUrl(Managers.staging_api_request_manager(),
+                                          Managers.staging_sparql_request_manager())
+    urls = extractSourcesUrl.execute()
+    download_dataset = DownloadDataset(gtfs_data_repository, urls)
+    download_dataset.execute()
+
     # Loads dataset in memory
     #dataset = load_dataset(args['dataset_path'])
 
@@ -55,28 +67,25 @@ if __name__ == "__main__":
     #compare_dataset_stops(dataset)
 
     # Query for all data
-    query_all = """
-    SELECT *
-    WHERE 
-    {
-      ?a 
-      ?b
-      ?c
-    }"""
+    #query_all = """
+    #SELECT *
+    #WHERE
+    #{
+    #  ?a
+    #  ?b
+    #  ?c
+    #}"""
 
     # Query for STM bus lines 
-    query_stm = """
-    SELECT *
-    WHERE 
-    {
-      ?a 
-      <http://wikibase.svc/prop/statement/P27>
-      <http://wikibase.svc/entity/Q61>
-    }"""
+    #query_stm = """
+    #SELECT *
+    #WHERE
+    #{
+    #  ?a
+    #  <http://wikibase.svc/prop/statement/P27>
+    #  <http://wikibase.svc/entity/Q61>
+    #}"""
 
     # Print items for the requested query
     #print_items_by_query(query_stm)
 
-    download_dataset = DownloadDataset(Managers.staging_api_request_manager(),
-                                       Managers.staging_sparql_request_manager())
-    download_dataset.execute()
