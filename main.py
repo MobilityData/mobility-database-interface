@@ -1,8 +1,9 @@
 import argparse
+import sys
+from guppy import hpy
 from repository.gtfs_data_repository import GtfsDataRepository
 from request_manager.request_manager_containers import Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
-from utilities import external_utils
 from usecase.download_dataset import DownloadDataset
 from usecase.extract_sources_url import ExtractSourcesUrl
 
@@ -14,7 +15,16 @@ def load_dataset(dataset_path):
     return data.get_datasets()
 
 
-def compare_dataset_stops(dataset):
+def download_data(data_repository, dataset_type="GTFS", specific_download=False, specific_entity_code=None):
+    extract_sources_url = ExtractSourcesUrl(Managers.staging_api_request_manager(),
+                                            Managers.staging_sparql_request_manager(),
+                                            dataset_type, specific_download, specific_entity_code)
+    urls = extract_sources_url.execute()
+    download_dataset = DownloadDataset(data_repository, urls)
+    download_dataset.execute()
+
+
+def compare_stops(dataset):
     compare_dataset_stops = CompareGtfsStops(dataset, dataset)
     compare_dataset_stops.execute()
 
@@ -46,46 +56,59 @@ def print_items_by_query(query):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='MobilityDatabase Interface Script')
-    parser.add_argument('-d', '--dataset_path', action='store', dest='dataset_path', required=True,
-                        help='Path to the GTFS dataset zip to verify')
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('--download', action='store_false', help='Download datasets in memory')
+    group.add_argument('--load', action='store', help='Load a dataset in memory. Must include path '
+                                                      'to the dataset zip file as positional argument.')
+    download_group = parser.add_mutually_exclusive_group(required='--download' in sys.argv)
+    download_group.add_argument('-a', '--all', action="store",
+                                help='Download all datasets found in the Mobility Database. '
+                                     'The datasets type must be provided as positional argument.'
+                                     'Possible values : "GTFS", "GBFS".')
+    download_group.add_argument('-s', '--specific', action='store',
+                                help='Download the dataset related to an entity code in the Mobility Database. '
+                                     'Entity code for the specific dataset to download must be valid and provided '
+                                     'as positional argument.')
     args = vars(parser.parse_args())
 
     # Initialise GtfsDataRepository
     gtfs_data_repository = GtfsDataRepository()
 
-    # Download datasets in memory
-    extractSourcesUrl = ExtractSourcesUrl(Managers.staging_api_request_manager(),
-                                          Managers.staging_sparql_request_manager())
-    urls = extractSourcesUrl.execute()
-    download_dataset = DownloadDataset(gtfs_data_repository, urls)
-    download_dataset.execute()
-
-    # Loads dataset in memory
-    #dataset = load_dataset(args['dataset_path'])
+    if args['download'] is not None:
+        # Download datasets in memory
+        if args['all'] is not None:
+            download_data(gtfs_data_repository, dataset_type=args['all'])
+        elif args['specific'] is not None:
+            download_data(gtfs_data_repository, specific_download=True, specific_entity_code=args['specific'])
+    elif args['load'] is not None:
+        # Load dataset in memory
+        dataset = load_dataset(args['dataset_path'])
 
     # Compare dataset stops
-    #compare_dataset_stops(dataset)
+    #compare_stops(dataset)
 
     # Query for all data
-    #query_all = """
-    #SELECT *
-    #WHERE
-    #{
-    #  ?a
-    #  ?b
-    #  ?c
-    #}"""
+    query_all = """
+    SELECT *
+    WHERE
+    {
+      ?a
+      ?b
+      ?c
+    }"""
 
-    # Query for STM bus lines 
-    #query_stm = """
-    #SELECT *
-    #WHERE
-    #{
-    #  ?a
-    #  <http://wikibase.svc/prop/statement/P27>
-    #  <http://wikibase.svc/entity/Q61>
-    #}"""
+    # Query for STM bus lines
+    query_stm = """
+    SELECT *
+    WHERE
+    {
+      ?a
+      <http://wikibase.svc/prop/statement/P27>
+      <http://wikibase.svc/entity/Q61>
+    }"""
 
     # Print items for the requested query
     #print_items_by_query(query_stm)
 
+    # Print memory usage
+    print(hpy().heap())
