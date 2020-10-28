@@ -36,9 +36,10 @@ def print_items_by_query(query):
     sparql_request_manager = Managers.staging_sparql_request_manager()
     sparql_response = sparql_request_manager.execute_get(query)
     results = []
+    print(sparql_response)
     for result in sparql_response["results"]["bindings"]:
-        #print(result)
-        #print(result['a']['value'][37:40])
+        print(result)
+        print(result['a']['value'][37:40])
         results.append(result['a']['value'][37:40])
 
     # Get data for a specific entity from Wikibase image
@@ -57,12 +58,12 @@ def print_items_by_query(query):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='MobilityDatabase Interface Script')
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument('--download', action='store_false', help='Download datasets in memory')
+    group.add_argument('--download', action='store_const', const=True, help='Download datasets in memory')
     group.add_argument('--load', action='store', help='Load a dataset in memory. Must include path '
                                                       'to the dataset zip file as positional argument.')
     download_group = parser.add_mutually_exclusive_group(required='--download' in sys.argv)
-    download_group.add_argument('-a', '--all', action="store",
-                                help='Download all datasets found in the Mobility Database. '
+    download_group.add_argument('-a', '--all', action='store', choices=['GTFS','GBFS'],
+                                help='Download all datasets found for a type in the Mobility Database. '
                                      'The datasets type must be provided as positional argument.'
                                      'Possible values : "GTFS", "GBFS".')
     download_group.add_argument('-s', '--specific', action='store',
@@ -82,7 +83,7 @@ if __name__ == "__main__":
             download_data(gtfs_data_repository, specific_download=True, specific_entity_code=args['specific'])
     elif args['load'] is not None:
         # Load dataset in memory
-        dataset = load_dataset(args['dataset_path'])
+        dataset = load_dataset(args['load'])
 
     # Compare dataset stops
     #compare_stops(dataset)
@@ -111,4 +112,5 @@ if __name__ == "__main__":
     #print_items_by_query(query_stm)
 
     # Print memory usage
+    print("\n--------------- Memory Usage ---------------\n")
     print(hpy().heap())
