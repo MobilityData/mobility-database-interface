@@ -80,7 +80,6 @@ Source documentation
 
 .. automodule:: request_manager.request_manager_containers
    :members:
-   :undoc-members:
    :show-inheritance:
 
 
@@ -88,6 +87,24 @@ Source documentation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: usecase.compare_gtfs_stops
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+:mod:`usecase.download_dataset`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: usecase.download_dataset
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+:mod:`usecase.extract_sources_url`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: usecase.extract_sources_url
    :members:
    :undoc-members:
    :show-inheritance:

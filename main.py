@@ -1,17 +1,30 @@
 import argparse
+import sys
+from guppy import hpy
 from repository.gtfs_data_repository import GtfsDataRepository
-from request_manager.request_manager_containers import Configs, Managers
+from request_manager.request_manager_containers import Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
-from utilities import external_utils
+from usecase.download_dataset import DownloadDataset
+from usecase.extract_sources_url import ExtractSourcesUrl
 
 
 def load_dataset(dataset_path):
-    data = GtfsDataRepository(dataset_path)
-    data.display_dataset()
-    return data.get_dataset()
+    data = GtfsDataRepository()
+    data.add_dataset("test", dataset_path)
+    data.display_dataset("test")
+    return data.get_datasets()
 
 
-def compare_dataset_stops(dataset):
+def download_data(data_repository, dataset_type="GTFS", specific_download=False, specific_entity_code=None):
+    extract_sources_url = ExtractSourcesUrl(Managers.staging_api_request_manager(),
+                                            Managers.staging_sparql_request_manager(),
+                                            dataset_type, specific_download, specific_entity_code)
+    urls = extract_sources_url.execute()
+    download_dataset = DownloadDataset(data_repository, urls)
+    download_dataset.execute()
+
+
+def compare_stops(dataset):
     compare_dataset_stops = CompareGtfsStops(dataset, dataset)
     compare_dataset_stops.execute()
 
@@ -23,9 +36,10 @@ def print_items_by_query(query):
     sparql_request_manager = Managers.staging_sparql_request_manager()
     sparql_response = sparql_request_manager.execute_get(query)
     results = []
+    print(sparql_response)
     for result in sparql_response["results"]["bindings"]:
-        #print(result)
-        #print(result['a']['value'][37:40])
+        print(result)
+        print(result['a']['value'][37:40])
         results.append(result['a']['value'][37:40])
 
     # Get data for a specific entity from Wikibase image
@@ -37,28 +51,49 @@ def print_items_by_query(query):
             "languages": "en",
             "format": "json"
         }
-        api_request = api_request_manager.execute_get(params=params)
+        api_request = api_request_manager.execute_get(params)
         print(api_request)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='MobilityDatabase Interface Script')
-    parser.add_argument('-d', '--dataset_path', action='store', dest='dataset_path', required=True,
-                        help='Path to the GTFS dataset zip to verify')
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('--download', action='store_const', const=True, help='Download datasets in memory')
+    group.add_argument('--load', action='store', help='Load a dataset in memory. Must include path '
+                                                      'to the dataset zip file as positional argument.')
+    download_group = parser.add_mutually_exclusive_group(required='--download' in sys.argv)
+    download_group.add_argument('-a', '--all', action='store', choices=['GTFS','GBFS'],
+                                help='Download all datasets found for a type in the Mobility Database. '
+                                     'The datasets type must be provided as positional argument.'
+                                     'Possible values : "GTFS", "GBFS".')
+    download_group.add_argument('-s', '--specific', action='store',
+                                help='Download the dataset related to an entity code in the Mobility Database. '
+                                     'Entity code for the specific dataset to download must be valid and provided '
+                                     'as positional argument.')
     args = vars(parser.parse_args())
 
-    # Loads dataset in memory
-    dataset = load_dataset(args['dataset_path'])
+    # Initialise GtfsDataRepository
+    gtfs_data_repository = GtfsDataRepository()
+
+    if args['download'] is not None:
+        # Download datasets in memory
+        if args['all'] is not None:
+            download_data(gtfs_data_repository, dataset_type=args['all'])
+        elif args['specific'] is not None:
+            download_data(gtfs_data_repository, specific_download=True, specific_entity_code=args['specific'])
+    elif args['load'] is not None:
+        # Load dataset in memory
+        dataset = load_dataset(args['load'])
 
     # Compare dataset stops
-    compare_dataset_stops(dataset)
+    #compare_stops(dataset)
 
     # Query for all data
     query_all = """
     SELECT *
-    WHERE 
+    WHERE
     {
-      ?a 
+      ?a
       ?b
       ?c
     }"""
@@ -66,12 +101,16 @@ if __name__ == "__main__":
     # Query for STM bus lines
     query_stm = """
     SELECT *
-    WHERE 
+    WHERE
     {
-      ?a 
+      ?a
       <http://wikibase.svc/prop/statement/P27>
       <http://wikibase.svc/entity/Q61>
     }"""
 
     # Print items for the requested query
-    print_items_by_query(query_stm)
+    #print_items_by_query(query_stm)
+
+    # Print memory usage
+    print("\n--------------- Memory Usage ---------------\n")
+    print(hpy().heap())
