@@ -79,8 +79,7 @@ Source documentation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: request_manager.request_manager_containers
-   :members:
-   :undoc-members:
+   :show-inheritance:
 
 
 :mod:`usecase.compare_gtfs_stops`
