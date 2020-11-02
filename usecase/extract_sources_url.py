@@ -6,6 +6,14 @@ from utilities.entities_codes import EntitiesCodes
 class ExtractSourcesUrl:
     def __init__(self, api_request_manager, sparql_request_manager, dataset_type="GTFS", specific_download=False,
                  specific_entity_code=None):
+        """Constructor for ``ExtractSourcesUrl``.
+        :param api_request_manager: API request manager used to process API requests.
+        :param sparql_request_manager: SPARQL request manager used to process SPARQL queries.
+        :param dataset_type: Dataset type, GTFS or GBFS. Default to GTFS.
+        :param specific_download: True if the URL must be extracted for a specific dataset, false otherwise.
+        :param specific_entity_code: Entity code of the specific dataset for which the URL must be extracted.
+        Required if `specific_download` is set to True.
+        """
         try:
             if api_request_manager is None or not isinstance(api_request_manager, ApiRequestManager):
                 raise TypeError("API request manager must be a valid ApiRequestManager.")
@@ -25,6 +33,9 @@ class ExtractSourcesUrl:
             raise e
 
     def execute(self):
+        """Execute the ``ExtractSourcesUrl`` use case.
+        :return: URLs of the datasets in the database, for the `dataset_type` passed in the constructor.
+        """
         entity_codes = []
         urls = {}
 

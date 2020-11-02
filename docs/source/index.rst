@@ -93,6 +93,24 @@ Source documentation
    :show-inheritance:
 
 
+:mod:`usecase.download_dataset`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: usecase.download_dataset
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+:mod:`usecase.extract_sources_url`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: usecase.extract_sources_url
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
 :mod:`utilities.external_utils`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
