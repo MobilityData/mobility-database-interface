@@ -79,6 +79,7 @@ Source documentation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: request_manager.request_manager_containers
+   :members:
    :show-inheritance:
 
 
