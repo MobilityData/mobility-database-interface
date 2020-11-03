@@ -95,8 +95,8 @@ class ExtractDatabaseMd5Test(TestCase):
     @mock.patch('request_manager.sparql_request_manager.SparqlRequestManager')
     def test_extract_database_md5_with_existing_entity_codes_should_return_md5_dict(self, mock_api_request_manager,
                                                                                     mock_sparql_request_manager):
-        test_entities = ['Q81']
-        test_md5 = {"Q81": {"md5_hash"}}
+        test_entities = ['Q80']
+        test_md5 = {"Q80": {"md5_hash"}}
 
         mock_api_request_manager.__class__ = ApiRequestManager
         mock_api_request_manager.execute_get.return_value = \
@@ -104,8 +104,10 @@ class ExtractDatabaseMd5Test(TestCase):
 
         mock_sparql_request_manager.__class__ = SparqlRequestManager
         mock_sparql_request_manager.execute_get.return_value = \
-            {"results": {"bindings": [{"a": {"value":
-             "http://wikibase.svc/entity/statement/Q81-11337a5a-4b00-dfde-a946-a2efb7b9e30a"}}]}}
+            {"results": {"bindings": [
+                {"a": {"value": "http://wikibase.svc/entity/statement/Q81-11337a5a-4b00-dfde-a946-a2efb7b9e30a"}},
+                {"a": {"value": "http://wikibase.svc/entity/statement/Q78-a14a67ef-4ee9-a15d-b9de-d6be2e03d43d"}}
+            ]}}
 
         mock_entity_codes = MagicMock()
         mock_entity_codes.__class__ = list

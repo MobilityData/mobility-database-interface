@@ -7,6 +7,7 @@ from usecase.compare_gtfs_stops import CompareGtfsStops
 from usecase.download_dataset import DownloadDataset
 from usecase.extract_sources_url import ExtractSourcesUrl
 from usecase.extract_database_md5 import ExtractDatabaseMd5
+from usecase.process_md5 import ProcessMd5
 
 
 def load_dataset(dataset_path):
@@ -31,8 +32,9 @@ def process_data_md5(datasets):
     extract_database_md5 = ExtractDatabaseMd5(Managers.staging_api_request_manager(),
                                               Managers.staging_sparql_request_manager(),
                                               entity_codes)
-    database_md5 = extract_database_md5.execute()
-    print(database_md5)
+    md5_hashes = extract_database_md5.execute()
+    process_md5 = ProcessMd5(datasets, md5_hashes)
+    process_md5.execute()
 
 
 def compare_stops(dataset):
@@ -99,7 +101,6 @@ if __name__ == "__main__":
     elif args['load'] is not None:
         # Load dataset in memory
         dataset = load_dataset(args['load'])
-
 
     # Compare dataset stops
     #compare_stops(dataset)
