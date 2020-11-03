@@ -4,7 +4,7 @@ from guppy import hpy
 from repository.gtfs_data_repository import GtfsDataRepository
 from request_manager.request_manager_containers import Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
-from usecase.download_dataset import DownloadDataset
+from usecase.download_dataset_as_zip import DownloadDatasetAsZip
 from usecase.extract_sources_url import ExtractSourcesUrl
 
 
@@ -15,12 +15,12 @@ def load_dataset(dataset_path):
     return data.get_datasets()
 
 
-def download_data(data_repository, dataset_type="GTFS", specific_download=False, specific_entity_code=None):
+def download_data(path_to_data, dataset_type="GTFS", specific_download=False, specific_entity_code=None):
     extract_sources_url = ExtractSourcesUrl(Managers.staging_api_request_manager(),
                                             Managers.staging_sparql_request_manager(),
                                             dataset_type, specific_download, specific_entity_code)
     urls = extract_sources_url.execute()
-    download_dataset = DownloadDataset(data_repository, urls)
+    download_dataset = DownloadDatasetAsZip(path_to_data, urls)
     download_dataset.execute()
 
 
@@ -70,6 +70,8 @@ if __name__ == "__main__":
                                 help='Download the dataset related to an entity code in the Mobility Database. '
                                      'Entity code for the specific dataset to download must be valid and provided '
                                      'as positional argument.')
+    download_group.add_argument('--path_to_tmp_data', action='store', default='./data/tmp/',
+                                help='Path to the folder where to temporary store downloaded datasets for processing.')
     args = vars(parser.parse_args())
 
     # Initialise GtfsDataRepository
@@ -78,9 +80,9 @@ if __name__ == "__main__":
     if args['download'] is not None:
         # Download datasets in memory
         if args['all'] is not None:
-            download_data(gtfs_data_repository, dataset_type=args['all'])
+            download_data(args['path_to_tmp_data'], dataset_type=args['all'])
         elif args['specific'] is not None:
-            download_data(gtfs_data_repository, specific_download=True, specific_entity_code=args['specific'])
+            download_data(args['path_to_tmp_data'], specific_download=True, specific_entity_code=args['specific'])
     elif args['load'] is not None:
         # Load dataset in memory
         dataset = load_dataset(args['load'])
@@ -98,7 +100,7 @@ if __name__ == "__main__":
       ?c
     }"""
 
-    # Query for STM bus lines
+    # Query for STM bus lines 
     query_stm = """
     SELECT *
     WHERE
