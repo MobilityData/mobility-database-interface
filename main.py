@@ -1,7 +1,7 @@
 import argparse
 import sys
 from guppy import hpy
-from repository.gtfs_data_repository import GtfsDataRepository
+from repository.data_repository import DataRepository
 from request_manager.request_manager_containers import Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
 from usecase.download_dataset import DownloadDataset
@@ -11,7 +11,7 @@ from usecase.process_md5 import ProcessMd5
 
 
 def load_dataset(dataset_path):
-    data = GtfsDataRepository()
+    data = DataRepository()
     data.add_dataset("test", dataset_path)
     data.display_dataset("test")
     return data.get_datasets()
@@ -87,8 +87,8 @@ if __name__ == "__main__":
                                 help='Path to the folder where to temporary store downloaded datasets for processing.')
     args = vars(parser.parse_args())
 
-    # Initialise GtfsDataRepository
-    gtfs_data_repository = GtfsDataRepository()
+    # Initialise DataRepository
+    data_repository = DataRepository()
 
     if args['download'] is not None:
         # Download datasets in memory
