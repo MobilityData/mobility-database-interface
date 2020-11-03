@@ -26,7 +26,7 @@ class ExtractDatabaseMd5Test(TestCase):
 
     @mock.patch('request_manager.api_request_manager.ApiRequestManager')
     def test_extract_database_md5_with_none_sparql_request_manager_should_raise_exception(self,
-                                                                                         mock_api_request_manager):
+                                                                                          mock_api_request_manager):
         mock_api_request_manager.__class__ = ApiRequestManager
         mock_entity_codes = MagicMock()
         mock_entity_codes.__class__ = list
@@ -34,7 +34,7 @@ class ExtractDatabaseMd5Test(TestCase):
 
     @mock.patch('request_manager.api_request_manager.ApiRequestManager')
     def test_extract_database_md5_with_invalid_sparql_request_manager_should_raise_exception(self,
-                                                                                            mock_api_request_manager):
+                                                                                             mock_api_request_manager):
         mock_api_request_manager.__class__ = ApiRequestManager
         mock_entity_codes = MagicMock()
         mock_entity_codes.__class__ = list

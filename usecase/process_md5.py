@@ -13,15 +13,17 @@ class ProcessMd5:
         try:
             if datasets is None or not isinstance(datasets, dict):
                 raise TypeError("Datasets must be a valid dictionary.")
-            self.datasets = datasets
             if md5_hashes is None or not isinstance(md5_hashes, dict):
                 raise TypeError("MD5 hashes must be a valid dictionary.")
+            if datasets.keys() != md5_hashes.keys():
+                raise Exception("Datasets and MD5 hashes dictionaries must share the same keys (entity codes).")
+            self.datasets = datasets
             self.md5_hashes = md5_hashes
         except Exception as e:
             raise e
 
     def execute(self):
-        """Execute the ``ProcessMd5`` use case.
+        """Execute the ``ProcessMd5`` use case. Removes the datasets for which the MD5 hash is already in the database.
         :return: The datasets for which the MD5 hashes are not in the database.
         N.B.: a dataset for which the MD5 hash is not in the database represents a new dataset version.
         """
@@ -36,7 +38,7 @@ class ProcessMd5:
                     while data := f.read(4096):
                         md5_hash.update(data)
 
-                if md5_hash not in self.md5_hashes[entity_code]:
+                if md5_hash.hexdigest() not in self.md5_hashes[entity_code]:
                     print("Success : new MD5 hash %s for %s, dataset kept for further processing\n" %
                           (md5_hash.hexdigest(), dataset_file))
                 else:
