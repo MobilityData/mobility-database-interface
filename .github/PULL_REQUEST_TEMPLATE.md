@@ -3,10 +3,8 @@
 Summarize the changes in the pull request including how it relates to any issues (include the #number, or link them).
 
 Implement
-- Process MD5
-- Tests for process
 
-This PR contains changes to 
+This PR contains changes to
 
 
 **Expected behavior:** 
