@@ -51,7 +51,7 @@ class ExtractSourcesUrlTest(TestCase):
         self.assertIsInstance(under_test, DownloadDataset)
 
     def test_download_dataset_with_empty_urls_should_return_empty_zip_paths(self):
-        test_datasets = {}
+        test_zip_paths = {}
         test_urls = {}
 
         mock_data_folder_path = MagicMock()
@@ -64,11 +64,11 @@ class ExtractSourcesUrlTest(TestCase):
 
         under_test = DownloadDataset(str(mock_data_folder_path), mock_urls).execute()
 
-        self.assertEqual(under_test, test_datasets)
+        self.assertEqual(under_test, test_zip_paths)
 
     @ignore_resource_warnings
-    def test_download_dataset_with_urls_should_add_datasets_to_data_repo(self):
-        test_datasets = {'url_key': './url_key_url_value.zip'}
+    def test_download_dataset_with_urls_should_return_zip_paths(self):
+        test_zip_paths = {'url_key': './url_key_url_value.zip'}
         test_urls = {'url_key': 'http://test.com/url_value.zip'}
 
         mock_data_folder_path = MagicMock()
@@ -81,6 +81,6 @@ class ExtractSourcesUrlTest(TestCase):
         mock_urls.items.return_value = test_urls.items()
 
         under_test = DownloadDataset(str(mock_data_folder_path), mock_urls).execute()
-        self.assertEqual(under_test, test_datasets)
+        self.assertEqual(under_test, test_zip_paths)
         self.assertTrue(os.path.exists('./url_key_url_value.zip'))
         os.remove('./url_key_url_value.zip')
