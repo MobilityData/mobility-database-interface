@@ -18,15 +18,16 @@ class ExtractDatabaseMd5:
             if sparql_request_manager is None or not isinstance(sparql_request_manager, SparqlRequestManager):
                 raise TypeError("SPARQL request manager must be a valid SparqlRequestManager.")
             self.sparql_request_manager = sparql_request_manager
-            if entity_codes is None:
-                raise TypeError("Entity codes must be valid.")
+            if entity_codes is None or not isinstance(entity_codes, list):
+                raise TypeError("Entity codes must be a valid entity codes list.")
             self.entity_codes = entity_codes
         except Exception as e:
             raise e
 
     def execute(self):
         """Execute the ``ExtractDatabaseMd5`` use case. Extract the MD5 hashes from the database.
-        :return: URLs of the datasets in the database, for the `dataset_type` passed in the constructor.
+        :return: MD5 hashes of the dataset versions in the database, for the entities associated
+        to the `entity_codes` passed in the constructor.
         """
         md5_hashes = {}
 
@@ -68,8 +69,7 @@ class ExtractDatabaseMd5:
                     for row in api_response["entities"][version_code]["claims"]["P61"]:
                         md5 = row["mainsnak"]["datavalue"]["value"]
                         entity_md5_hashes.add(md5)
-
-            # Add the MD5 hashes found for an entity to the MD5 hashes dictionary.
-            md5_hashes[entity_code] = entity_md5_hashes
+                    # Add the MD5 hashes found for an entity to the MD5 hashes dictionary.
+                    md5_hashes[entity_code] = entity_md5_hashes
 
         return md5_hashes
