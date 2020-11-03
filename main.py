@@ -6,6 +6,7 @@ from request_manager.request_manager_containers import Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
 from usecase.download_dataset import DownloadDataset
 from usecase.extract_sources_url import ExtractSourcesUrl
+from usecase.extract_database_md5 import ExtractDatabaseMd5
 
 
 def load_dataset(dataset_path):
@@ -15,13 +16,23 @@ def load_dataset(dataset_path):
     return data.get_datasets()
 
 
-def download_data(data_repository, dataset_type="GTFS", specific_download=False, specific_entity_code=None):
+def download_data(data_folder_path, dataset_type="GTFS", specific_download=False, specific_entity_code=None):
     extract_sources_url = ExtractSourcesUrl(Managers.staging_api_request_manager(),
                                             Managers.staging_sparql_request_manager(),
                                             dataset_type, specific_download, specific_entity_code)
     urls = extract_sources_url.execute()
-    download_dataset = DownloadDataset(data_repository, urls)
-    download_dataset.execute()
+    download_dataset = DownloadDataset(data_folder_path, urls)
+    datasets = download_dataset.execute()
+    return datasets
+
+
+def process_data_md5(datasets):
+    entity_codes = list(datasets.keys())
+    extract_database_md5 = ExtractDatabaseMd5(Managers.staging_api_request_manager(),
+                                              Managers.staging_sparql_request_manager(),
+                                              entity_codes)
+    database_md5 = extract_database_md5.execute()
+    print(database_md5)
 
 
 def compare_stops(dataset):
@@ -70,6 +81,8 @@ if __name__ == "__main__":
                                 help='Download the dataset related to an entity code in the Mobility Database. '
                                      'Entity code for the specific dataset to download must be valid and provided '
                                      'as positional argument.')
+    download_group.add_argument('--tmp_data_folder_path', action='store', default='./data/tmp/',
+                                help='Path to the folder where to temporary store downloaded datasets for processing.')
     args = vars(parser.parse_args())
 
     # Initialise GtfsDataRepository
@@ -78,17 +91,20 @@ if __name__ == "__main__":
     if args['download'] is not None:
         # Download datasets in memory
         if args['all'] is not None:
-            download_data(gtfs_data_repository, dataset_type=args['all'])
+            data = download_data(args['tmp_data_folder_path'], dataset_type=args['all'])
         elif args['specific'] is not None:
-            download_data(gtfs_data_repository, specific_download=True, specific_entity_code=args['specific'])
+            data = download_data(args['tmp_data_folder_path'], specific_download=True,
+                                 specific_entity_code=args['specific'])
+        process_data_md5(data)
     elif args['load'] is not None:
         # Load dataset in memory
         dataset = load_dataset(args['load'])
 
+
     # Compare dataset stops
     #compare_stops(dataset)
 
-    # Query for all data 
+    # Query for all data
     query_all = """
     SELECT *
     WHERE
