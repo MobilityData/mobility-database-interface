@@ -2,6 +2,13 @@
 
 Summarize the changes in the pull request including how it relates to any issues (include the #number, or link them).
 
+Implement
+- Process MD5
+- Tests for process
+
+This PR contains changes to 
+
+
 **Expected behavior:** 
 
 Explain and/or show screenshots for how you expect the pull request to work in your testing (in case other devices exhibit different behavior).
