@@ -67,7 +67,7 @@ class ExtractSourcesUrlTest(TestCase):
         self.assertEqual(under_test, test_zip_paths)
 
     @ignore_resource_warnings
-    def test_download_dataset_with_urls_should_add_datasets_to_data_repo(self):
+    def test_download_dataset_with_urls_should_return_zip_paths(self):
         test_zip_paths = {'url_key': './url_key_url_value.zip'}
         test_urls = {'url_key': 'http://test.com/url_value.zip'}
 
