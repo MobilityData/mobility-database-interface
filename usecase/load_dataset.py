@@ -43,6 +43,6 @@ class LoadDataset:
                 self.data_repository.add_dataset_representation(entity_code, dataset_representation)
                 self.data_repository.print_dataset_representation(entity_code)
             except Exception as e:
-                print("Exception \"%s\" occurred when loading dataset\n" % e)
+                print("Exception \"%s\" occurred while loading dataset.\n" % e)
 
         return self.data_repository

@@ -12,11 +12,16 @@ class DatasetRepresentationFactory:
         :param path_to_dataset: The path to the dataset zip file to use for the representation.
         :param md5_hash: The MD5 hash of the dataset version.
         """
-        if dataset_type == 'GTFS':
-            dataset = gtfs_kit.read_feed(path_to_dataset, dist_units='km')
-            metadata = GtfsMetadata(md5_hash)
-            representation = GtfsRepresentation(entity_code, dataset, metadata)
-        elif dataset_type == 'GBFS':
-            # TODO
-            pass
+        representation = None
+        try:
+            if dataset_type == 'GTFS':
+                dataset = gtfs_kit.read_feed(path_to_dataset, dist_units='km')
+                metadata = GtfsMetadata(md5_hash)
+                representation = GtfsRepresentation(entity_code, dataset, metadata)
+            elif dataset_type == 'GBFS':
+                # TODO
+                pass
+        except Exception as e:
+            print("Exception \"%s\" occurred while building the dataset representation.\n" % e)
+            raise e
         return representation
