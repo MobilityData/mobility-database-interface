@@ -5,8 +5,8 @@ from utilities.entities_codes import EntitiesCodes
 
 class ExtractDatabaseMd5:
     # Define index values for dataset version entity code in response retrieved by SPARQL query
-    VERSION_CODE_FIRST_INDEX = 37
-    VERSION_CODE_LAST_INDEX = 40
+    DATASET_VERSION_ENTITY_CODE_FIRST_INDEX = 37
+    DATASET_VERSION_ENTITY_CODE_LAST_INDEX = 40
 
     def __init__(self, api_request_manager, sparql_request_manager, entity_codes):
         """Constructor for ``ExtractDatabaseMd5``.
@@ -53,8 +53,8 @@ class ExtractDatabaseMd5:
             )
 
             for result in sparql_response["results"]["bindings"]:
-                dataset_version_codes.add(result['a']['value']
-                                          [self.VERSION_CODE_FIRST_INDEX:self.VERSION_CODE_LAST_INDEX])
+                dataset_version_codes.add(result['a']['value'][self.DATASET_VERSION_ENTITY_CODE_FIRST_INDEX:
+                                                               self.DATASET_VERSION_ENTITY_CODE_LAST_INDEX])
 
             # Verify if entity if part of a catalog of sources.
             # If yes, removes the catalog of sources entity code, which appears in the results of a source entity,
