@@ -24,28 +24,34 @@ class ProcessMd5:
 
     def execute(self):
         """Execute the ``ProcessMd5`` use case. Removes the datasets for which the MD5 hash is already in the database.
-        :return: The datasets for which the MD5 hashes are not in the database.
+        :return: The datasets for which the MD5 hashes are not in the database. These updated datasets are returned in a
+        dictionary, where a key is an entity code and a value is a sub-dictionary including a path to a dataset zip file
+        and the new MD5 hash processed.
         N.B.: a dataset for which the MD5 hash is not in the database represents a new dataset version.
         """
         entity_codes = list(self.datasets.keys())
+        updated_datasets = {}
 
         for entity_code in entity_codes:
             md5_hash = md5()
             dataset_file = self.datasets[entity_code]
+            previous_md5_hashes = self.md5_hashes[entity_code]
+
             try:
                 print("--------------- Processing MD5 : %s ---------------\n" % dataset_file)
                 with open(dataset_file, "rb") as f:
                     while data := f.read(4096):
                         md5_hash.update(data)
 
-                if md5_hash.hexdigest() not in self.md5_hashes[entity_code]:
+                if md5_hash.hexdigest() not in previous_md5_hashes:
+                    updated_datasets[entity_code] = {'path': dataset_file, 'md5': md5_hash.hexdigest()}
                     print("Success : new MD5 hash %s for %s, dataset kept for further processing\n" %
                           (md5_hash.hexdigest(), dataset_file))
                 else:
-                    del self.datasets[entity_code]
+                    #del self.datasets[entity_code]
                     print("Success : MD5 hash %s already exists for %s, dataset discarded\n" %
                           (md5_hash.hexdigest(), dataset_file))
             except Exception as e:
                 print("Exception \"%s\" occurred when processing MD5 hash\n" % e)
 
-        return self.datasets
+        return updated_datasets
