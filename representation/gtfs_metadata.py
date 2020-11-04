@@ -17,7 +17,6 @@ class GtfsMetadata:
         self.__bounding_box = ""
         self.__stable_url = ""
 
-
     def __str__(self):
         """String representation of the GTFS dataset metadata.
         """
