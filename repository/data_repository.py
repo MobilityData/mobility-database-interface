@@ -11,6 +11,8 @@ class DataRepository:
         :param dataset_key: Key to access the dataset representation in the repository.
         :param dataset_representation: The dataset representation to add to the repository.
         """
+        if dataset_key is None and dataset_representation is None:
+            raise TypeError("Dataset key and dataset representation must not be of NoneType.")
         self.__dataset_representations[dataset_key] = dataset_representation
 
     def print_dataset_representations(self):
