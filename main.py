@@ -6,6 +6,8 @@ from request_manager.request_manager_containers import Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
 from usecase.download_dataset_as_zip import DownloadDatasetAsZip
 from usecase.extract_sources_url import ExtractSourcesUrl
+from usecase.extract_database_md5 import ExtractDatabaseMd5
+from usecase.process_md5 import ProcessMd5
 
 
 def load_dataset(dataset_path):
@@ -21,7 +23,18 @@ def download_data(path_to_data, dataset_type="GTFS", specific_download=False, sp
                                             dataset_type, specific_download, specific_entity_code)
     urls = extract_sources_url.execute()
     download_dataset = DownloadDatasetAsZip(path_to_data, urls)
-    download_dataset.execute()
+    datasets = download_dataset.execute()
+    return datasets
+
+
+def process_data_md5(datasets):
+    entity_codes = list(datasets.keys())
+    extract_database_md5 = ExtractDatabaseMd5(Managers.staging_api_request_manager(),
+                                              Managers.staging_sparql_request_manager(),
+                                              entity_codes)
+    md5_hashes = extract_database_md5.execute()
+    process_md5 = ProcessMd5(datasets, md5_hashes)
+    process_md5.execute()
 
 
 def compare_stops(dataset):

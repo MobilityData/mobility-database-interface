@@ -4,6 +4,10 @@ from utilities.entities_codes import EntitiesCodes
 
 
 class ExtractSourcesUrl:
+    # Define index values for entity code in response retrieved by SPARQL query
+    ENTITY_CODE_FIRST_INDEX = 37
+    ENTITY_CODE_LAST_INDEX = 40
+
     def __init__(self, api_request_manager, sparql_request_manager, dataset_type="GTFS", specific_download=False,
                  specific_entity_code=None):
         """Constructor for ``ExtractSourcesUrl``.
@@ -53,7 +57,7 @@ class ExtractSourcesUrl:
             )
 
             for result in sparql_response["results"]["bindings"]:
-                entity_codes.append(result['a']['value'][37:40])
+                entity_codes.append(result['a']['value'][self.ENTITY_CODE_FIRST_INDEX:self.ENTITY_CODE_LAST_INDEX])
         else:
             entity_codes.append(self.specific_entity_code)
 
