@@ -40,7 +40,7 @@ class DataRepository:
         """
         :param dataset_key: Key to access the dataset representation in the repository.
         :return: The dataset representation accessible with the given key if the `dataset_key`
-        exists in repository, None otherwise.
+        exists in repository, None otherwise. 
         """
         if dataset_key in self.__dataset_representations:
             return self.__dataset_representations[dataset_key]
