@@ -8,6 +8,6 @@ class GtfsRepresentation:
 
     def print_representation(self):
         print("--------------- Metadata ---------------\n")
-        print(self.__metadata.print())
+        print(str(self.__metadata))
         print("\n--------------- Dataset ---------------\n")
         print(self.__dataset)

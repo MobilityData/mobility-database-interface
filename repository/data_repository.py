@@ -13,19 +13,20 @@ class DataRepository:
         """
         self.__dataset_representations[dataset_key] = dataset_representation
 
-    def display_datasets(self):
+    def print_dataset_representations(self):
         """Print the dataset representations in the repository.
         """
         for key, representation in self.__dataset_representations.items():
             print("--------------- Dataset representation for entity %s ---------------\n" % key)
-            print(representation.print_representation())
+            representation.print_representation()
 
-    def display_dataset(self, dataset_key):
+    def print_dataset_representation(self, dataset_key):
         """Print the dataset representation accessible with the given key.
         :param dataset_key: Key to access the dataset representation in the repository.
         """
         if dataset_key in self.__dataset_representations:
-            print(self.__dataset_representations[dataset_key].print_representation())
+            print("--------------- Dataset representation for entity %s ---------------\n" % dataset_key)
+            self.__dataset_representations[dataset_key].print_representation()
 
     def get_dataset_representations(self):
         """
