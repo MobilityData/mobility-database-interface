@@ -22,7 +22,7 @@ class DownloadDatasetAsZip:
         """Execute the ``DownloadDatasetAsZip`` use case.
         :return: The paths to the downloaded dataset zip files.
         """
-        datasets = {}
+        paths_to_datasets = {}
         for entity_code, url in self.urls.items():
             try:
                 print("--------------- Downloading URL : %s ---------------\n" % url)
@@ -30,8 +30,8 @@ class DownloadDatasetAsZip:
                 zip_path = self.data_folder_path + '%s_%s' % (entity_code, zip_name)
                 zip_file = requests.get(url, allow_redirects=True)
                 open(zip_path, 'wb').write(zip_file.content)
-                datasets[entity_code] = zip_path
+                paths_to_datasets[entity_code] = zip_path
                 print("Success : %s_%s downloaded in %s\n" % (entity_code, zip_name, self.data_folder_path))
             except Exception as e:
                 print("Exception \"%s\" occurred when downloading URL\n" % e)
-        return datasets
+        return paths_to_datasets
