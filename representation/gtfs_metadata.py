@@ -2,6 +2,9 @@
 
 class GtfsMetadata:
     def __init__(self, md5_hash):
+        """Constructor for ``GtfsMetadata``.
+        :param md5_hash: The MD5 hash of the dataset version.
+        """
         self.__timezone = ""
         self.__country_code = ""
         self.__sub_country_code = ""
@@ -13,6 +16,8 @@ class GtfsMetadata:
         self.__md5_hash = md5_hash
 
     def __str__(self):
+        """String representation of the GTFS dataset metadata.
+        """
         return "Timezone: %s\n" \
                "Country code: %s\n" \
                "Sub country code: %s\n" \
