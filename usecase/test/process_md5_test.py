@@ -60,6 +60,8 @@ class ProcessMd5Test(TestCase):
     def test_process_md5_with_dataset_md5_not_in_md5_hashes_should_return_dataset(self):
         test_datasets = {'Q80': './usecase/test/resources/test.zip'}
         test_md5_hashes = {'Q80': {"test_md5_hash"}}
+        test_updated_datasets = {'Q80': {'path': './usecase/test/resources/test.zip',
+                                         'md5': 'd41d8cd98f00b204e9800998ecf8427e'}}
 
         mock_datasets = MagicMock()
         mock_datasets.__class__ = dict
@@ -73,14 +75,14 @@ class ProcessMd5Test(TestCase):
         mock_md5_hashes.keys.return_value = test_md5_hashes.keys()
 
         under_test = ProcessMd5(mock_datasets, mock_md5_hashes).execute()
-        self.assertEqual(under_test.items(), {'Q80': './usecase/test/resources/test.zip'}.items())
-        mock_datasets.items.assert_called_once()
+        self.assertEqual(under_test.items(), test_updated_datasets.items())
         mock_datasets.keys.assert_called()
         mock_md5_hashes.keys.assert_called_once()
 
-    def test_process_md5_with_dataset_md5_in_md5_hashes_should_remove_dataset(self):
+    def test_process_md5_with_dataset_md5_existing_in_previous_md5_should_discard_dataset(self):
         test_datasets = {'Q80': './usecase/test/resources/test.zip'}
-        test_md5_hashes = {'Q80': {"d41d8cd98f00b204e9800998ecf8427e"}}
+        test_md5_hashes = {'Q80': {'d41d8cd98f00b204e9800998ecf8427e'}}
+        test_updated_datasets = {}
 
         mock_datasets = MagicMock()
         mock_datasets.__class__ = dict
@@ -95,7 +97,6 @@ class ProcessMd5Test(TestCase):
         mock_md5_hashes.keys.return_value = test_md5_hashes.keys()
 
         under_test = ProcessMd5(mock_datasets, mock_md5_hashes).execute()
-        self.assertEqual(under_test.items(), {}.items())
-        mock_datasets.items.assert_called_once()
+        self.assertEqual(under_test.items(), test_updated_datasets.items())
         mock_datasets.keys.assert_called()
         mock_md5_hashes.keys.assert_called_once()
