@@ -23,13 +23,15 @@ class LoadDataset:
             if datasets is None or not isinstance(datasets, dict):
                 raise TypeError("Datasets must be a valid dictionary.")
             self.datasets = datasets
+            if dataset_type is None or dataset_type not in ['GTFS', 'GBFS']:
+                raise TypeError("Dataset type must be a valid dataset type - GTFS or GBFS.")
             self.dataset_type = dataset_type
         except Exception as e:
             raise e
 
     def execute(self):
         """Execute the ``LoadDataset`` use case.
-        :return: The data repository containing the loaded dataset representation.
+        :return: The data repository containing the loaded dataset representations.
         """
         for entity_code, dataset_infos in self.datasets.items():
             try:
