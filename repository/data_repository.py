@@ -15,7 +15,7 @@ class DataRepository:
             raise TypeError("Dataset key and dataset representation must not be of NoneType.")
         self.__dataset_representations[dataset_key] = dataset_representation
 
-    def print_dataset_representations(self):
+    def print_all_dataset_representations(self):
         """Print the dataset representations in the repository.
         """
         for key, representation in self.__dataset_representations.items():

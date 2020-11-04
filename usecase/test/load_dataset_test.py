@@ -89,7 +89,9 @@ class LoadDatasetTest(TestCase):
 
     @mock.patch('repository.data_repository.DataRepository')
     @mock.patch('representation.dataset_representation_factory.DatasetRepresentationFactory')
-    def test_load_dataset_with_valid_parameters_should_not_raise_exception(self, mock_data_repository, mock_factory):
+    def test_load_dataset_with_valid_parameters_should_not_raise_exception_and_return_instance(self,
+                                                                                               mock_data_repository,
+                                                                                               mock_factory):
         mock_data_repository.__class__ = DataRepository
         mock_factory.__class__ = DatasetRepresentationFactory
         mock_datasets = MagicMock()

@@ -72,18 +72,21 @@ if __name__ == "__main__":
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--data_type', action='store', choices=['GTFS', 'GBFS'], default='GTFS',
                        help='Type of the datasets to process. Possible values : "GTFS", "GBFS".')
-    group.add_argument('--download', action='store_const', const=True, help='Download datasets in memory')
+    group.add_argument('--download', action='store_const', const=True,
+                       help='Download datasets in memory. Usage : --download (-a | -s SPECIFIC)')
     group.add_argument('--load', action='store', help='Load a dataset in memory. Must include path '
                                                       'to the dataset zip file as positional argument.')
     download_group = parser.add_mutually_exclusive_group(required='--download' in sys.argv)
     download_group.add_argument('-a', '--all', action='store_const', const=True,
-                                help='Download all datasets found for a type in the Mobility Database.')
+                                help='Download all datasets found for a type in the Mobility Database.'
+                                     'Required with --download to select the "Download all" option.')
     download_group.add_argument('-s', '--specific', action='store',
                                 help='Download the dataset related to an entity code in the Mobility Database. '
                                      'Entity code for the specific dataset to download must be valid and provided '
-                                     'as positional argument.')
-    download_group.add_argument('--path_to_tmp_data', action='store', default='./data/tmp/',
-                                help='Path to the folder where to temporary store downloaded datasets for processing.')
+                                     'as positional argument. Required with --download to select '
+                                     'the "Download specific" option.')
+    parser.add_argument('--path_to_tmp_data', required='--download' in sys.argv, action='store', default='./data/tmp/',
+                        help='Path to the folder where to temporary store downloaded datasets for processing.')
     args = vars(parser.parse_args())
 
     # Initialize DataRepository

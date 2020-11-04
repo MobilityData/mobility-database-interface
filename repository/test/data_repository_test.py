@@ -6,15 +6,15 @@ from representation.gtfs_representation import GtfsRepresentation
 
 class DataRepositoryTest(TestCase):
 
-    def test_data_repository_initializing_repository_should_create_instance(self):
+    def test_data_repository_initializing_repository_should_return_instance(self):
         under_test = DataRepository()
         self.assertIsInstance(under_test, DataRepository)
 
     @mock.patch('representation.gtfs_representation.GtfsRepresentation')
-    def test_data_repository_adding_none_dataset_key_should_return_none(self, mock_representation):
+    def test_data_repository_adding_none_dataset_key_should_raise_exception(self, mock_representation):
         self.assertRaises(TypeError, DataRepository, None, mock_representation)
 
-    def test_data_repository_adding_none_dataset_representation_should_return_none(self):
+    def test_data_repository_adding_none_dataset_representation_should_raise_exception(self):
         mock_dataset_key = MagicMock()
         self.assertRaises(TypeError, DataRepository, mock_dataset_key, None)
 
@@ -31,7 +31,7 @@ class DataRepositoryTest(TestCase):
         mock_representation.__class__ = GtfsRepresentation
         mock_dataset_key = MagicMock()
         mock_dataset_key.__class__ = str
-        under_test = DataRepository().print_dataset_representations()
+        under_test = DataRepository().print_all_dataset_representations()
         self.assertIsNone(under_test)
 
     @mock.patch('representation.gtfs_representation.GtfsRepresentation')
