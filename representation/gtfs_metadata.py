@@ -5,6 +5,9 @@ class GtfsMetadata:
         """Constructor for ``GtfsMetadata``.
         :param md5_hash: The MD5 hash of the dataset version.
         """
+        if md5_hash is None or not isinstance(md5_hash, str):
+            raise TypeError('MD5 hash must be a valid MD5 hash string.')
+        self.__md5_hash = md5_hash
         self.__timezone = ""
         self.__country_code = ""
         self.__sub_country_code = ""
@@ -13,7 +16,7 @@ class GtfsMetadata:
         self.__end_service_date = ""
         self.__bounding_box = ""
         self.__stable_url = ""
-        self.__md5_hash = md5_hash
+
 
     def __str__(self):
         """String representation of the GTFS dataset metadata.

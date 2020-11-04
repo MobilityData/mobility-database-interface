@@ -21,13 +21,13 @@ def download_data(path_to_data, dataset_type="GTFS", specific_download=False, sp
     return download_dataset.execute()
 
 
-def process_data_md5(datasets):
-    entity_codes = list(datasets.keys())
+def process_data_md5(paths_to_datasets):
+    entity_codes = list(paths_to_datasets.keys())
     extract_database_md5 = ExtractDatabaseMd5(Managers.staging_api_request_manager(),
                                               Managers.staging_sparql_request_manager(),
                                               entity_codes)
     previous_md5_hashes = extract_database_md5.execute()
-    process_md5 = ProcessMd5(datasets, previous_md5_hashes)
+    process_md5 = ProcessMd5(paths_to_datasets, previous_md5_hashes)
     return process_md5.execute()
 
 
@@ -85,7 +85,7 @@ if __name__ == "__main__":
                                      'Entity code for the specific dataset to download must be valid and provided '
                                      'as positional argument. Required with --download to select '
                                      'the "Download specific" option.')
-    parser.add_argument('--path_to_tmp_data', required='--download' in sys.argv, action='store', default='./data/tmp/',
+    parser.add_argument('--path_to_tmp_data', action='store', default='./data/tmp/',
                         help='Path to the folder where to temporary store downloaded datasets for processing.')
     args = vars(parser.parse_args())
 
@@ -99,12 +99,15 @@ if __name__ == "__main__":
     if args['download'] is not None:
         # Download datasets in memory
         if args['all'] is not None:
-            datasets = download_data(args['path_to_tmp_data'], dataset_type=args['data_type'])
+            paths_to_datasets = download_data(args['path_to_tmp_data'], dataset_type=args['data_type'])
         elif args['specific'] is not None:
-            datasets = download_data(args['path_to_tmp_data'], specific_download=True,
-                                 specific_entity_code=args['specific'])
-        datasets = process_data_md5(datasets)
-        data_repository = load_data(data_repository, dataset_representation_factory, datasets, args['data_type'])
+            paths_to_datasets = download_data(args['path_to_tmp_data'], specific_download=True,
+                                              specific_entity_code=args['specific'])
+        paths_to_datasets_and_md5 = process_data_md5(paths_to_datasets)
+        data_repository = load_data(data_repository,
+                                    dataset_representation_factory,
+                                    paths_to_datasets_and_md5,
+                                    args['data_type'])
 
     elif args['load'] is not None:
         # Load dataset in memory
