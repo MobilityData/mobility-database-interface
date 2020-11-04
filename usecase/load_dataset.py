@@ -31,7 +31,7 @@ class LoadDataset:
 
     def execute(self):
         """Execute the ``LoadDataset`` use case.
-        :return: The data repository containing the loaded dataset representations.
+        :return: The data repository containing the loaded dataset representations. 
         """
         for entity_code, dataset_infos in self.datasets.items():
             try:
