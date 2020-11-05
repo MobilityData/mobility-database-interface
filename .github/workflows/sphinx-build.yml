@@ -7,7 +7,7 @@ on:
 
 jobs:
   docs:
-    runs-on: ubuntu-18.03
+    runs-on: ubuntu-16.04
     strategy:
       matrix:
         python-version: [3.8]
