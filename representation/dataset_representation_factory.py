@@ -22,6 +22,5 @@ class DatasetRepresentationFactory:
                 # TODO
                 pass
         except Exception as e:
-            print("Exception \"%s\" occurred while building the dataset representation.\n" % e)
-            raise e
+            raise Exception("Exception \"%s\" occurred while building the dataset representation.\n" % e)
         return representation
