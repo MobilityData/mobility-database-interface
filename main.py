@@ -126,6 +126,6 @@ if __name__ == "__main__":
     # Print items for the requested query
     #print_items_by_query(query_stm)
 
-    # Print memory usage
+    # Print memory usage 
     print("\n--------------- Memory Usage ---------------\n")
     print(hpy().heap())
