@@ -30,10 +30,37 @@ Source documentation
    :show-inheritance:
 
 
-:mod:`repository.gtfs_data_repository`
+:mod:`repository.data_repository`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: repository.gtfs_data_repository
+.. automodule:: repository.data_repository
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+:mod:`representation.dataset_representation_factory`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: representation.dataset_representation_factory
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+:mod:`representation.gtfs_metadata`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: representation.gtfs_metadata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+:mod:`representation.gtfs_representation`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: representation.gtfs_representation
    :members:
    :undoc-members:
    :show-inheritance:
@@ -92,10 +119,10 @@ Source documentation
    :show-inheritance:
 
 
-:mod:`usecase.download_dataset`
+:mod:`usecase.download_dataset_as_zip`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: usecase.download_dataset
+.. automodule:: usecase.download_dataset_as_zip
    :members:
    :undoc-members:
    :show-inheritance:
@@ -114,6 +141,15 @@ Source documentation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: usecase.extract_sources_url
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
+:mod:`usecase.load_dataset`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: usecase.load_dataset
    :members:
    :undoc-members:
    :show-inheritance:

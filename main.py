@@ -1,20 +1,15 @@
 import argparse
 import sys
 from guppy import hpy
-from repository.gtfs_data_repository import GtfsDataRepository
+from repository.data_repository import DataRepository
+from representation.dataset_representation_factory import DatasetRepresentationFactory
 from request_manager.request_manager_containers import Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
 from usecase.download_dataset_as_zip import DownloadDatasetAsZip
 from usecase.extract_sources_url import ExtractSourcesUrl
 from usecase.extract_database_md5 import ExtractDatabaseMd5
+from usecase.load_dataset import LoadDataset
 from usecase.process_md5 import ProcessMd5
-
-
-def load_dataset(dataset_path):
-    data = GtfsDataRepository()
-    data.add_dataset("test", dataset_path)
-    data.display_dataset("test")
-    return data.get_datasets()
 
 
 def download_data(path_to_data, dataset_type="GTFS", specific_download=False, specific_entity_code=None):
@@ -23,18 +18,22 @@ def download_data(path_to_data, dataset_type="GTFS", specific_download=False, sp
                                             dataset_type, specific_download, specific_entity_code)
     urls = extract_sources_url.execute()
     download_dataset = DownloadDatasetAsZip(path_to_data, urls)
-    datasets = download_dataset.execute()
-    return datasets
+    return download_dataset.execute()
 
 
-def process_data_md5(datasets):
-    entity_codes = list(datasets.keys())
+def process_data_md5(paths_to_datasets):
+    entity_codes = list(paths_to_datasets.keys())
     extract_database_md5 = ExtractDatabaseMd5(Managers.staging_api_request_manager(),
                                               Managers.staging_sparql_request_manager(),
                                               entity_codes)
-    md5_hashes = extract_database_md5.execute()
-    process_md5 = ProcessMd5(datasets, md5_hashes)
-    process_md5.execute()
+    previous_md5_hashes = extract_database_md5.execute()
+    process_md5 = ProcessMd5(paths_to_datasets, previous_md5_hashes)
+    return process_md5.execute()
+
+
+def load_data(data_repository, dataset_representation_factory, datasets, data_type='GTFS'):
+    load_dataset = LoadDataset(data_repository, dataset_representation_factory, datasets, data_type)
+    return load_dataset.execute()
 
 
 def compare_stops(dataset):
@@ -71,60 +70,49 @@ def print_items_by_query(query):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='MobilityDatabase Interface Script')
     group = parser.add_mutually_exclusive_group(required=True)
-    group.add_argument('--download', action='store_const', const=True, help='Download datasets in memory')
+    group.add_argument('--data_type', action='store', choices=['GTFS', 'GBFS'], default='GTFS',
+                       help='Type of the datasets to process. Possible values : "GTFS", "GBFS".')
+    group.add_argument('--download', action='store_const', const=True,
+                       help='Download datasets in memory. Usage : --download (-a | -s SPECIFIC)')
     group.add_argument('--load', action='store', help='Load a dataset in memory. Must include path '
                                                       'to the dataset zip file as positional argument.')
     download_group = parser.add_mutually_exclusive_group(required='--download' in sys.argv)
-    download_group.add_argument('-a', '--all', action='store', choices=['GTFS','GBFS'],
-                                help='Download all datasets found for a type in the Mobility Database. '
-                                     'The datasets type must be provided as positional argument.'
-                                     'Possible values : "GTFS", "GBFS".')
+    download_group.add_argument('-a', '--all', action='store_const', const=True,
+                                help='Download all datasets found for a type in the Mobility Database.'
+                                     'Required with --download to select the "Download all" option.')
     download_group.add_argument('-s', '--specific', action='store',
                                 help='Download the dataset related to an entity code in the Mobility Database. '
                                      'Entity code for the specific dataset to download must be valid and provided '
-                                     'as positional argument.')
-    download_group.add_argument('--path_to_tmp_data', action='store', default='./data/tmp/',
-                                help='Path to the folder where to temporary store downloaded datasets for processing.')
+                                     'as positional argument. Required with --download to select '
+                                     'the "Download specific" option.')
+    parser.add_argument('--path_to_tmp_data', action='store', default='./data/tmp/',
+                        help='Path to the folder where to temporary store downloaded datasets for processing.')
     args = vars(parser.parse_args())
 
-    # Initialise GtfsDataRepository
-    gtfs_data_repository = GtfsDataRepository()
+    # Initialize DataRepository
+    data_repository = DataRepository()
 
+    # Initialize DatasetRepresentationFactory
+    dataset_representation_factory = DatasetRepresentationFactory()
+
+    # Process data
     if args['download'] is not None:
         # Download datasets in memory
         if args['all'] is not None:
-            download_data(args['path_to_tmp_data'], dataset_type=args['all'])
+            paths_to_datasets = download_data(args['path_to_tmp_data'], dataset_type=args['data_type'])
         elif args['specific'] is not None:
-            download_data(args['path_to_tmp_data'], specific_download=True, specific_entity_code=args['specific'])
+            paths_to_datasets = download_data(args['path_to_tmp_data'], specific_download=True,
+                                              specific_entity_code=args['specific'])
+        paths_to_datasets_and_md5 = process_data_md5(paths_to_datasets)
+        data_repository = load_data(data_repository,
+                                    dataset_representation_factory,
+                                    paths_to_datasets_and_md5,
+                                    args['data_type'])
+
     elif args['load'] is not None:
         # Load dataset in memory
-        dataset = load_dataset(args['load'])
-
-    # Compare dataset stops
-    #compare_stops(dataset)
-
-    # Query for all data
-    query_all = """
-    SELECT *
-    WHERE
-    {
-      ?a
-      ?b
-      ?c
-    }"""
-
-    # Query for STM bus lines 
-    query_stm = """
-    SELECT *
-    WHERE
-    {
-      ?a
-      <http://wikibase.svc/prop/statement/P27>
-      <http://wikibase.svc/entity/Q61>
-    }"""
-
-    # Print items for the requested query
-    #print_items_by_query(query_stm)
+        # TODO dataset = load_data(args['load'])
+        pass
 
     # Print memory usage 
     print("\n--------------- Memory Usage ---------------\n")
