@@ -23,6 +23,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install flake8 pytest wheel numpy
           sudo add-apt-repository ppa:ubuntugis/ppa
+          sudo apt-get update
           sudo apt-get install gdal-bin python3-gdal
           sudo apt-get install libgdal-dev
           pip install GDAL==$(gdal-config --version) --global-option=build_ext --global-option="-I/usr/include/gdal"
