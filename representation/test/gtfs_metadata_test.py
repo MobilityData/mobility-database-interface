@@ -31,6 +31,8 @@ class GtfsMetadataTest(TestCase):
                                "Language code: \n" \
                                "Start service date: \n" \
                                "End service date: \n" \
+                               "Start timestamp: \n" \
+                               "End timestamp: \n" \
                                "Bounding box: \n" \
                                "Stable url: \n" \
                                "MD5 hash: test_md5_hash"
