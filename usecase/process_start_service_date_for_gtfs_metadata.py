@@ -1,6 +1,6 @@
 import pandas as pd
 from representation.gtfs_representation import GtfsRepresentation
-from utilities.temporal_utils import get_gtfs_start_dates_dataframe
+from utilities.temporal_utils import get_gtfs_dates_by_type
 
 
 class ProcessStartServiceDateForGtfsMetadata:
@@ -26,8 +26,8 @@ class ProcessStartServiceDateForGtfsMetadata:
             filtered_feed_info = dataset.feed_info.loc[dataset.feed_info['feed_start_date'].notnull()]
             start_dates = pd.to_datetime(filtered_feed_info['feed_start_date'], format='%Y%m%d')
         else:
-            # Extract the calendar start dates in the dataset representation
-            dataset_dates = get_gtfs_start_dates_dataframe(dataset)
+            # Extract the start dates in the dataset representation
+            dataset_dates = get_gtfs_dates_by_type(dataset, date_type='start_date')
             start_dates = pd.to_datetime(dataset_dates['date'], format='%Y%m%d')
 
         # Get first start service date with min() and converting the date into a ISO 8601 string
