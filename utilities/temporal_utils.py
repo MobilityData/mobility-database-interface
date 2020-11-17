@@ -9,14 +9,17 @@ UTC_THRESHOLD = 12
 
 
 def get_gtfs_dates_by_type(dataset, date_type):
+    # Initialize dataframe for the dataset dates
     dates_dataframe = pd.DataFrame(columns=['service_id', 'date'])
 
+    # Add the dates from the dataset calendar to the dataframe
     if dataset.calendar is not None:
         if date_type == 'start_date':
             dates_dataframe = get_gtfs_start_dates_from_calendar(dataset.calendar, dates_dataframe)
         elif date_type == 'end_date':
             dates_dataframe = get_gtfs_end_dates_from_calendar(dataset.calendar, dates_dataframe)
 
+    # Verify exceptions from dataset calendar dates
     if dataset.calendar_dates is not None:
         for index, row in dataset.calendar_dates.iterrows():
             date_index = dates_dataframe.loc[(dates_dataframe['service_id'] == row['service_id']) &
@@ -81,8 +84,11 @@ def get_gtfs_end_dates_from_calendar(dataset_calendar, dates_dataframe):
 
 
 def get_gtfs_timezone_utc_offset(dataset):
+    # Extract agency timezone from dataset
     agency_timezone = dataset.agency['agency_timezone'].iloc[0]
     timezone = pytz.timezone(agency_timezone)
+
+    # Compute the utc offset time and sign
     utc = datetime.utcnow()
     offset_seconds = timezone.utcoffset(utc).seconds
     offset_hours = offset_seconds / SECONDS_PER_HOUR
@@ -91,8 +97,11 @@ def get_gtfs_timezone_utc_offset(dataset):
         offset_hours = -1 * (offset_hours % -UTC_THRESHOLD)
         offset_sign = "-"
     offset_time_string = str(time(int(offset_hours), int((offset_hours % 1) * MINUTES_PER_HOUR)))
+
+    # Keep the hour and minutes from the computed offset and add the offset sign to the string
     offset_hours_and_minutes = offset_time_string[0:5]
     timezone_offset = offset_sign + offset_hours_and_minutes
+
     return timezone_offset
 
 
