@@ -87,6 +87,7 @@ def get_gtfs_timezone_utc_offset(dataset):
     # Extract agency timezone from dataset
     agency_timezone = dataset.agency['agency_timezone'].iloc[0]
     timezone = pytz.timezone(agency_timezone)
+    # TODO verify timezone is valid
 
     # Compute the utc offset time and sign
     utc = datetime.utcnow()
@@ -109,12 +110,10 @@ def get_gtfs_stop_times_for_date(dataset, dataset_dates, date_to_look_up):
     # Extract the list of every service ID with date equal to the date to look up
     service_dates = dataset_dates.loc[dataset_dates['date'] == date_to_look_up.strftime('%Y%m%d')]
     service_ids_for_date = service_dates['service_id'].tolist()
-    #print(service_ids_for_date)
 
     # Extract the list of every trip ID with service ID in the list of service IDs previously extracted
     trips_for_date = dataset.trips.loc[dataset.trips['service_id'].isin(service_ids_for_date)]
     trip_ids_for_date = trips_for_date['trip_id'].tolist()
-    #print(trip_ids_for_date)
 
     # Extract the stop times with trip ID in the list of trip IDs previously extracted
     stop_times_for_date = dataset.stop_times.loc[dataset.stop_times['trip_id'].isin(trip_ids_for_date)]
