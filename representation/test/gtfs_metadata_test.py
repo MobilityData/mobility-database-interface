@@ -25,7 +25,8 @@ class GtfsMetadataTest(TestCase):
         mock_md5_hash.__class__ = str
         mock_md5_hash.__str__.return_value = 'test_md5_hash'
 
-        test_metadata_string = "Timezone: \n" \
+        test_metadata_string = "Main timezone: \n" \
+                               "All timezones: \n" \
                                "Country code: \n" \
                                "Sub country code: \n" \
                                "Language code: \n" \
