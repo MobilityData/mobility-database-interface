@@ -16,7 +16,9 @@ class ProcessStartTimestampForGtfsMetadata:
             raise e
 
     def execute(self):
-        """Execute the ``ProcessStartTimestampForGtfsMetadata`` use case.
+        """Execute the ``ProcessStartTimestampForGtfsMetadata`` use case. Process the start timestamp using the
+        `agency`, `calendar`, `calendar_dates`, `trips` and `stop_times` files from the GTFS dataset of the
+        representation. Add the start timestamp to the representation metadata once processed.
         :return: The representation of the GTFS dataset post-execution.
         """
         dataset = self.gtfs_representation.get_dataset()

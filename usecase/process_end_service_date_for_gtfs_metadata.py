@@ -16,7 +16,9 @@ class ProcessEndServiceDateForGtfsMetadata:
             raise e
 
     def execute(self):
-        """Execute the ``ProcessEndServiceDateForGtfsMetadata`` use case.
+        """Execute the ``ProcessEndServiceDateForGtfsMetadata`` use case. Process the end service date using the
+        `feed_info`, `calendar` and `calendar_dates` files from the GTFS dataset of the representation.
+        Add the end service date to the representation metadata once processed.
         :return: The representation of the GTFS dataset post-execution.
         """
         dataset = self.gtfs_representation.get_dataset()

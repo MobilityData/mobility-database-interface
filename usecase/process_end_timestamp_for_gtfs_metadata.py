@@ -16,7 +16,9 @@ class ProcessEndTimestampForGtfsMetadata:
             raise e
 
     def execute(self):
-        """Execute the ``ProcessEndTimestampForGtfsMetadata`` use case.
+        """Execute the ``ProcessEndTimestampForGtfsMetadata`` use case. Process the end timestamp using the `agency`,
+        `calendar`, `calendar_dates`, `trips` and `stop_times` files from the GTFS dataset of the representation.
+        Add the end timestamp to the representation metadata once processed.
         :return: The representation of the GTFS dataset post-execution.
         """
         dataset = self.gtfs_representation.get_dataset()
