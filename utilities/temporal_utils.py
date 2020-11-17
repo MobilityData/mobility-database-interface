@@ -32,7 +32,7 @@ def get_gtfs_dates_by_type(dataset, date_type):
                 dates_dataframe.loc[date_loc] = [service_id] + [date]
 
             elif row['exception_type'] == 2 and len(date_index) > 0:
-                dates_dataframe.drop(date_index)
+                dates_dataframe.drop(list(date_index), inplace=True)
 
     return dates_dataframe
 

@@ -34,6 +34,7 @@ class ProcessEndServiceDateForGtfsMetadataTest(TestCase):
         mock_feed_info = PropertyMock(return_value=pd.DataFrame({'feed_end_date': ['20201010']}))
         mock_dataset.__class__ = Feed
         type(mock_dataset).feed_info = mock_feed_info
+
         mock_metadata.__class__ = GtfsMetadata
         mock_gtfs_representation.__class__ = GtfsRepresentation
         mock_gtfs_representation.get_dataset.return_value = mock_dataset
@@ -67,6 +68,7 @@ class ProcessEndServiceDateForGtfsMetadataTest(TestCase):
         type(mock_dataset).feed_info = mock_feed_info
         type(mock_dataset).calendar = mock_calendar
         type(mock_dataset).calendar_dates = mock_calendar_dates
+
         mock_metadata.__class__ = GtfsMetadata
         mock_gtfs_representation.__class__ = GtfsRepresentation
         mock_gtfs_representation.get_dataset.return_value = mock_dataset
@@ -104,6 +106,7 @@ class ProcessEndServiceDateForGtfsMetadataTest(TestCase):
         type(mock_dataset).feed_info = mock_feed_info
         type(mock_dataset).calendar = mock_calendar
         type(mock_dataset).calendar_dates = mock_calendar_dates
+
         mock_metadata.__class__ = GtfsMetadata
         mock_gtfs_representation.__class__ = GtfsRepresentation
         mock_gtfs_representation.get_dataset.return_value = mock_dataset
