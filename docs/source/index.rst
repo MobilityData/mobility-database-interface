@@ -165,7 +165,7 @@ Source documentation
 :mod:`usecase.process_main_timezone_for_gtfs_metadata`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: usecase.process_main_timezones_for_gtfs_metadata
+.. automodule:: usecase.process_main_timezone_for_gtfs_metadata
    :members:
    :undoc-members:
    :show-inheritance:

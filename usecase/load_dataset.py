@@ -41,7 +41,6 @@ class LoadDataset:
                                                                                                   dataset_infos['path'],
                                                                                                   dataset_infos['md5'])
                 self.data_repository.add_dataset_representation(entity_code, dataset_representation)
-                self.data_repository.print_dataset_representation(entity_code)
             except Exception as e:
                 print("Exception \"%s\" occurred while loading dataset.\n" % e)
 
