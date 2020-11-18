@@ -9,6 +9,7 @@ from usecase.download_dataset_as_zip import DownloadDatasetAsZip
 from usecase.extract_sources_url import ExtractSourcesUrl
 from usecase.extract_database_md5 import ExtractDatabaseMd5
 from usecase.load_dataset import LoadDataset
+from usecase.process_main_language_code_for_gtfs_metadata import ProcessMainLanguageCodeForGtfsMetadata
 from usecase.process_md5 import ProcessMd5
 
 
@@ -103,11 +104,22 @@ if __name__ == "__main__":
         elif args['specific'] is not None:
             paths_to_datasets = download_data(args['path_to_tmp_data'], specific_download=True,
                                               specific_entity_code=args['specific'])
+
+        # Process the MD5 hashes
         paths_to_datasets_and_md5 = process_data_md5(paths_to_datasets)
+
+        # Load the datasets in memory in the data repository
         data_repository = load_data(data_repository,
                                     dataset_representation_factory,
                                     paths_to_datasets_and_md5,
                                     args['data_type'])
+
+        # Process each dataset representation in the data_repository
+        for dataset_key, dataset_representation in data_repository.get_dataset_representations().items():
+            ProcessMainLanguageCodeForGtfsMetadata(dataset_representation).execute()
+
+            # Print results
+            data_repository.print_dataset_representation(dataset_key)
 
     elif args['load'] is not None:
         # Load dataset in memory

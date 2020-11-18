@@ -11,11 +11,17 @@ class GtfsMetadata:
         self.__timezone = ""
         self.__country_code = ""
         self.__sub_country_code = ""
-        self.__language_code = ""
+        self.__main_language_code = ""
         self.__start_service_date = ""
         self.__end_service_date = ""
         self.__bounding_box = ""
         self.__stable_url = ""
+
+    def set_main_language_code(self, main_language_code):
+        """ Set a main language code in the GTFS metadata.
+        :param main_language_code: The main language code to set.
+        """
+        self.__main_language_code = main_language_code
 
     def __str__(self):
         """String representation of the GTFS dataset metadata.
@@ -23,7 +29,7 @@ class GtfsMetadata:
         return "Timezone: %s\n" \
                "Country code: %s\n" \
                "Sub country code: %s\n" \
-               "Language code: %s\n" \
+               "Main language code: %s\n" \
                "Start service date: %s\n" \
                "End service date: %s\n" \
                "Bounding box: %s\n" \
@@ -32,11 +38,9 @@ class GtfsMetadata:
                % (self.__timezone,
                   self.__country_code,
                   self.__sub_country_code,
-                  self.__language_code,
+                  self.__main_language_code,
                   self.__start_service_date,
                   self.__end_service_date,
                   self.__bounding_box,
                   self.__stable_url,
                   self.__md5_hash)
-
-

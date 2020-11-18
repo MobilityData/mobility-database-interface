@@ -28,7 +28,7 @@ class GtfsMetadataTest(TestCase):
         test_metadata_string = "Timezone: \n" \
                                "Country code: \n" \
                                "Sub country code: \n" \
-                               "Language code: \n" \
+                               "Main language code: \n" \
                                "Start service date: \n" \
                                "End service date: \n" \
                                "Bounding box: \n" \

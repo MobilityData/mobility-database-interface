@@ -19,6 +19,17 @@ class GtfsRepresentation:
             raise TypeError('Metadata must be a valid GtfsMetadata.')
         self.__metadata = metadata
 
+    def get_dataset(self):
+        """ Get the representation of the GTFS dataset content.
+        """
+        return self.__dataset
+
+    def set_metadata_main_language_code(self, main_language_code):
+        """ Set a main language code in the representation of the GTFS dataset metadata.
+        :param main_language_code: The main language code to set.
+        """
+        self.__metadata.set_main_language_code(main_language_code)
+
     def print_representation(self):
         """ Print the representation of the GTFS dataset.
         """
