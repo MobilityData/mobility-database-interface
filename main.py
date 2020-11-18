@@ -114,6 +114,6 @@ if __name__ == "__main__":
         # TODO dataset = load_data(args['load'])
         pass
 
-    # Print memory usage
+    # Print memory usage 
     print("\n--------------- Memory Usage ---------------\n")
     print(hpy().heap())
