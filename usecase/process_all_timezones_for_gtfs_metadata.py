@@ -30,7 +30,8 @@ class ProcessAllTimezonesForGtfsMetadata:
 
         # Extract the timezone from the first row in the dataset agency
         # if the set of all timezones is empty after processing the dataset stops
-        all_timezones.add(dataset.agency['agency_timezone'].iloc[0])
+        if len(all_timezones) == 0:
+            all_timezones.add(dataset.agency['agency_timezone'].iloc[0])
 
-        self.gtfs_representation.set_metadata_all_timezones(list(all_timezones))
+        self.gtfs_representation.set_metadata_all_timezones(sorted(list(all_timezones)))
         return self.gtfs_representation
