@@ -155,6 +155,15 @@ Source documentation
    :show-inheritance:
 
 
+:mod:`usecase.process_main_language_code_for_gtfs_metadata`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: usecase.process_main_language_code_for_gtfs_metadata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
 :mod:`usecase.process_md5`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
