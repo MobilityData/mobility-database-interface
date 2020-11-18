@@ -15,7 +15,7 @@ class ProcessAllTimezonesForGtfsMetadata:
 
     def execute(self):
         """Execute the ``ProcessAllTimezonesForGtfsMetadata`` use case.
-        Process all the timezones using the`stops` file from the GTFS dataset of the representation.
+        Process all the timezones using the `stops` and the `agency` file from the GTFS dataset of the representation.
         Add the list of all the timezones to the representation metadata once processed.
         :return: The representation of the GTFS dataset post-execution.
         """
