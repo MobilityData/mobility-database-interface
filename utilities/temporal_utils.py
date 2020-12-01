@@ -10,34 +10,41 @@ UTC_THRESHOLD = 12
 
 def get_gtfs_dates_by_type(dataset, date_type):
     # Initialize dataframe for the dataset dates
-    dates_dataframe = pd.DataFrame(columns=['service_id', 'date'])
+    dates_per_service_id_dataframe = pd.DataFrame(columns=['service_id', 'date'])
 
     # Add the dates from the dataset calendar to the dataframe
     if dataset.calendar is not None:
         if date_type == 'start_date':
-            dates_dataframe = get_gtfs_start_dates_from_calendar(dataset.calendar, dates_dataframe)
+            dates_per_service_id_dataframe = get_gtfs_start_dates_from_calendar(dataset.calendar,
+                                                                                dates_per_service_id_dataframe)
         elif date_type == 'end_date':
-            dates_dataframe = get_gtfs_end_dates_from_calendar(dataset.calendar, dates_dataframe)
+            dates_per_service_id_dataframe = get_gtfs_end_dates_from_calendar(dataset.calendar,
+                                                                              dates_per_service_id_dataframe)
 
     # Verify exceptions from dataset calendar dates
     if dataset.calendar_dates is not None:
         for index, row in dataset.calendar_dates.iterrows():
-            date_index = dates_dataframe.loc[(dates_dataframe['service_id'] == row['service_id']) &
-                                             (dates_dataframe['date'] == row['date'])].index
+            date_index = dates_per_service_id_dataframe.loc[
+                (dates_per_service_id_dataframe['service_id'] == row['service_id']) &
+                (dates_per_service_id_dataframe['date'] == row['date'])].index
 
+            # Add a date if exception_type is 1
+            # and if the date is not in the dataframe
             if row['exception_type'] == 1 and len(date_index) == 0:
                 service_id = row['service_id']
                 date = row['date']
                 date_loc = service_id + '_' + date
-                dates_dataframe.loc[date_loc] = [service_id] + [date]
+                dates_per_service_id_dataframe.loc[date_loc] = [service_id] + [date]
 
+            # Remove a date if exception_type is 2
+            # and if the date is in the dataframe
             elif row['exception_type'] == 2 and len(date_index) > 0:
-                dates_dataframe.drop(list(date_index), inplace=True)
+                dates_per_service_id_dataframe.drop(list(date_index), inplace=True)
 
-    return dates_dataframe
+    return dates_per_service_id_dataframe
 
 
-def get_gtfs_start_dates_from_calendar(dataset_calendar, dates_dataframe):
+def get_gtfs_start_dates_from_calendar(dataset_calendar, dates_per_service_id_dataframe):
     for index, row in dataset_calendar.iterrows():
         row_start_date_as_datetime = datetime.strptime(row['start_date'], '%Y%m%d')
 
@@ -47,20 +54,20 @@ def get_gtfs_start_dates_from_calendar(dataset_calendar, dates_dataframe):
 
         # Iterate in the calendar days to get the days of a service and adds it to the dataset_dates.
         # Consider the offset to next monday. Ex. If a service starts on tuesday,
-        # than the first monday of the service will be start date + 6 days.
+        # then the first monday of the service will be start date + 6 days.
         for day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']:
             if row[day] == 1:
                 service_id = row['service_id']
                 date_as_datetime = row_start_date_as_datetime + timedelta(days=day_offset_to_monday)
                 date_as_string = date_as_datetime.strftime('%Y%m%d')
                 date_loc = service_id + '_' + date_as_string
-                dates_dataframe.loc[date_loc] = [service_id] + [date_as_string]
+                dates_per_service_id_dataframe.loc[date_loc] = [service_id] + [date_as_string]
             day_offset_to_monday = (day_offset_to_monday + 1) % 7
 
-    return dates_dataframe
+    return dates_per_service_id_dataframe
 
 
-def get_gtfs_end_dates_from_calendar(dataset_calendar, dates_dataframe):
+def get_gtfs_end_dates_from_calendar(dataset_calendar, dates_per_service_id_dataframe):
     for index, row in dataset_calendar.iterrows():
         row_end_date_as_datetime = datetime.strptime(row['end_date'], '%Y%m%d')
 
@@ -70,17 +77,17 @@ def get_gtfs_end_dates_from_calendar(dataset_calendar, dates_dataframe):
 
         # Iterate in the calendar days to get the days of a service and adds it to the dataset_dates.
         # Consider the offset to next monday. Ex. If a service starts on sunday,
-        # than the last monday of the service will be end date - 6 days.
+        # then the last monday of the service will be end date - 6 days.
         for day in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']:
             if row[day] == 1:
                 service_id = row['service_id']
                 date_as_datetime = row_end_date_as_datetime - timedelta(days=day_offset_to_monday)
                 date_as_string = date_as_datetime.strftime('%Y%m%d')
                 date_loc = service_id + '_' + date_as_string
-                dates_dataframe.loc[date_loc] = [service_id] + [date_as_string]
+                dates_per_service_id_dataframe.loc[date_loc] = [service_id] + [date_as_string]
             day_offset_to_monday = (day_offset_to_monday - 1) % 7
 
-    return dates_dataframe
+    return dates_per_service_id_dataframe
 
 
 def get_gtfs_timezone_utc_offset(dataset):

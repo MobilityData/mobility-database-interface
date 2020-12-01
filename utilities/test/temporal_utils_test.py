@@ -190,7 +190,7 @@ class TemporalUtilsTest(TestCase):
         self.assertIsInstance(under_test, pd.DataFrame)
         self.assertTrue(under_test.empty)
 
-    def test_get_gtfs_start_dates_from_calendar_with_filled_calendar_should_return_empty_dataframe(self):
+    def test_get_gtfs_start_dates_from_calendar_with_filled_calendar_should_return_non_empty_dataframe(self):
         test_calendar = pd.DataFrame({'start_date': ['20201010'],
                                       'monday': [1],
                                       'tuesday': [1],
@@ -217,6 +217,33 @@ class TemporalUtilsTest(TestCase):
         self.assertEqual(under_test['date'].count(), 7)
         self.assertEqual(under_test['date'].tolist(), test_dates_list)
 
+    def test_get_gtfs_start_dates_from_calendar_with_mixed_calendar_should_return_non_empty_dataframe(self):
+        test_calendar = pd.DataFrame({'start_date': ['20201010'],
+                                      'monday': [1],
+                                      'tuesday': [1],
+                                      'wednesday': [1],
+                                      'thursday': [0],
+                                      'friday': [0],
+                                      'saturday': [1],
+                                      'sunday': [1],
+                                      'service_id': ['test_service_date']})
+        mock_calendar = MagicMock()
+        mock_calendar.__class__ = pd.DataFrame
+        mock_calendar.iterrows.return_value = test_calendar.iterrows()
+
+        test_dataframe = pd.DataFrame(columns=['service_id', 'date'])
+
+        test_service_ids_list = ['test_service_date', 'test_service_date', 'test_service_date', 'test_service_date',
+                                 'test_service_date']
+        test_dates_list = ['20201012', '20201013', '20201014', '20201010', '20201011']
+
+        under_test = get_gtfs_start_dates_from_calendar(mock_calendar, test_dataframe)
+        self.assertIsInstance(under_test, pd.DataFrame)
+        self.assertEqual(under_test['service_id'].count(), 5)
+        self.assertEqual(under_test['service_id'].tolist(), test_service_ids_list)
+        self.assertEqual(under_test['date'].count(), 5)
+        self.assertEqual(under_test['date'].tolist(), test_dates_list)
+
     def test_get_gtfs_end_dates_from_calendar_with_empty_calendar_should_return_empty_dataframe(self):
         test_calendar = pd.DataFrame({'end_date': [],
                                       'monday': [],
@@ -237,7 +264,7 @@ class TemporalUtilsTest(TestCase):
         self.assertIsInstance(under_test, pd.DataFrame)
         self.assertTrue(under_test.empty)
 
-    def test_get_gtfs_end_dates_from_calendar_with_filled_calendar_should_return_empty_dataframe(self):
+    def test_get_gtfs_end_dates_from_calendar_with_filled_calendar_should_return_non_empty_dataframe(self):
         test_calendar = pd.DataFrame({'end_date': ['20201010'],
                                       'monday': [1],
                                       'tuesday': [1],
@@ -262,6 +289,33 @@ class TemporalUtilsTest(TestCase):
         self.assertEqual(under_test['service_id'].count(), 7)
         self.assertEqual(under_test['service_id'].tolist(), test_service_ids_list)
         self.assertEqual(under_test['date'].count(), 7)
+        self.assertEqual(under_test['date'].tolist(), test_dates_list)
+
+    def test_get_gtfs_end_dates_from_calendar_with_mixed_calendar_should_return_non_empty_dataframe(self):
+        test_calendar = pd.DataFrame({'end_date': ['20201010'],
+                                      'monday': [1],
+                                      'tuesday': [1],
+                                      'wednesday': [1],
+                                      'thursday': [0],
+                                      'friday': [0],
+                                      'saturday': [1],
+                                      'sunday': [1],
+                                      'service_id': ['test_service_date']})
+        mock_calendar = MagicMock()
+        mock_calendar.__class__ = pd.DataFrame
+        mock_calendar.iterrows.return_value = test_calendar.iterrows()
+
+        test_dataframe = pd.DataFrame(columns=['service_id', 'date'])
+
+        test_service_ids_list = ['test_service_date', 'test_service_date', 'test_service_date', 'test_service_date',
+                                 'test_service_date']
+        test_dates_list = ['20201005', '20201006', '20201007', '20201010', '20201004']
+
+        under_test = get_gtfs_end_dates_from_calendar(mock_calendar, test_dataframe)
+        self.assertIsInstance(under_test, pd.DataFrame)
+        self.assertEqual(under_test['service_id'].count(), 5)
+        self.assertEqual(under_test['service_id'].tolist(), test_service_ids_list)
+        self.assertEqual(under_test['date'].count(), 5)
         self.assertEqual(under_test['date'].tolist(), test_dates_list)
 
     @mock.patch('gtfs_kit.feed.Feed')
@@ -311,16 +365,3 @@ class TemporalUtilsTest(TestCase):
         self.assertTrue('departure_time' in under_test.columns)
         self.assertEqual(under_test['trip_id'].tolist(), test_stop_times_trip_ids)
         self.assertEqual(under_test['departure_time'].tolist(), test_stop_times_departure_time)
-
-
-
-
-
-
-
-
-
-
-
-
-
