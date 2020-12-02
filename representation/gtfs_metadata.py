@@ -24,11 +24,23 @@ class GtfsMetadata:
         """
         self.__main_timezone = main_timezone
 
+    def get_main_timezone(self):
+        """ Get the main timezone in the GTFS metadata.
+        :return: The main timezone to set.
+        """
+        return self.__main_timezone
+
     def set_all_timezones(self, all_timezones):
         """ Set all the timezones in the GTFS metadata.
         :param all_timezones: the list of all timezones to set.
         """
         self.__all_timezones = all_timezones
+
+    def get_all_timezones(self):
+        """ Get all the timezones in the GTFS metadata.
+        :return: the list of all timezones to set.
+        """
+        return self.__all_timezones
 
     def __str__(self):
         """String representation of the GTFS dataset metadata.
