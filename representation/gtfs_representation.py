@@ -48,6 +48,12 @@ class GtfsRepresentation:
         """
         self.__metadata.set_end_timestamp(end_timestamp)
 
+    def set_metadata_main_language_code(self, main_language_code):
+        """ Set a main language code in the representation of the GTFS dataset metadata.
+        :param main_language_code: The main language code to set.
+        """
+        self.__metadata.set_main_language_code(main_language_code)
+
     def set_metadata_main_timezone(self, main_timezone):
         """ Set a main timezone in the representation of the GTFS dataset metadata.
         :param main_timezone: The main timezone to set.

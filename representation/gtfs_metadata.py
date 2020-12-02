@@ -12,7 +12,7 @@ class GtfsMetadata:
         self.__all_timezones = []
         self.__country_code = ""
         self.__sub_country_code = ""
-        self.__language_code = ""
+        self.__main_language_code = ""
         self.__start_service_date = ""
         self.__end_service_date = ""
         self.__start_timestamp = ""
@@ -68,6 +68,18 @@ class GtfsMetadata:
         """
         return self.__end_timestamp
 
+    def set_main_language_code(self, main_language_code):
+        """ Set a main language code in the GTFS metadata.
+        :param main_language_code: The main language code to set.
+        """
+        self.__main_language_code = main_language_code
+
+    def get_main_language_code(self):
+        """ Get the main language code in the GTFS metadata.
+        :return: The main language code to set.
+        """
+        return self.__main_language_code
+
     def set_main_timezone(self, main_timezone):
         """ Set a main timezone in the GTFS metadata.
         :param main_timezone: The main timezone to set.
@@ -99,7 +111,7 @@ class GtfsMetadata:
                "All timezones: %s\n" \
                "Country code: %s\n" \
                "Sub country code: %s\n" \
-               "Language code: %s\n" \
+               "Main language code: %s\n" \
                "Start service date: %s\n" \
                "End service date: %s\n" \
                "Start timestamp: %s\n" \
@@ -111,7 +123,7 @@ class GtfsMetadata:
                   ', '.join(self.__all_timezones),
                   self.__country_code,
                   self.__sub_country_code,
-                  self.__language_code,
+                  self.__main_language_code,
                   self.__start_service_date,
                   self.__end_service_date,
                   self.__start_timestamp,
@@ -119,5 +131,3 @@ class GtfsMetadata:
                   self.__bounding_box,
                   self.__stable_url,
                   self.__md5_hash)
-
-
