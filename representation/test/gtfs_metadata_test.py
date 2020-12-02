@@ -20,14 +20,14 @@ class GtfsMetadataTest(TestCase):
         under_test = GtfsMetadata(mock_md5_hash)
         self.assertIsInstance(under_test, GtfsMetadata)
 
-    def test_gtfs_metadata_get_start_service_date(self):
+    def test_gtfs_metadata_get_start_service_date_should_return_start_service_date(self):
         mock_md5_hash = MagicMock()
         mock_md5_hash.__class__ = str
 
         under_test = GtfsMetadata(mock_md5_hash)
         self.assertEqual(under_test.get_start_service_date(), "")
 
-    def test_gtfs_metadata_set_start_service_date(self):
+    def test_gtfs_metadata_set_start_service_date_should_set_start_service_date(self):
         mock_md5_hash = MagicMock()
         mock_md5_hash.__class__ = str
 
@@ -37,14 +37,14 @@ class GtfsMetadataTest(TestCase):
         under_test.set_start_service_date("test_start_date")
         self.assertEqual(under_test.get_start_service_date(), "test_start_date")
 
-    def test_gtfs_metadata_get_end_service_date(self):
+    def test_gtfs_metadata_get_end_service_date_should_return_end_service_date(self):
         mock_md5_hash = MagicMock()
         mock_md5_hash.__class__ = str
 
         under_test = GtfsMetadata(mock_md5_hash)
         self.assertEqual(under_test.get_end_service_date(), "")
 
-    def test_gtfs_metadata_set_end_service_date(self):
+    def test_gtfs_metadata_set_end_service_date_should_set_end_service_date(self):
         mock_md5_hash = MagicMock()
         mock_md5_hash.__class__ = str
 
@@ -54,14 +54,14 @@ class GtfsMetadataTest(TestCase):
         under_test.set_end_service_date("test_end_date")
         self.assertEqual(under_test.get_end_service_date(), "test_end_date")
 
-    def test_gtfs_metadata_get_start_timestamp(self):
+    def test_gtfs_metadata_get_start_timestamp_should_return_start_timestamp(self):
         mock_md5_hash = MagicMock()
         mock_md5_hash.__class__ = str
 
         under_test = GtfsMetadata(mock_md5_hash)
         self.assertEqual(under_test.get_start_timestamp(), "")
 
-    def test_gtfs_metadata_set_start_timestamp(self):
+    def test_gtfs_metadata_set_start_timestamp_should_set_start_timestamp(self):
         mock_md5_hash = MagicMock()
         mock_md5_hash.__class__ = str
 
@@ -71,14 +71,14 @@ class GtfsMetadataTest(TestCase):
         under_test.set_start_timestamp("test_start_timestamp")
         self.assertEqual(under_test.get_start_timestamp(), "test_start_timestamp")
 
-    def test_gtfs_metadata_get_end_timestamp(self):
+    def test_gtfs_metadata_get_end_timestamp_should_return_end_timestamp(self):
         mock_md5_hash = MagicMock()
         mock_md5_hash.__class__ = str
 
         under_test = GtfsMetadata(mock_md5_hash)
         self.assertEqual(under_test.get_start_timestamp(), "")
 
-    def test_gtfs_metadata_set_end_timestamp(self):
+    def test_gtfs_metadata_set_end_timestamp_should_set_end_timestamp(self):
         mock_md5_hash = MagicMock()
         mock_md5_hash.__class__ = str
 
