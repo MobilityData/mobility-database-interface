@@ -319,8 +319,8 @@ class TemporalUtilsTest(TestCase):
         self.assertEqual(under_test['date'].tolist(), test_dates_list)
 
     @mock.patch('gtfs_kit.feed.Feed')
-    def test_get_gtfs_timezone_utc_offset_with_invalid_agency_timezone_should_return_timezone_utc_offset(self,
-                                                                                                         mock_dataset):
+    def test_get_gtfs_timezone_utc_offset_with_invalid_agency_timezone_should_return_default_utc_offset(self,
+                                                                                                        mock_dataset):
         mock_agency = PropertyMock(return_value=pd.DataFrame({'agency_timezone': ['test_timezone']}))
 
         mock_dataset.__class__ = Feed
