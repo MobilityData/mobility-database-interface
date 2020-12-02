@@ -19,6 +19,23 @@ class GtfsRepresentation:
             raise TypeError('Metadata must be a valid GtfsMetadata.')
         self.__metadata = metadata
 
+    def get_dataset(self):
+        """ Get the representation of the GTFS dataset content.
+        """
+        return self.__dataset
+
+    def set_metadata_main_timezone(self, main_timezone):
+        """ Set a main timezone in the representation of the GTFS dataset metadata.
+        :param main_timezone: The main timezone to set.
+        """
+        self.__metadata.set_main_timezone(main_timezone)
+
+    def set_metadata_all_timezones(self, all_timezones):
+        """ Set all the timezones in the representation of the GTFS dataset metadata.
+        :param all_timezones: the list of all timezones to set.
+        """
+        self.__metadata.set_all_timezones(all_timezones)
+
     def print_representation(self):
         """ Print the representation of the GTFS dataset.
         """
