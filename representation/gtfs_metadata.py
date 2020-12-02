@@ -8,7 +8,8 @@ class GtfsMetadata:
         if md5_hash is None or not isinstance(md5_hash, str):
             raise TypeError('MD5 hash must be a valid MD5 hash string.')
         self.__md5_hash = md5_hash
-        self.__timezone = ""
+        self.__main_timezone = ""
+        self.__all_timezones = []
         self.__country_code = ""
         self.__sub_country_code = ""
         self.__language_code = ""
@@ -17,10 +18,35 @@ class GtfsMetadata:
         self.__bounding_box = ""
         self.__stable_url = ""
 
+    def set_main_timezone(self, main_timezone):
+        """ Set a main timezone in the GTFS metadata.
+        :param main_timezone: The main timezone to set.
+        """
+        self.__main_timezone = main_timezone
+
+    def get_main_timezone(self):
+        """ Get the main timezone in the GTFS metadata.
+        :return: The main timezone to set.
+        """
+        return self.__main_timezone
+
+    def set_all_timezones(self, all_timezones):
+        """ Set all the timezones in the GTFS metadata.
+        :param all_timezones: the list of all timezones to set.
+        """
+        self.__all_timezones = all_timezones
+
+    def get_all_timezones(self):
+        """ Get all the timezones in the GTFS metadata.
+        :return: the list of all timezones to set.
+        """
+        return self.__all_timezones
+
     def __str__(self):
         """String representation of the GTFS dataset metadata.
         """
-        return "Timezone: %s\n" \
+        return "Main timezone: %s\n" \
+               "All timezones: %s\n" \
                "Country code: %s\n" \
                "Sub country code: %s\n" \
                "Language code: %s\n" \
@@ -29,7 +55,8 @@ class GtfsMetadata:
                "Bounding box: %s\n" \
                "Stable url: %s\n" \
                "MD5 hash: %s" \
-               % (self.__timezone,
+               % (self.__main_timezone,
+                  ', '.join(self.__all_timezones),
                   self.__country_code,
                   self.__sub_country_code,
                   self.__language_code,

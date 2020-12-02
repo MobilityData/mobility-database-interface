@@ -20,12 +20,47 @@ class GtfsMetadataTest(TestCase):
         under_test = GtfsMetadata(mock_md5_hash)
         self.assertIsInstance(under_test, GtfsMetadata)
 
+    def test_gtfs_metadata_get_main_timezone_should_return_main_timezone(self):
+        mock_md5_hash = MagicMock()
+        mock_md5_hash.__class__ = str
+
+        under_test = GtfsMetadata(mock_md5_hash)
+        self.assertEqual(under_test.get_main_timezone(), "")
+
+    def test_gtfs_metadata_set_main_timezone_should_set_main_timezone(self):
+        mock_md5_hash = MagicMock()
+        mock_md5_hash.__class__ = str
+
+        under_test = GtfsMetadata(mock_md5_hash)
+        self.assertEqual(under_test.get_main_timezone(), "")
+
+        under_test.set_main_timezone("test_main_timezone")
+        self.assertEqual(under_test.get_main_timezone(), "test_main_timezone")
+
+    def test_gtfs_metadata_get_all_timezones_should_return_all_timezones(self):
+        mock_md5_hash = MagicMock()
+        mock_md5_hash.__class__ = str
+
+        under_test = GtfsMetadata(mock_md5_hash)
+        self.assertEqual(under_test.get_all_timezones(), [])
+
+    def test_gtfs_metadata_set_main_timezone_should_set_main_timezone(self):
+        mock_md5_hash = MagicMock()
+        mock_md5_hash.__class__ = str
+
+        under_test = GtfsMetadata(mock_md5_hash)
+        self.assertEqual(under_test.get_all_timezones(), [])
+
+        under_test.set_main_timezone(["test_all_timezones"])
+        self.assertEqual(under_test.get_main_timezone(), ["test_all_timezones"])
+
     def test_gtfs_metadata_to_string_special_method_should_return_metadata_string(self):
         mock_md5_hash = MagicMock()
         mock_md5_hash.__class__ = str
         mock_md5_hash.__str__.return_value = 'test_md5_hash'
 
-        test_metadata_string = "Timezone: \n" \
+        test_metadata_string = "Main timezone: \n" \
+                               "All timezones: \n" \
                                "Country code: \n" \
                                "Sub country code: \n" \
                                "Language code: \n" \
