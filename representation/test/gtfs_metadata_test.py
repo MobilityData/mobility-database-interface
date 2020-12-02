@@ -20,6 +20,23 @@ class GtfsMetadataTest(TestCase):
         under_test = GtfsMetadata(mock_md5_hash)
         self.assertIsInstance(under_test, GtfsMetadata)
 
+    def test_gtfs_metadata_get_main_language_code_should_return_main_language_code(self):
+        mock_md5_hash = MagicMock()
+        mock_md5_hash.__class__ = str
+
+        under_test = GtfsMetadata(mock_md5_hash)
+        self.assertEqual(under_test.get_main_language_code(), "")
+
+    def test_gtfs_metadata_set_main_language_code_should_set_main_language_code(self):
+        mock_md5_hash = MagicMock()
+        mock_md5_hash.__class__ = str
+
+        under_test = GtfsMetadata(mock_md5_hash)
+        self.assertEqual(under_test.get_main_language_code(), "")
+
+        under_test.set_main_language_code("test_main_language_code")
+        self.assertEqual(under_test.get_main_language_code(), "test_main_language_code")
+
     def test_gtfs_metadata_get_main_timezone_should_return_main_timezone(self):
         mock_md5_hash = MagicMock()
         mock_md5_hash.__class__ = str
@@ -44,7 +61,7 @@ class GtfsMetadataTest(TestCase):
         under_test = GtfsMetadata(mock_md5_hash)
         self.assertEqual(under_test.get_all_timezones(), [])
 
-    def test_gtfs_metadata_set_main_timezone_should_set_main_timezone(self):
+    def test_gtfs_metadata_set_all_timezones_should_set_main_timezone(self):
         mock_md5_hash = MagicMock()
         mock_md5_hash.__class__ = str
 
@@ -63,7 +80,7 @@ class GtfsMetadataTest(TestCase):
                                "All timezones: \n" \
                                "Country code: \n" \
                                "Sub country code: \n" \
-                               "Language code: \n" \
+                               "Main language code: \n" \
                                "Start service date: \n" \
                                "End service date: \n" \
                                "Bounding box: \n" \
