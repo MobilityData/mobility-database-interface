@@ -93,22 +93,32 @@ def get_gtfs_end_dates_from_calendar(dataset_calendar, dates_per_service_id_data
 def get_gtfs_timezone_utc_offset(dataset):
     # Extract agency timezone from dataset
     agency_timezone = dataset.agency['agency_timezone'].iloc[0]
-    timezone = pytz.timezone(agency_timezone)
-    # TODO verify timezone is valid
 
-    # Compute the utc offset time and sign
-    utc = datetime.utcnow()
-    offset_seconds = timezone.utcoffset(utc).seconds
-    offset_hours = offset_seconds / SECONDS_PER_HOUR
-    offset_sign = "+"
-    if offset_hours > UTC_THRESHOLD:
-        offset_hours = -1 * (offset_hours % -UTC_THRESHOLD)
-        offset_sign = "-"
-    offset_time_string = str(time(int(offset_hours), int((offset_hours % 1) * MINUTES_PER_HOUR)))
+    # TODO confirm action
+    if agency_timezone in pytz.all_timezones:
+        timezone = pytz.timezone(agency_timezone)
 
-    # Keep the hour and minutes from the computed offset and add the offset sign to the string
-    offset_hours_and_minutes = offset_time_string[0:5]
-    timezone_offset = offset_sign + offset_hours_and_minutes
+        # Compute the utc offset time and sign
+        utc = datetime.utcnow()
+        offset_seconds = timezone.utcoffset(utc).seconds
+        if offset_seconds != 0:
+            # compute offset in hour if offset is not equal to zero
+            offset_hours = offset_seconds / SECONDS_PER_HOUR
+            offset_sign = "+"
+            if offset_hours > UTC_THRESHOLD:
+                offset_hours = -1 * (offset_hours % -UTC_THRESHOLD)
+                offset_sign = "-"
+            offset_time_string = str(time(int(offset_hours), int((offset_hours % 1) * MINUTES_PER_HOUR)))
+
+            # Keep the hour and minutes from the computed offset and add the offset sign to the string
+            offset_hours_and_minutes = offset_time_string[0:5]
+            timezone_offset = offset_sign + offset_hours_and_minutes
+        else:
+            # Set timezone offset to "±00:00" if offset is equal to zero
+            timezone_offset = "±00:00"
+    else:
+        # Set timezone offset to "±00:00" if timezone is invalid
+        timezone_offset = "±00:00"
 
     return timezone_offset
 

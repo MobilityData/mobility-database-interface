@@ -319,14 +319,40 @@ class TemporalUtilsTest(TestCase):
         self.assertEqual(under_test['date'].tolist(), test_dates_list)
 
     @mock.patch('gtfs_kit.feed.Feed')
+    def test_get_gtfs_timezone_utc_offset_with_invalid_agency_timezone_should_return_timezone_utc_offset(self,
+                                                                                                         mock_dataset):
+        mock_agency = PropertyMock(return_value=pd.DataFrame({'agency_timezone': ['test_timezone']}))
+
+        mock_dataset.__class__ = Feed
+        type(mock_dataset).agency = mock_agency
+
+        test_utc_offset = '±00:00'
+
+        under_test = get_gtfs_timezone_utc_offset(mock_dataset)
+        self.assertEqual(under_test, test_utc_offset)
+
+    @mock.patch('gtfs_kit.feed.Feed')
     def test_get_gtfs_timezone_utc_offset_with_valid_agency_timezone_should_return_timezone_utc_offset(self,
                                                                                                        mock_dataset):
-        mock_agency = PropertyMock(return_value=pd.DataFrame({'agency_timezone': ['America/Montreal']}))
+        mock_agency = PropertyMock(return_value=pd.DataFrame({'agency_timezone': ['America/Toronto']}))
 
         mock_dataset.__class__ = Feed
         type(mock_dataset).agency = mock_agency
 
         test_utc_offset = '-05:00'
+
+        under_test = get_gtfs_timezone_utc_offset(mock_dataset)
+        self.assertEqual(under_test, test_utc_offset)
+
+    @mock.patch('gtfs_kit.feed.Feed')
+    def test_get_gtfs_timezone_utc_offset_with_another_agency_timezone_should_return_timezone_utc_offset(self,
+                                                                                                         mock_dataset):
+        mock_agency = PropertyMock(return_value=pd.DataFrame({'agency_timezone': ['Europe/London']}))
+
+        mock_dataset.__class__ = Feed
+        type(mock_dataset).agency = mock_agency
+
+        test_utc_offset = '±00:00'
 
         under_test = get_gtfs_timezone_utc_offset(mock_dataset)
         self.assertEqual(under_test, test_utc_offset)
