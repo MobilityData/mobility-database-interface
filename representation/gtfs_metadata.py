@@ -23,6 +23,12 @@ class GtfsMetadata:
         """
         self.__main_language_code = main_language_code
 
+    def get_main_language_code(self):
+        """ Get the main language code in the GTFS metadata.
+        :return: The main language code to set.
+        """
+        return self.__main_language_code
+
     def __str__(self):
         """String representation of the GTFS dataset metadata.
         """
