@@ -33,7 +33,6 @@ class GtfsMetadataTest(TestCase):
 
         under_test = GtfsMetadata(mock_md5_hash)
         self.assertEqual(under_test.get_start_service_date(), "")
-
         under_test.set_start_service_date("test_start_date")
         self.assertEqual(under_test.get_start_service_date(), "test_start_date")
 
@@ -50,7 +49,6 @@ class GtfsMetadataTest(TestCase):
 
         under_test = GtfsMetadata(mock_md5_hash)
         self.assertEqual(under_test.get_end_service_date(), "")
-
         under_test.set_end_service_date("test_end_date")
         self.assertEqual(under_test.get_end_service_date(), "test_end_date")
 
@@ -67,7 +65,6 @@ class GtfsMetadataTest(TestCase):
 
         under_test = GtfsMetadata(mock_md5_hash)
         self.assertEqual(under_test.get_start_timestamp(), "")
-
         under_test.set_start_timestamp("test_start_timestamp")
         self.assertEqual(under_test.get_start_timestamp(), "test_start_timestamp")
 
@@ -84,7 +81,6 @@ class GtfsMetadataTest(TestCase):
 
         under_test = GtfsMetadata(mock_md5_hash)
         self.assertEqual(under_test.get_end_timestamp(), "")
-
         under_test.set_end_timestamp("test_end_timestamp")
         self.assertEqual(under_test.get_end_timestamp(), "test_end_timestamp")
 
@@ -101,7 +97,6 @@ class GtfsMetadataTest(TestCase):
 
         under_test = GtfsMetadata(mock_md5_hash)
         self.assertEqual(under_test.get_main_language_code(), "")
-
         under_test.set_main_language_code("test_main_language_code")
         self.assertEqual(under_test.get_main_language_code(), "test_main_language_code")
 
@@ -118,7 +113,6 @@ class GtfsMetadataTest(TestCase):
 
         under_test = GtfsMetadata(mock_md5_hash)
         self.assertEqual(under_test.get_main_timezone(), "")
-
         under_test.set_main_timezone("test_main_timezone")
         self.assertEqual(under_test.get_main_timezone(), "test_main_timezone")
 
@@ -135,7 +129,6 @@ class GtfsMetadataTest(TestCase):
 
         under_test = GtfsMetadata(mock_md5_hash)
         self.assertEqual(under_test.get_all_timezones(), [])
-
         under_test.set_main_timezone(["test_all_timezones"])
         self.assertEqual(under_test.get_main_timezone(), ["test_all_timezones"])
 
