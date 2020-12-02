@@ -82,6 +82,7 @@ class GtfsRepresentationTest(TestCase):
         under_test = GtfsRepresentation(mock_entity_code, mock_dataset, mock_metadata)
         under_test.set_metadata_start_service_date("test_start_date")
         mock_metadata.set_start_service_date.assert_called_once()
+        mock_metadata.set_start_service_date.assert_called_with("test_start_date")
 
     @mock.patch('gtfs_kit.feed.Feed')
     @mock.patch('representation.gtfs_metadata.GtfsMetadata')
@@ -94,6 +95,7 @@ class GtfsRepresentationTest(TestCase):
         under_test = GtfsRepresentation(mock_entity_code, mock_dataset, mock_metadata)
         under_test.set_metadata_end_service_date("test_end_date")
         mock_metadata.set_end_service_date.assert_called_once()
+        mock_metadata.set_end_service_date.assert_called_with("test_end_date")
 
     @mock.patch('gtfs_kit.feed.Feed')
     @mock.patch('representation.gtfs_metadata.GtfsMetadata')
@@ -106,6 +108,7 @@ class GtfsRepresentationTest(TestCase):
         under_test = GtfsRepresentation(mock_entity_code, mock_dataset, mock_metadata)
         under_test.set_metadata_start_timestamp("test_start_timestamp")
         mock_metadata.set_start_timestamp.assert_called_once()
+        mock_metadata.set_start_timestamp.assert_called_with("test_start_timestamp")
 
     @mock.patch('gtfs_kit.feed.Feed')
     @mock.patch('representation.gtfs_metadata.GtfsMetadata')
@@ -118,6 +121,7 @@ class GtfsRepresentationTest(TestCase):
         under_test = GtfsRepresentation(mock_entity_code, mock_dataset, mock_metadata)
         under_test.set_metadata_end_timestamp("test_end_timestamp")
         mock_metadata.set_end_timestamp.assert_called_once()
+        mock_metadata.set_end_timestamp.assert_called_with("test_end_timestamp")
 
     @mock.patch('gtfs_kit.feed.Feed')
     @mock.patch('representation.gtfs_metadata.GtfsMetadata')
