@@ -10,6 +10,8 @@ from usecase.extract_sources_url import ExtractSourcesUrl
 from usecase.extract_database_md5 import ExtractDatabaseMd5
 from usecase.load_dataset import LoadDataset
 from usecase.process_main_language_code_for_gtfs_metadata import ProcessMainLanguageCodeForGtfsMetadata
+from usecase.process_main_timezone_for_gtfs_metadata import ProcessMainTimezoneForGtfsMetadata
+from usecase.process_all_timezones_for_gtfs_metadata import ProcessAllTimezonesForGtfsMetadata
 from usecase.process_md5 import ProcessMd5
 
 
@@ -117,6 +119,8 @@ if __name__ == "__main__":
         # Process each dataset representation in the data_repository
         for dataset_key, dataset_representation in data_repository.get_dataset_representations().items():
             ProcessMainLanguageCodeForGtfsMetadata(dataset_representation).execute()
+            ProcessMainTimezoneForGtfsMetadata(dataset_representation).execute()
+            ProcessAllTimezonesForGtfsMetadata(dataset_representation).execute()
 
             # Print results
             data_repository.print_dataset_representation(dataset_key)
@@ -126,6 +130,6 @@ if __name__ == "__main__":
         # TODO dataset = load_data(args['load'])
         pass
 
-    # Print memory usage 
+    # Print memory usage
     print("\n--------------- Memory Usage ---------------\n")
     print(hpy().heap())
