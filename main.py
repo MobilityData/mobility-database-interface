@@ -9,6 +9,8 @@ from usecase.download_dataset_as_zip import DownloadDatasetAsZip
 from usecase.extract_sources_url import ExtractSourcesUrl
 from usecase.extract_database_md5 import ExtractDatabaseMd5
 from usecase.load_dataset import LoadDataset
+from usecase.process_main_timezone_for_gtfs_metadata import ProcessMainTimezoneForGtfsMetadata
+from usecase.process_all_timezones_for_gtfs_metadata import ProcessAllTimezonesForGtfsMetadata
 from usecase.process_md5 import ProcessMd5
 from usecase.process_start_service_date_for_gtfs_metadata import ProcessStartServiceDateForGtfsMetadata
 from usecase.process_end_service_date_for_gtfs_metadata import ProcessEndServiceDateForGtfsMetadata
@@ -123,6 +125,8 @@ if __name__ == "__main__":
             ProcessEndServiceDateForGtfsMetadata(dataset_representation).execute()
             ProcessStartTimestampForGtfsMetadata(dataset_representation).execute()
             ProcessEndTimestampForGtfsMetadata(dataset_representation).execute()
+            ProcessMainTimezoneForGtfsMetadata(dataset_representation).execute()
+            ProcessAllTimezonesForGtfsMetadata(dataset_representation).execute()
 
             # Print results
             data_repository.print_dataset_representation(dataset_key)
