@@ -24,6 +24,30 @@ class GtfsRepresentation:
         """
         return self.__dataset
 
+    def set_metadata_start_service_date(self, start_service_date):
+        """ Set a start service date in the representation of the GTFS dataset metadata.
+        :param start_service_date: The start service date to set.
+        """
+        self.__metadata.set_start_service_date(start_service_date)
+
+    def set_metadata_end_service_date(self, end_service_date):
+        """ Set an end service date in the representation of the GTFS dataset metadata.
+        :param end_service_date: The end service date to set.
+        """
+        self.__metadata.set_end_service_date(end_service_date)
+
+    def set_metadata_start_timestamp(self, start_timestamp):
+        """ Set a start timestamp in the representation of the GTFS dataset metadata.
+        :param start_timestamp: The start timestamp to set.
+        """
+        self.__metadata.set_start_timestamp(start_timestamp)
+
+    def set_metadata_end_timestamp(self, end_timestamp):
+        """ Set a end timestamp in the representation of the GTFS dataset metadata.
+        :param end_timestamp: The end timestamp to set.
+        """
+        self.__metadata.set_end_timestamp(end_timestamp)
+
     def set_metadata_main_language_code(self, main_language_code):
         """ Set a main language code in the representation of the GTFS dataset metadata.
         :param main_language_code: The main language code to set.
