@@ -94,7 +94,8 @@ def get_gtfs_timezone_utc_offset(dataset):
     # Extract agency timezone from dataset
     agency_timezone = dataset.agency['agency_timezone'].iloc[0]
 
-    # TODO confirm action
+    timezone_offset = ""
+
     if agency_timezone in pytz.all_timezones:
         timezone = pytz.timezone(agency_timezone)
 
@@ -116,9 +117,6 @@ def get_gtfs_timezone_utc_offset(dataset):
         else:
             # Set timezone offset to "±00:00" if offset is equal to zero
             timezone_offset = "±00:00"
-    else:
-        # Set timezone offset to "±00:00" if timezone is invalid
-        timezone_offset = "±00:00"
 
     return timezone_offset
 

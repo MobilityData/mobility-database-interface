@@ -326,7 +326,7 @@ class TemporalUtilsTest(TestCase):
         mock_dataset.__class__ = Feed
         type(mock_dataset).agency = mock_agency
 
-        test_utc_offset = '±00:00'
+        test_utc_offset = ''
 
         under_test = get_gtfs_timezone_utc_offset(mock_dataset)
         self.assertEqual(under_test, test_utc_offset)
