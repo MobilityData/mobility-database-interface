@@ -62,6 +62,69 @@ class GtfsRepresentationTest(TestCase):
 
     @mock.patch('gtfs_kit.feed.Feed')
     @mock.patch('representation.gtfs_metadata.GtfsMetadata')
+    def test_gtfs_representation_get_dataset_should_return_dataset(self, mock_dataset, mock_metadata):
+        mock_entity_code = MagicMock()
+        mock_entity_code.__class__ = str
+        mock_dataset.__class__ = Feed
+        mock_metadata.__class__ = GtfsMetadata
+
+        under_test = GtfsRepresentation(mock_entity_code, mock_dataset, mock_metadata)
+        self.assertEqual(under_test.get_dataset(), mock_dataset)
+
+    @mock.patch('gtfs_kit.feed.Feed')
+    @mock.patch('representation.gtfs_metadata.GtfsMetadata')
+    def test_gtfs_representation_set_metadata_start_service_date_should_call_method(self, mock_dataset, mock_metadata):
+        mock_entity_code = MagicMock()
+        mock_entity_code.__class__ = str
+        mock_dataset.__class__ = Feed
+        mock_metadata.__class__ = GtfsMetadata
+
+        under_test = GtfsRepresentation(mock_entity_code, mock_dataset, mock_metadata)
+        under_test.set_metadata_start_service_date("test_start_date")
+        mock_metadata.set_start_service_date.assert_called_once()
+        mock_metadata.set_start_service_date.assert_called_with("test_start_date")
+
+    @mock.patch('gtfs_kit.feed.Feed')
+    @mock.patch('representation.gtfs_metadata.GtfsMetadata')
+    def test_gtfs_representation_set_metadata_end_service_date_should_call_method(self, mock_dataset, mock_metadata):
+        mock_entity_code = MagicMock()
+        mock_entity_code.__class__ = str
+        mock_dataset.__class__ = Feed
+        mock_metadata.__class__ = GtfsMetadata
+
+        under_test = GtfsRepresentation(mock_entity_code, mock_dataset, mock_metadata)
+        under_test.set_metadata_end_service_date("test_end_date")
+        mock_metadata.set_end_service_date.assert_called_once()
+        mock_metadata.set_end_service_date.assert_called_with("test_end_date")
+
+    @mock.patch('gtfs_kit.feed.Feed')
+    @mock.patch('representation.gtfs_metadata.GtfsMetadata')
+    def test_gtfs_representation_set_metadata_start_timestamp_should_call_method(self, mock_dataset, mock_metadata):
+        mock_entity_code = MagicMock()
+        mock_entity_code.__class__ = str
+        mock_dataset.__class__ = Feed
+        mock_metadata.__class__ = GtfsMetadata
+
+        under_test = GtfsRepresentation(mock_entity_code, mock_dataset, mock_metadata)
+        under_test.set_metadata_start_timestamp("test_start_timestamp")
+        mock_metadata.set_start_timestamp.assert_called_once()
+        mock_metadata.set_start_timestamp.assert_called_with("test_start_timestamp")
+
+    @mock.patch('gtfs_kit.feed.Feed')
+    @mock.patch('representation.gtfs_metadata.GtfsMetadata')
+    def test_gtfs_representation_set_metadata_end_timestamp_should_call_method(self, mock_dataset, mock_metadata):
+        mock_entity_code = MagicMock()
+        mock_entity_code.__class__ = str
+        mock_dataset.__class__ = Feed
+        mock_metadata.__class__ = GtfsMetadata
+
+        under_test = GtfsRepresentation(mock_entity_code, mock_dataset, mock_metadata)
+        under_test.set_metadata_end_timestamp("test_end_timestamp")
+        mock_metadata.set_end_timestamp.assert_called_once()
+        mock_metadata.set_end_timestamp.assert_called_with("test_end_timestamp")
+
+    @mock.patch('gtfs_kit.feed.Feed')
+    @mock.patch('representation.gtfs_metadata.GtfsMetadata')
     def test_gtfs_representation_set_metadata_main_language_code_should_call_method(self, mock_dataset, mock_metadata):
         mock_entity_code = MagicMock()
         mock_entity_code.__class__ = str

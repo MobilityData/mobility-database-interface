@@ -13,6 +13,10 @@ from usecase.process_main_language_code_for_gtfs_metadata import ProcessMainLang
 from usecase.process_main_timezone_for_gtfs_metadata import ProcessMainTimezoneForGtfsMetadata
 from usecase.process_all_timezones_for_gtfs_metadata import ProcessAllTimezonesForGtfsMetadata
 from usecase.process_md5 import ProcessMd5
+from usecase.process_start_service_date_for_gtfs_metadata import ProcessStartServiceDateForGtfsMetadata
+from usecase.process_end_service_date_for_gtfs_metadata import ProcessEndServiceDateForGtfsMetadata
+from usecase.process_start_timestamp_for_gtfs_metadata import ProcessStartTimestampForGtfsMetadata
+from usecase.process_end_timestamp_for_gtfs_metadata import ProcessEndTimestampForGtfsMetadata
 
 
 def download_data(path_to_data, dataset_type="GTFS", specific_download=False, specific_entity_code=None):
@@ -100,7 +104,7 @@ if __name__ == "__main__":
 
     # Process data
     if args['download'] is not None:
-        # Download datasets in memory
+        # Download datasets zip files
         if args['all'] is not None:
             paths_to_datasets = download_data(args['path_to_tmp_data'], dataset_type=args['data_type'])
         elif args['specific'] is not None:
@@ -118,6 +122,10 @@ if __name__ == "__main__":
 
         # Process each dataset representation in the data_repository
         for dataset_key, dataset_representation in data_repository.get_dataset_representations().items():
+            ProcessStartServiceDateForGtfsMetadata(dataset_representation).execute()
+            ProcessEndServiceDateForGtfsMetadata(dataset_representation).execute()
+            ProcessStartTimestampForGtfsMetadata(dataset_representation).execute()
+            ProcessEndTimestampForGtfsMetadata(dataset_representation).execute()
             ProcessMainLanguageCodeForGtfsMetadata(dataset_representation).execute()
             ProcessMainTimezoneForGtfsMetadata(dataset_representation).execute()
             ProcessAllTimezonesForGtfsMetadata(dataset_representation).execute()
