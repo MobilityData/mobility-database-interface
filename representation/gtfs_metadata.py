@@ -17,7 +17,7 @@ class GtfsMetadata:
         self.__end_service_date = ""
         self.__start_timestamp = ""
         self.__end_timestamp = ""
-        self.__bounding_box = ""
+        self.__bounding_box = {}
         self.__stable_url = ""
 
     def set_start_service_date(self, start_service_date):
@@ -28,7 +28,7 @@ class GtfsMetadata:
 
     def get_start_service_date(self):
         """ Get the start service date in the GTFS metadata.
-        :return: The start_service_date to set.
+        :return: The start_service_date to get.
         """
         return self.__start_service_date
 
@@ -40,7 +40,7 @@ class GtfsMetadata:
 
     def get_end_service_date(self):
         """ Get the end service date in the GTFS metadata.
-        :return: The end_service_date to set.
+        :return: The end_service_date to get.
         """
         return self.__end_service_date
 
@@ -52,7 +52,7 @@ class GtfsMetadata:
 
     def get_start_timestamp(self):
         """ Get the start timestamp in the GTFS metadata.
-        :return: The start_timestamp to set.
+        :return: The start_timestamp to get.
         """
         return self.__start_timestamp
 
@@ -64,7 +64,7 @@ class GtfsMetadata:
 
     def get_end_timestamp(self):
         """ Get the end timestamp in the GTFS metadata.
-        :return: The end_timestamp to set.
+        :return: The end_timestamp to get.
         """
         return self.__end_timestamp
 
@@ -76,7 +76,7 @@ class GtfsMetadata:
 
     def get_main_language_code(self):
         """ Get the main language code in the GTFS metadata.
-        :return: The main language code to set.
+        :return: The main language code to get.
         """
         return self.__main_language_code
 
@@ -88,7 +88,7 @@ class GtfsMetadata:
 
     def get_main_timezone(self):
         """ Get the main timezone in the GTFS metadata.
-        :return: The main timezone to set.
+        :return: The main timezone to get.
         """
         return self.__main_timezone
 
@@ -100,9 +100,21 @@ class GtfsMetadata:
 
     def get_all_timezones(self):
         """ Get all the timezones in the GTFS metadata.
-        :return: the list of all timezones to set.
+        :return: the list of all timezones to get.
         """
         return self.__all_timezones
+
+    def set_bounding_box(self, bounding_box):
+        """ Set the geographical bounding box in the GTFS metadata.
+        :param bounding_box: the bounding box to set.
+        """
+        self.__bounding_box = bounding_box
+
+    def get_bounding_box(self):
+        """ Get the geographical bounding box in the GTFS metadata.
+        :return: the bounding box to get.
+        """
+        return self.__bounding_box
 
     def __str__(self):
         """String representation of the GTFS dataset metadata.

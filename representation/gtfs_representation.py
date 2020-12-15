@@ -66,6 +66,12 @@ class GtfsRepresentation:
         """
         self.__metadata.set_all_timezones(all_timezones)
 
+    def set_metadata_bounding_box(self, bounding_box):
+        """ Set the geographical bounding_box in the representation of the GTFS dataset metadata.
+        :param bounding_box: the bounding box to set.
+        """
+        self.__metadata.set_bounding_box(bounding_box)
+
     def print_representation(self):
         """ Print the representation of the GTFS dataset.
         """
