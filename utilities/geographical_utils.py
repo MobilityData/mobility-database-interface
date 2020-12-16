@@ -1,38 +1,37 @@
-import pandas as pd
 import re
-from LatLon23 import LatLon, Latitude, Longitude
+from LatLon23 import Latitude, Longitude
 
 
 def get_geographical_coordinates(dataset):
-    max_latitude = get_maximum_latitude(dataset.stops)
-    min_latitude = get_minimum_latitude(dataset.stops)
-    max_longitude = get_maximum_longitude(dataset.stops)
-    min_longitude = get_minimum_longitude(dataset.stops)
+    max_latitude = get_maximum_latitude_as_string(dataset.stops)
+    min_latitude = get_minimum_latitude_as_string(dataset.stops)
+    max_longitude = get_maximum_longitude_as_string(dataset.stops)
+    min_longitude = get_minimum_longitude_as_string(dataset.stops)
     return max_latitude, min_latitude, max_longitude, min_longitude
 
 
-def get_maximum_latitude(dataset_stops):
+def get_maximum_latitude_as_string(dataset_stops):
     max_latitude_as_float = dataset_stops["stop_lat"].max()
     max_latitude = Latitude(max_latitude_as_float)
     max_latitude_as_string = convert_coordinate_to_degrees_and_minutes_string(max_latitude)
     return max_latitude_as_string
 
 
-def get_minimum_latitude(dataset_stops):
+def get_minimum_latitude_as_string(dataset_stops):
     min_latitude_as_float = dataset_stops["stop_lat"].min()
     min_latitude = Latitude(min_latitude_as_float)
     min_latitude_as_string = convert_coordinate_to_degrees_and_minutes_string(min_latitude)
     return min_latitude_as_string
 
 
-def get_maximum_longitude(dataset_stops):
+def get_maximum_longitude_as_string(dataset_stops):
     max_longitude_as_float = dataset_stops["stop_lon"].max()
     max_longitude = Longitude(max_longitude_as_float)
     max_longitude_as_string = convert_coordinate_to_degrees_and_minutes_string(max_longitude)
     return max_longitude_as_string
 
 
-def get_minimum_longitude(dataset_stops):
+def get_minimum_longitude_as_string(dataset_stops):
     min_longitude_as_float = dataset_stops["stop_lon"].min()
     min_longitude = Longitude(min_longitude_as_float)
     min_longitude_as_string = convert_coordinate_to_degrees_and_minutes_string(min_longitude)
