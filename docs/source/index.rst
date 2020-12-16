@@ -164,6 +164,15 @@ Source documentation
    :show-inheritance:
 
 
+:mod:`usecase.process_bounding_box_for_gtfs_metadata`
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: usecase.process_bounding_box_for_gtfs_metadata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+
 :mod:`usecase.process_main_timezone_for_gtfs_metadata`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
