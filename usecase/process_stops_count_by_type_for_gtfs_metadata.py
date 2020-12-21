@@ -27,7 +27,9 @@ class ProcessStopsCountByTypeForGtfsMetadata:
         entrances_count = dataset.stops['location_type'].loc[dataset.stops['location_type'] == 2].size
 
         # Create the dictionary of stops count by type
-        stops_count_by_type = {'stop': stops_count, 'station': stations_count, 'entrance': entrances_count}
+        stops_count_by_type = {'stop': str(stops_count),
+                               'station': str(stations_count),
+                               'entrance': str(entrances_count)}
 
         self.gtfs_representation.set_metadata_stops_count_by_type(stops_count_by_type)
         return self.gtfs_representation

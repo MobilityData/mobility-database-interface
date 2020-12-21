@@ -34,11 +34,11 @@ class ProcessRoutesCountByTypeForGtfsMetadata:
         monorails_count = dataset.routes['route_type'].loc[dataset.routes['route_type'] == 12].size
 
         # Create the dictionary of routes count by type
-        routes_count_by_type = {'tram': trams_count, 'subway': subways_count,
-                                'rail': rails_count, 'bus': buses_count,
-                                'ferry': ferries_count, 'cable_tram': cable_trams_count,
-                                'aerial_lift': aerial_lifts_count, 'funicular': funiculars_count,
-                                'trolley_bus': trolley_buses_count, 'monorail': monorails_count}
+        routes_count_by_type = {'tram': str(trams_count), 'subway': str(subways_count),
+                                'rail': str(rails_count), 'bus': str(buses_count),
+                                'ferry': str(ferries_count), 'cable_tram': str(cable_trams_count),
+                                'aerial_lift': str(aerial_lifts_count), 'funicular': str(funiculars_count),
+                                'trolley_bus': str(trolley_buses_count), 'monorail': str(monorails_count)}
 
         self.gtfs_representation.set_metadata_routes_count_by_type(routes_count_by_type)
         return self.gtfs_representation
