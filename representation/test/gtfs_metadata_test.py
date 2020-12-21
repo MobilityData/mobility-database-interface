@@ -132,6 +132,54 @@ class GtfsMetadataTest(TestCase):
         under_test.set_main_timezone(["test_all_timezones"])
         self.assertEqual(under_test.get_main_timezone(), ["test_all_timezones"])
 
+    def test_gtfs_metadata_get_agencies_count_should_return_agencies_count(self):
+        mock_md5_hash = MagicMock()
+        mock_md5_hash.__class__ = str
+
+        under_test = GtfsMetadata(mock_md5_hash)
+        self.assertEqual(under_test.get_agencies_count(), "")
+
+    def test_gtfs_metadata_set_agencies_count_should_return_agencies_count(self):
+        mock_md5_hash = MagicMock()
+        mock_md5_hash.__class__ = str
+
+        under_test = GtfsMetadata(mock_md5_hash)
+        self.assertEqual(under_test.get_agencies_count(), "")
+        under_test.set_agencies_count("test_agencies_count")
+        self.assertEqual(under_test.get_agencies_count(), "test_agencies_count")
+
+    def test_gtfs_metadata_get_routes_count_by_type_should_return_routes_count_by_type(self):
+        mock_md5_hash = MagicMock()
+        mock_md5_hash.__class__ = str
+
+        under_test = GtfsMetadata(mock_md5_hash)
+        self.assertEqual(under_test.get_routes_count_by_type(), {})
+
+    def test_gtfs_metadata_set_routes_count_by_type_should_return_routes_count_by_type(self):
+        mock_md5_hash = MagicMock()
+        mock_md5_hash.__class__ = str
+
+        under_test = GtfsMetadata(mock_md5_hash)
+        self.assertEqual(under_test.get_routes_count_by_type(), {})
+        under_test.set_routes_count_by_type({"test_route_type": "test_count"})
+        self.assertEqual(under_test.get_routes_count_by_type(), {"test_route_type": "test_count"})
+
+    def test_gtfs_metadata_get_stops_count_by_type_should_return_stops_count_by_type(self):
+        mock_md5_hash = MagicMock()
+        mock_md5_hash.__class__ = str
+
+        under_test = GtfsMetadata(mock_md5_hash)
+        self.assertEqual(under_test.get_stops_count_by_type(), {})
+
+    def test_gtfs_metadata_set_stops_count_by_type_should_return_stops_count_by_type(self):
+        mock_md5_hash = MagicMock()
+        mock_md5_hash.__class__ = str
+
+        under_test = GtfsMetadata(mock_md5_hash)
+        self.assertEqual(under_test.get_stops_count_by_type(), {})
+        under_test.set_stops_count_by_type({"test_stop_type": "test_count"})
+        self.assertEqual(under_test.get_stops_count_by_type(), {"test_stop_type": "test_count"})
+
     def test_gtfs_metadata_to_string_special_method_should_return_metadata_string(self):
         mock_md5_hash = MagicMock()
         mock_md5_hash.__class__ = str
@@ -147,6 +195,9 @@ class GtfsMetadataTest(TestCase):
                                "Start timestamp: \n" \
                                "End timestamp: \n" \
                                "Bounding box: \n" \
+                               "Agencies count: \n" \
+                               "Routes count by type: {}\n" \
+                               "Stops count by type: {}\n" \
                                "Stable url: \n" \
                                "MD5 hash: test_md5_hash"
 

@@ -66,6 +66,24 @@ class GtfsRepresentation:
         """
         self.__metadata.set_all_timezones(all_timezones)
 
+    def set_metadata_agencies_count(self, agencies_count):
+        """ Set the agencies count in the representation of the GTFS dataset metadata.
+        :param agencies_count: the agencies count to set.
+        """
+        self.__metadata.set_agencies_count(agencies_count)
+
+    def set_metadata_routes_count_by_type(self, routes_count_by_type):
+        """ Set the routes count by type in the representation of the GTFS dataset metadata.
+        :param routes_count_by_type: the routes count by type to set.
+        """
+        self.__metadata.set_routes_count_by_type(routes_count_by_type)
+
+    def set_metadata_stops_count_by_type(self, stops_count_by_type):
+        """ Set the stops count by type in the representation of the GTFS dataset metadata.
+        :param stops_count_by_type: the routes count by type to set.
+        """
+        self.__metadata.set_stops_count_by_type(stops_count_by_type)
+
     def print_representation(self):
         """ Print the representation of the GTFS dataset.
         """
