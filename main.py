@@ -18,6 +18,8 @@ from usecase.process_end_service_date_for_gtfs_metadata import ProcessEndService
 from usecase.process_start_timestamp_for_gtfs_metadata import ProcessStartTimestampForGtfsMetadata
 from usecase.process_end_timestamp_for_gtfs_metadata import ProcessEndTimestampForGtfsMetadata
 from usecase.process_stops_count_by_type_for_gtfs_metadata import ProcessStopsCountByTypeForGtfsMetadata
+from usecase.process_routes_count_by_type_for_gtfs_metadata import ProcessRoutesCountByTypeForGtfsMetadata
+from usecase.process_agencies_count_for_gtfs_metadata import ProcessAgenciesCountForGtfsMetadata
 
 
 def download_data(path_to_data, dataset_type="GTFS", specific_download=False, specific_entity_code=None):
@@ -123,15 +125,16 @@ if __name__ == "__main__":
 
         # Process each dataset representation in the data_repository
         for dataset_key, dataset_representation in data_repository.get_dataset_representations().items():
-            #ProcessStartServiceDateForGtfsMetadata(dataset_representation).execute()
-            #ProcessEndServiceDateForGtfsMetadata(dataset_representation).execute()
-            #ProcessStartTimestampForGtfsMetadata(dataset_representation).execute()
-            #ProcessEndTimestampForGtfsMetadata(dataset_representation).execute()
-            #ProcessMainLanguageCodeForGtfsMetadata(dataset_representation).execute()
-            #ProcessMainTimezoneForGtfsMetadata(dataset_representation).execute()
-            #ProcessAllTimezonesForGtfsMetadata(dataset_representation).execute()
+            ProcessStartServiceDateForGtfsMetadata(dataset_representation).execute()
+            ProcessEndServiceDateForGtfsMetadata(dataset_representation).execute()
+            ProcessStartTimestampForGtfsMetadata(dataset_representation).execute()
+            ProcessEndTimestampForGtfsMetadata(dataset_representation).execute()
+            ProcessMainLanguageCodeForGtfsMetadata(dataset_representation).execute()
+            ProcessMainTimezoneForGtfsMetadata(dataset_representation).execute()
+            ProcessAllTimezonesForGtfsMetadata(dataset_representation).execute()
+            ProcessAgenciesCountForGtfsMetadata(dataset_representation).execute()
+            ProcessRoutesCountByTypeForGtfsMetadata(dataset_representation).execute()
             ProcessStopsCountByTypeForGtfsMetadata(dataset_representation).execute()
-
 
             # Print results
             data_repository.print_dataset_representation(dataset_key)
