@@ -22,7 +22,7 @@ class ProcessAgenciesCountForGtfsMetadata:
         dataset = self.gtfs_representation.get_dataset()
 
         # Count agencies
-        agencies_count = dataset.agency['agency_id'].size
+        agencies_count = dataset.agency['agency_name'].size
 
-        self.gtfs_representation.set_metadata_agencies_count(str(agencies_count))
+        self.gtfs_representation.set_metadata_agencies_count(agencies_count)
         return self.gtfs_representation

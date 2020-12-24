@@ -29,7 +29,7 @@ class ProcessAgenciesCountForGtfsMetadataTest(TestCase):
     @mock.patch('representation.gtfs_metadata.GtfsMetadata')
     def test_process_agencies_count_execution_should_set_start_agencies_count_metadata(self, mock_gtfs_representation,
                                                                                        mock_dataset, mock_metadata):
-        mock_agency = PropertyMock(return_value=pd.DataFrame({'agency_id': ['test_agency_id_1', 'test_agency_id_2']}))
+        mock_agency = PropertyMock(return_value=pd.DataFrame({'agency_name': ['test_agency_1', 'test_agency_2']}))
 
         mock_dataset.__class__ = Feed
         type(mock_dataset).agency = mock_agency
@@ -43,4 +43,4 @@ class ProcessAgenciesCountForGtfsMetadataTest(TestCase):
         mock_gtfs_representation.get_dataset.assert_called_once()
         mock_agency.assert_called()
         self.assertEqual(mock_agency.call_count, 1)
-        mock_gtfs_representation.set_metadata_agencies_count.assert_called_with('2')
+        mock_gtfs_representation.set_metadata_agencies_count.assert_called_with(2)

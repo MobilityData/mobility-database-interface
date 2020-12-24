@@ -42,13 +42,13 @@ class ProcessRoutesCountByTypeForGtfsMetadataTest(TestCase):
         mock_gtfs_representation.get_dataset.assert_called_once()
         mock_routes.assert_called()
         self.assertEqual(mock_routes.call_count, 20)
-        mock_gtfs_representation.set_metadata_routes_count_by_type.assert_called_with({'tram': '5',
-                                                                                       'subway': '1',
-                                                                                       'rail': '1',
-                                                                                       'bus': '0',
-                                                                                       'ferry': '0',
-                                                                                       'cable_tram': '1',
-                                                                                       'aerial_lift': '0',
-                                                                                       'funicular': '0',
-                                                                                       'trolley_bus': '0',
-                                                                                       'monorail': '1'})
+        mock_gtfs_representation.set_metadata_routes_count_by_type.assert_called_with({'tram': 5,
+                                                                                       'subway': 1,
+                                                                                       'rail': 1,
+                                                                                       'bus': 0,
+                                                                                       'ferry': 0,
+                                                                                       'cable_tram': 1,
+                                                                                       'aerial_lift': 0,
+                                                                                       'funicular': 0,
+                                                                                       'trolley_bus': 0,
+                                                                                       'monorail': 1})

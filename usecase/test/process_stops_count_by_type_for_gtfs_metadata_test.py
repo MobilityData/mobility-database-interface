@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 from unittest import TestCase, mock
 from unittest.mock import MagicMock, PropertyMock
 from gtfs_kit.feed import Feed
@@ -28,7 +29,7 @@ class ProcessStopsCountByTypeForGtfsMetadataTest(TestCase):
     @mock.patch('representation.gtfs_metadata.GtfsMetadata')
     def test_process_stops_count_execution_should_set_start_agencies_count_metadata(self, mock_gtfs_representation,
                                                                                      mock_dataset, mock_metadata):
-        mock_stops = PropertyMock(return_value=pd.DataFrame({'location_type': [0, 2, 1, 0, 0, 1, 0, 0, 0]}))
+        mock_stops = PropertyMock(return_value=pd.DataFrame({'location_type': [0, 2, 1, 0, 0, 1, 0, 0, np.nan]}))
 
         mock_dataset.__class__ = Feed
         type(mock_dataset).stops = mock_stops
@@ -41,7 +42,7 @@ class ProcessStopsCountByTypeForGtfsMetadataTest(TestCase):
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_gtfs_representation.get_dataset.assert_called_once()
         mock_stops.assert_called()
-        self.assertEqual(mock_stops.call_count, 6)
-        mock_gtfs_representation.set_metadata_stops_count_by_type.assert_called_with({'stop': '6',
-                                                                                      'station': '2',
-                                                                                      'entrance': '1'})
+        self.assertEqual(mock_stops.call_count, 10)
+        mock_gtfs_representation.set_metadata_stops_count_by_type.assert_called_with({'stop': 6,
+                                                                                      'station': 2,
+                                                                                      'entrance': 1})

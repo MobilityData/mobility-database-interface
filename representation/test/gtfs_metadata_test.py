@@ -137,16 +137,16 @@ class GtfsMetadataTest(TestCase):
         mock_md5_hash.__class__ = str
 
         under_test = GtfsMetadata(mock_md5_hash)
-        self.assertEqual(under_test.get_agencies_count(), "")
+        self.assertEqual(under_test.get_agencies_count(), 0)
 
     def test_gtfs_metadata_set_agencies_count_should_return_agencies_count(self):
         mock_md5_hash = MagicMock()
         mock_md5_hash.__class__ = str
 
         under_test = GtfsMetadata(mock_md5_hash)
-        self.assertEqual(under_test.get_agencies_count(), "")
-        under_test.set_agencies_count("test_agencies_count")
-        self.assertEqual(under_test.get_agencies_count(), "test_agencies_count")
+        self.assertEqual(under_test.get_agencies_count(), 0)
+        under_test.set_agencies_count(1)
+        self.assertEqual(under_test.get_agencies_count(), 1)
 
     def test_gtfs_metadata_get_routes_count_by_type_should_return_routes_count_by_type(self):
         mock_md5_hash = MagicMock()
@@ -195,7 +195,7 @@ class GtfsMetadataTest(TestCase):
                                "Start timestamp: \n" \
                                "End timestamp: \n" \
                                "Bounding box: \n" \
-                               "Agencies count: \n" \
+                               "Agencies count: 0\n" \
                                "Routes count by type: {}\n" \
                                "Stops count by type: {}\n" \
                                "Stable url: \n" \

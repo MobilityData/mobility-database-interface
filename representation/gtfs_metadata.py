@@ -18,7 +18,7 @@ class GtfsMetadata:
         self.__start_timestamp = ""
         self.__end_timestamp = ""
         self.__bounding_box = ""
-        self.__agencies_count = ""
+        self.__agencies_count = 0
         self.__routes_count_by_type = {}
         self.__stops_count_by_type = {}
         self.__stable_url = ""
