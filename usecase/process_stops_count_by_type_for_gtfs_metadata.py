@@ -31,6 +31,8 @@ class ProcessStopsCountByTypeForGtfsMetadata:
         dataset.stops = dataset.stops
 
         # Count stops by location type
+        # Generic Node (3) and Boarding Area (4) are not considered
+        # because they relate to an existing Stop or Station.
         stops_count = dataset.stops['location_type'].loc[dataset.stops['location_type'] == self.STOP].size
         stations_count = dataset.stops['location_type'].loc[dataset.stops['location_type'] == self.STATION].size
         entrances_count = dataset.stops['location_type'].loc[dataset.stops['location_type'] == self.ENTRANCE].size
