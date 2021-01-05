@@ -19,6 +19,9 @@ class GtfsMetadata:
         self.__end_timestamp = ""
         self.__bounding_box = {}
         self.__bounding_octagon = {}
+        self.__agencies_count = 0
+        self.__routes_count_by_type = {}
+        self.__stops_count_by_type = {}
         self.__stable_url = ""
 
     def set_start_service_date(self, start_service_date):
@@ -129,6 +132,42 @@ class GtfsMetadata:
         """
         return self.__bounding_octagon
 
+    def set_agencies_count(self, agencies_count):
+        """ Set the agencies count in the GTFS metadata.
+        :param agencies_count: the agencies count to set.
+        """
+        self.__agencies_count = agencies_count
+
+    def get_agencies_count(self):
+        """ Get the agencies count in the GTFS metadata.
+        :return: the agencies count to set.
+        """
+        return self.__agencies_count
+
+    def set_routes_count_by_type(self, routes_count_by_type):
+        """ Set the routes count by type in the GTFS metadata.
+        :param routes_count_by_type: the routes count by type to set.
+        """
+        self.__routes_count_by_type = routes_count_by_type
+
+    def get_routes_count_by_type(self):
+        """ Get the routes count by type in the GTFS metadata.
+        :return: the routes count by type to set.
+        """
+        return self.__routes_count_by_type
+
+    def set_stops_count_by_type(self, stops_count_by_type):
+        """ Set the stops count by type in the GTFS metadata.
+        :param stops_count_by_type: the stops count by type to set.
+        """
+        self.__stops_count_by_type = stops_count_by_type
+
+    def get_stops_count_by_type(self):
+        """ Get the stops count by type in the GTFS metadata.
+        :return: the stops count by type to set.
+        """
+        return self.__stops_count_by_type
+
     def __str__(self):
         """String representation of the GTFS dataset metadata.
         """
@@ -143,6 +182,9 @@ class GtfsMetadata:
                "End timestamp: %s\n" \
                "Bounding box: %s\n" \
                "Bounding octagon: %s\n" \
+               "Agencies count: %s\n" \
+               "Routes count by type: %s\n" \
+               "Stops count by type: %s\n" \
                "Stable url: %s\n" \
                "MD5 hash: %s" \
                % (self.__main_timezone,
@@ -156,5 +198,8 @@ class GtfsMetadata:
                   self.__end_timestamp,
                   self.__bounding_box,
                   self.__bounding_octagon,
+                  self.__agencies_count,
+                  self.__routes_count_by_type,
+                  self.__stops_count_by_type,
                   self.__stable_url,
                   self.__md5_hash)
