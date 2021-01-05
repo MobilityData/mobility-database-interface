@@ -148,6 +148,22 @@ class GtfsMetadataTest(TestCase):
         under_test.set_bounding_box({"bounding_box": "bounding_box"})
         self.assertEqual(under_test.get_bounding_box(), {"bounding_box": "bounding_box"})
 
+    def test_gtfs_metadata_get_bounding_octagon_should_return_bounding_octagon(self):
+        mock_md5_hash = MagicMock()
+        mock_md5_hash.__class__ = str
+
+        under_test = GtfsMetadata(mock_md5_hash)
+        self.assertEqual(under_test.get_bounding_octagon(), {})
+
+    def test_gtfs_metadata_set_bounding_octagon_should_set_bounding_octagon(self):
+        mock_md5_hash = MagicMock()
+        mock_md5_hash.__class__ = str
+
+        under_test = GtfsMetadata(mock_md5_hash)
+        self.assertEqual(under_test.get_all_timezones(), [])
+        under_test.set_bounding_octagon({"bounding_octagon": "bounding_octagon"})
+        self.assertEqual(under_test.get_bounding_octagon(), {"bounding_octagon": "bounding_octagon"})
+
     def test_gtfs_metadata_to_string_special_method_should_return_metadata_string(self):
         mock_md5_hash = MagicMock()
         mock_md5_hash.__class__ = str
@@ -163,6 +179,7 @@ class GtfsMetadataTest(TestCase):
                                "Start timestamp: \n" \
                                "End timestamp: \n" \
                                "Bounding box: {}\n" \
+                               "Bounding octagon: {}\n" \
                                "Stable url: \n" \
                                "MD5 hash: test_md5_hash"
 

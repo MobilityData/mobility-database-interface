@@ -41,7 +41,7 @@ class ProcessBoundingBoxForGtfsMetadataTest(TestCase):
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_gtfs_representation.get_dataset.assert_called_once()
         mock_stops.assert_called()
-        self.assertEqual(mock_stops.call_count, 4)
+        self.assertEqual(mock_stops.call_count, 1)
         mock_gtfs_representation.set_metadata_bounding_box.assert_called_with({'1': '45°30\'31.997"N, 73°33\'42.005"W',
                                                                                '2': '45°30\'31.997"N, 73°33\'42.005"W',
                                                                                '3': '45°30\'31.997"N, 73°33\'42.005"W',

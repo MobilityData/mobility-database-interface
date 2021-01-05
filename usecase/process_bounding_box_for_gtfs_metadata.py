@@ -22,7 +22,7 @@ class ProcessBoundingBoxForGtfsMetadata:
         dataset = self.gtfs_representation.get_dataset()
 
         # Extract the geographical coordinates in the dataset representation
-        max_lat, min_lat, max_lon, min_lon = get_geographical_coordinates(dataset)
+        max_lat, min_lat, max_lon, min_lon = get_geographical_coordinates_as_string(dataset)
 
         # Create the corner strings
         south_east_corner = min_lat + ", " + max_lon

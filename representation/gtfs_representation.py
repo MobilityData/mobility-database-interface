@@ -72,6 +72,12 @@ class GtfsRepresentation:
         """
         self.__metadata.set_bounding_box(bounding_box)
 
+    def set_metadata_bounding_octagon(self, bounding_octagon):
+        """ Set the geographical bounding_octagon in the representation of the GTFS dataset metadata.
+        :param bounding_octagon: the bounding octagon to set.
+        """
+        self.__metadata.set_bounding_octagon(bounding_octagon)
+
     def print_representation(self):
         """ Print the representation of the GTFS dataset.
         """

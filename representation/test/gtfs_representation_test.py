@@ -177,6 +177,19 @@ class GtfsRepresentationTest(TestCase):
 
     @mock.patch('gtfs_kit.feed.Feed')
     @mock.patch('representation.gtfs_metadata.GtfsMetadata')
+    def test_gtfs_representation_set_metadata_bounding_octagon_should_call_method(self, mock_dataset, mock_metadata):
+        mock_entity_code = MagicMock()
+        mock_entity_code.__class__ = str
+        mock_dataset.__class__ = Feed
+        mock_metadata.__class__ = GtfsMetadata
+
+        under_test = GtfsRepresentation(mock_entity_code, mock_dataset, mock_metadata)
+        under_test.set_metadata_bounding_octagon({"bounding_octagon": "bounding_octagon"})
+        mock_metadata.set_bounding_octagon.assert_called_once()
+        mock_metadata.set_bounding_octagon.assert_called_with({"bounding_octagon": "bounding_octagon"})
+
+    @mock.patch('gtfs_kit.feed.Feed')
+    @mock.patch('representation.gtfs_metadata.GtfsMetadata')
     def test_gtfs_representation_print_representation_should_return_none(self, mock_dataset, mock_metadata):
         mock_entity_code = MagicMock()
         mock_entity_code.__class__ = str

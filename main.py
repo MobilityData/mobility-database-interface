@@ -13,6 +13,7 @@ from usecase.process_main_language_code_for_gtfs_metadata import ProcessMainLang
 from usecase.process_main_timezone_for_gtfs_metadata import ProcessMainTimezoneForGtfsMetadata
 from usecase.process_all_timezones_for_gtfs_metadata import ProcessAllTimezonesForGtfsMetadata
 from usecase.process_bounding_box_for_gtfs_metadata import ProcessBoundingBoxForGtfsMetadata
+from usecase.process_bounding_octogone_for_gtfs_metadata import ProcessBoundingOctagonForGtfsMetadata
 from usecase.process_md5 import ProcessMd5
 from usecase.process_start_service_date_for_gtfs_metadata import ProcessStartServiceDateForGtfsMetadata
 from usecase.process_end_service_date_for_gtfs_metadata import ProcessEndServiceDateForGtfsMetadata
@@ -131,6 +132,7 @@ if __name__ == "__main__":
             ProcessMainTimezoneForGtfsMetadata(dataset_representation).execute()
             ProcessAllTimezonesForGtfsMetadata(dataset_representation).execute()
             ProcessBoundingBoxForGtfsMetadata(dataset_representation).execute()
+            ProcessBoundingOctagonForGtfsMetadata(dataset_representation).execute()
 
             # Print results
             data_repository.print_dataset_representation(dataset_key)

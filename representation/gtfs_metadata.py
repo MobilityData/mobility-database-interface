@@ -18,6 +18,7 @@ class GtfsMetadata:
         self.__start_timestamp = ""
         self.__end_timestamp = ""
         self.__bounding_box = {}
+        self.__bounding_octagon = {}
         self.__stable_url = ""
 
     def set_start_service_date(self, start_service_date):
@@ -116,6 +117,18 @@ class GtfsMetadata:
         """
         return self.__bounding_box
 
+    def set_bounding_octagon(self, bounding_octagon):
+        """ Set the geographical bounding octagon in the GTFS metadata.
+        :param bounding_octagon: the bounding octagon to set.
+        """
+        self.__bounding_octagon = bounding_octagon
+
+    def get_bounding_octagon(self):
+        """ Get the geographical bounding octagon in the GTFS metadata.
+        :return: the bounding octagon to get.
+        """
+        return self.__bounding_octagon
+
     def __str__(self):
         """String representation of the GTFS dataset metadata.
         """
@@ -129,6 +142,7 @@ class GtfsMetadata:
                "Start timestamp: %s\n" \
                "End timestamp: %s\n" \
                "Bounding box: %s\n" \
+               "Bounding octagon: %s\n" \
                "Stable url: %s\n" \
                "MD5 hash: %s" \
                % (self.__main_timezone,
@@ -141,5 +155,6 @@ class GtfsMetadata:
                   self.__start_timestamp,
                   self.__end_timestamp,
                   self.__bounding_box,
+                  self.__bounding_octagon,
                   self.__stable_url,
                   self.__md5_hash)
