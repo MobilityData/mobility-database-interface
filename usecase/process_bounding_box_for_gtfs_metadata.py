@@ -21,14 +21,13 @@ class ProcessBoundingBoxForGtfsMetadata:
         """
         dataset = self.gtfs_representation.get_dataset()
 
-        # Extract the geographical coordinates in the dataset representation
-        max_lat, min_lat, max_lon, min_lon = get_geographical_coordinates_as_string(dataset)
+        # Extract the box corners coordinates in the dataset representation
+        box_corners = get_box_corners_coordinates_as_string(dataset)
 
-        # Create the corner strings
-        south_east_corner = min_lat + ", " + max_lon
-        south_west_corner = min_lat + ", " + min_lon
-        north_west_corner = max_lat + ", " + min_lon
-        north_east_corner = max_lat + ", " + max_lon
+        south_east_corner = box_corners[0]
+        south_west_corner = box_corners[1]
+        north_west_corner = box_corners[2]
+        north_east_corner = box_corners[3]
 
         # Order the corners inside a bounding box
         bounding_box = {"1": south_east_corner,
