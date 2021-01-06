@@ -66,6 +66,18 @@ class GtfsRepresentation:
         """
         self.__metadata.set_all_timezones(all_timezones)
 
+    def set_metadata_bounding_box(self, bounding_box):
+        """ Set the geographical bounding_box in the representation of the GTFS dataset metadata.
+        :param bounding_box: the bounding box to set.
+        """
+        self.__metadata.set_bounding_box(bounding_box)
+
+    def set_metadata_bounding_octagon(self, bounding_octagon):
+        """ Set the geographical bounding_octagon in the representation of the GTFS dataset metadata.
+        :param bounding_octagon: the bounding octagon to set.
+        """
+        self.__metadata.set_bounding_octagon(bounding_octagon)
+
     def set_metadata_agencies_count(self, agencies_count):
         """ Set the agencies count in the representation of the GTFS dataset metadata.
         :param agencies_count: the agencies count to set.

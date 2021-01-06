@@ -12,6 +12,8 @@ from usecase.load_dataset import LoadDataset
 from usecase.process_main_language_code_for_gtfs_metadata import ProcessMainLanguageCodeForGtfsMetadata
 from usecase.process_main_timezone_for_gtfs_metadata import ProcessMainTimezoneForGtfsMetadata
 from usecase.process_all_timezones_for_gtfs_metadata import ProcessAllTimezonesForGtfsMetadata
+from usecase.process_bounding_box_for_gtfs_metadata import ProcessBoundingBoxForGtfsMetadata
+from usecase.process_bounding_octagon_for_gtfs_metadata import ProcessBoundingOctagonForGtfsMetadata
 from usecase.process_md5 import ProcessMd5
 from usecase.process_start_service_date_for_gtfs_metadata import ProcessStartServiceDateForGtfsMetadata
 from usecase.process_end_service_date_for_gtfs_metadata import ProcessEndServiceDateForGtfsMetadata
@@ -132,6 +134,8 @@ if __name__ == "__main__":
             ProcessMainLanguageCodeForGtfsMetadata(dataset_representation).execute()
             ProcessMainTimezoneForGtfsMetadata(dataset_representation).execute()
             ProcessAllTimezonesForGtfsMetadata(dataset_representation).execute()
+            ProcessBoundingBoxForGtfsMetadata(dataset_representation).execute()
+            ProcessBoundingOctagonForGtfsMetadata(dataset_representation).execute()
             ProcessAgenciesCountForGtfsMetadata(dataset_representation).execute()
             ProcessRoutesCountByTypeForGtfsMetadata(dataset_representation).execute()
             ProcessStopsCountByTypeForGtfsMetadata(dataset_representation).execute()
@@ -144,6 +148,6 @@ if __name__ == "__main__":
         # TODO dataset = load_data(args['load'])
         pass
 
-    # Print memory usage 
+    # Print memory usage
     print("\n--------------- Memory Usage ---------------\n")
     print(hpy().heap())

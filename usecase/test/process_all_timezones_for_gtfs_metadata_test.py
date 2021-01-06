@@ -53,10 +53,10 @@ class ProcessMainTimezoneForGtfsMetadataTest(TestCase):
     @mock.patch('representation.gtfs_representation.GtfsRepresentation')
     @mock.patch('gtfs_kit.feed.Feed')
     @mock.patch('representation.gtfs_metadata.GtfsMetadata')
-    def test_process_all_timezone_with_empty_stop_timezone_should_add_main_timezone_to_list(self,
-                                                                                            mock_gtfs_representation,
-                                                                                            mock_dataset,
-                                                                                            mock_metadata):
+    def test_process_all_timezones_with_empty_stop_timezone_should_add_main_timezone_to_list(self,
+                                                                                             mock_gtfs_representation,
+                                                                                             mock_dataset,
+                                                                                             mock_metadata):
         mock_stops = PropertyMock(return_value=pd.DataFrame({'stop_timezone': []}))
         mock_agency = PropertyMock(return_value=pd.DataFrame({'agency_timezone': ['America/Montreal']}))
         mock_dataset.__class__ = Feed
@@ -79,8 +79,8 @@ class ProcessMainTimezoneForGtfsMetadataTest(TestCase):
     @mock.patch('representation.gtfs_representation.GtfsRepresentation')
     @mock.patch('gtfs_kit.feed.Feed')
     @mock.patch('representation.gtfs_metadata.GtfsMetadata')
-    def test_process_all_timezone_with_stop_timezones_should_add_these_to_list(self, mock_gtfs_representation,
-                                                                               mock_dataset, mock_metadata):
+    def test_process_all_timezones_with_stop_timezones_should_add_these_to_list(self, mock_gtfs_representation,
+                                                                                mock_dataset, mock_metadata):
         mock_stops = PropertyMock(return_value=pd.DataFrame({'stop_timezone': ['America/Montreal', 'America/Toronto']}))
         mock_agency = PropertyMock(return_value=pd.DataFrame({'agency_timezone': ['America/Montreal']}))
         mock_dataset.__class__ = Feed
