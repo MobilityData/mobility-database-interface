@@ -2,28 +2,42 @@ import re
 from LatLon23 import Latitude, Longitude
 
 
-def get_box_corners_coordinates_as_string(dataset):
-    # Get max and min geographical coordinates as string
-    max_lat_str, min_lat_str, max_lon_str, min_lon_str = get_geographical_coordinates_as_string(dataset.stops)
+def process_bounding_box_corner_strings(dataset):
+    #  max and min geographical coordinates as string
+    max_lat_str, min_lat_str, max_lon_str, min_lon_str = process_geographical_coordinates_as_string(dataset.stops)
 
     # Create the box corners in string format from the max and min geographical coordinates
     # 4 corners : South-East, South-West, North-West and North-East
-    se_corner_str, sw_corner_str, nw_corner_str, ne_corner_str = convert_geographical_coordinates_to_box_corners_string(
-                                                                    max_lat_str, min_lat_str, max_lon_str, min_lon_str)
+    se_corner_str, sw_corner_str, nw_corner_str, ne_corner_str = \
+        convert_geographical_coordinates_to_box_corner_strings(max_lat_str, min_lat_str, max_lon_str, min_lon_str)
 
     return [se_corner_str, sw_corner_str, nw_corner_str, ne_corner_str]
 
 
-def get_octagon_corners_coordinates_as_string(dataset):
+def process_bounding_octagon_corner_strings(dataset):
     # Get max and min geographical coordinates as float for further computation
-    max_lat_float, min_lat_float, max_lon_float, min_lon_float = get_geographical_coordinates_as_float(dataset.stops)
+    max_lat_float, min_lat_float, max_lon_float, min_lon_float = \
+        extract_geographical_coordinates_as_float(dataset.stops)
 
-    # Get octagon corners
-    bottom_right_corner, right_bottom_corner = get_lower_right_octagon_corners(dataset.stops, min_lat_float,
-                                                                               max_lon_float)
-    bottom_left_corner, left_bottom_corner = get_lower_left_octagon_corners(dataset.stops, min_lat_float, min_lon_float)
-    top_left_corner, left_top_corner = get_upper_left_octagon_corners(dataset.stops, max_lat_float, min_lon_float)
-    top_right_corner, right_top_corner = get_upper_right_octagon_corners(dataset.stops, max_lat_float, max_lon_float)
+    # Minimize the subtraction latitude - longitude
+    # Then use the min_lat and max_long to compute the lower right quadrant corners
+    bottom_right_corner, right_bottom_corner = \
+        process_octagon_local_corners(dataset.stops, min_lat_float, max_lon_float, is_addition=False, is_maximum=False)
+
+    # Minimize the addition latitude + longitude
+    # Then use the min_lat and min_long to compute the lower left quadrant corners
+    bottom_left_corner, left_bottom_corner = \
+        process_octagon_local_corners(dataset.stops, min_lat_float, min_lon_float, is_addition=True, is_maximum=False)
+
+    # Maximize the subtraction latitude - longitude
+    # Then use the max_lat and min_long to compute the upper left quadrant corners
+    top_left_corner, left_top_corner = \
+        process_octagon_local_corners(dataset.stops, max_lat_float, min_lon_float, is_addition=False, is_maximum=True)
+
+    # Maximize the addition latitude + longitude
+    # Then use the max_lat and max_long to compute the upper right quadrant corners
+    top_right_corner, right_top_corner = \
+        process_octagon_local_corners(dataset.stops, max_lat_float, max_lon_float, is_addition=True, is_maximum=True)
 
     return [right_bottom_corner, bottom_right_corner,
             bottom_left_corner, left_bottom_corner,
@@ -31,18 +45,19 @@ def get_octagon_corners_coordinates_as_string(dataset):
             top_right_corner, right_top_corner]
 
 
-def get_geographical_coordinates_as_string(dataset_stops):
-    max_lat_float, min_lat_float, max_lon_float, min_lon_float = get_geographical_coordinates_as_float(dataset_stops)
+def process_geographical_coordinates_as_string(dataset_stops):
+    max_lat_float, min_lat_float, max_lon_float, min_lon_float = \
+        extract_geographical_coordinates_as_float(dataset_stops)
 
-    max_lat_string = get_latitude_as_string(max_lat_float)
-    min_lat_string = get_latitude_as_string(min_lat_float)
-    max_lon_string = get_longitude_as_string(max_lon_float)
-    min_lon_string = get_longitude_as_string(min_lon_float)
+    max_lat_string = convert_latitude_to_degrees_string(max_lat_float)
+    min_lat_string = convert_latitude_to_degrees_string(min_lat_float)
+    max_lon_string = convert_longitude_to_degrees_string(max_lon_float)
+    min_lon_string = convert_longitude_to_degrees_string(min_lon_float)
 
     return max_lat_string, min_lat_string, max_lon_string, min_lon_string
 
 
-def get_geographical_coordinates_as_float(dataset_stops):
+def extract_geographical_coordinates_as_float(dataset_stops):
     max_lat_float = dataset_stops["stop_lat"].max()
     min_lat_float = dataset_stops["stop_lat"].min()
     max_lon_float = dataset_stops["stop_lon"].max()
@@ -51,7 +66,7 @@ def get_geographical_coordinates_as_float(dataset_stops):
     return max_lat_float, min_lat_float, max_lon_float, min_lon_float
 
 
-def get_latitude_as_string(lat_float):
+def convert_latitude_to_degrees_string(lat_float):
     # Use Latitude object to process conversion
     latitude = Latitude(lat_float)
     lat_string = convert_coordinate_to_degrees_and_minutes_string(latitude)
@@ -59,7 +74,7 @@ def get_latitude_as_string(lat_float):
     return lat_string
 
 
-def get_longitude_as_string(lon_float):
+def convert_longitude_to_degrees_string(lon_float):
     # Use Longitude object to process conversion
     longitude = Longitude(lon_float)
     lon_string = convert_coordinate_to_degrees_and_minutes_string(longitude)
@@ -67,131 +82,58 @@ def get_longitude_as_string(lon_float):
     return lon_string
 
 
-def get_upper_right_octagon_corners(dataset_stops, max_lat_float, max_lon_float):
-    # Maximize the addition maximum latitude + maximum longitude
-    maximum = 0
-    max_stop = None
+def process_octagon_local_corners(dataset_stops, lat_float, lon_float, is_addition, is_maximum):
+    # Process the corners of an octagon which are located in the same Cartesian quadrant
+    # For example, top_right_corner and right_top_corner both belong to the 1st quadrant
+    best_value = 0
+    best_stop = None
 
+    # Process local corners according to the situation
+    # For example, for the 1st quadrant, we want to maximize the addition of latitude and longitude
+    # Each situation is detailed above when this function is called
+    # within the process_bounding_octagon_corner_strings method
     for index, stop in dataset_stops.iterrows():
-        current = stop["stop_lat"] + stop["stop_lon"]
+        if is_addition:
+            current = stop["stop_lat"] + stop["stop_lon"]
+        else:
+            current = stop["stop_lat"] - stop["stop_lon"]
 
-        if max_stop is None:
-            max_stop = stop
-            maximum = current
+        if best_stop is None:
+            best_stop = stop
+            best_value = current
 
-        if current > maximum:
-            maximum = current
-            max_stop = stop
+        if is_maximum:
+            comparison_result = current > best_value
+        else:
+            comparison_result = current < best_value
 
-    # Compute the corners as float using maximum
-    top_right_corner_lat_float = max_lat_float
-    top_right_corner_lon_float = maximum - max_lat_float
+        if comparison_result:
+            best_value = current
+            best_stop = stop
 
-    right_top_corner_lat_float = maximum - max_lon_float
-    right_top_corner_lon_float = max_lon_float
+    # Compute the corners as float using best value
+    # Corner follow the Y and X axis, where Y is Tor or Bottom, and X is Right or Left
+    # For example, y_x_corner can stand for top_right_corner, where x_y_corner is right_top_corner
+    y_x_corner_lat_float = lat_float
+
+    if is_addition:
+        y_x_corner_lon_float = best_value - lat_float
+        x_y_corner_lat_float = best_value - lon_float
+    else:
+        y_x_corner_lon_float = (best_value - lat_float) * -1
+        x_y_corner_lat_float = best_value + lon_float
+
+    x_y_corner_lon_float = lon_float
 
     # Convert the corners coordinates to strings
-    top_right_corner_string, right_top_corner_string = convert_octagon_section_corners_coordinates_to_string(
-                                                                top_right_corner_lat_float, top_right_corner_lon_float,
-                                                                right_top_corner_lat_float, right_top_corner_lon_float)
+    y_x_corner_string, x_y_corner_string = \
+        convert_octagon_section_corners_coordinates_to_corner_strings(y_x_corner_lat_float, y_x_corner_lon_float,
+                                                                      x_y_corner_lat_float, x_y_corner_lon_float)
 
-    return top_right_corner_string, right_top_corner_string
-
-
-def get_lower_right_octagon_corners(dataset_stops, min_lat_float, max_lon_float):
-    # Minimize the subtraction minimum latitude - maximum longitude
-    minimum = 0
-    min_stop = None
-
-    for index, stop in dataset_stops.iterrows():
-        current = stop["stop_lat"] - stop["stop_lon"]
-
-        if min_stop is None:
-            min_stop = stop
-            minimum = current
-
-        if current < minimum:
-            minimum = current
-            min_stop = stop
-
-    # Compute the corners as float using maximum
-    btm_right_corner_lat_float = min_lat_float
-    btm_right_corner_lon_float = (minimum - min_lat_float) * -1
-
-    right_btm_corner_lat_float = minimum + max_lon_float
-    right_btm_corner_lon_float = max_lon_float
-
-    # Convert the corners coordinates to strings
-    btm_right_corner_string, right_btm_corner_string = convert_octagon_section_corners_coordinates_to_string(
-                                                            btm_right_corner_lat_float, btm_right_corner_lon_float,
-                                                            right_btm_corner_lat_float, right_btm_corner_lon_float)
-
-    return btm_right_corner_string, right_btm_corner_string
+    return y_x_corner_string, x_y_corner_string
 
 
-def get_lower_left_octagon_corners(dataset_stops, min_lat_float, min_lon_float):
-    # Minimize the addition minimum latitude + minimum longitude
-    minimum = 0
-    min_stop = None
-
-    for index, stop in dataset_stops.iterrows():
-        current = stop["stop_lat"] + stop["stop_lon"]
-
-        if min_stop is None:
-            min_stop = stop
-            minimum = current
-
-        if current < minimum:
-            minimum = current
-            min_stop = stop
-
-    # Compute the corners as float using maximum
-    btm_left_corner_lat_float = min_lat_float
-    btm_left_corner_lon_float = minimum - min_lat_float
-
-    left_btm_corner_lat_float = minimum - min_lon_float
-    left_btm_corner_lon_float = min_lon_float
-
-    # Convert the corners coordinates to strings
-    btm_left_corner_string, left_btm_corner_string = convert_octagon_section_corners_coordinates_to_string(
-                                                                btm_left_corner_lat_float, btm_left_corner_lon_float,
-                                                                left_btm_corner_lat_float, left_btm_corner_lon_float)
-
-    return btm_left_corner_string, left_btm_corner_string
-
-
-def get_upper_left_octagon_corners(dataset_stops, max_lat_float, min_lon_float):
-    # Maximize the subtraction maximum latitude - minimum longitude
-    maximum = 0
-    max_stop = None
-
-    for index, stop in dataset_stops.iterrows():
-        current = stop["stop_lat"] - stop["stop_lon"]
-
-        if max_stop is None:
-            max_stop = stop
-            maximum = current
-
-        if current > maximum:
-            maximum = current
-            max_stop = stop
-
-    # Compute the corners as float using maximum
-    top_left_corner_lat_float = max_lat_float
-    top_left_corner_lon_float = (maximum - max_lat_float) * -1
-
-    left_top_corner_lat_float = maximum + min_lon_float
-    left_top_corner_lon_float = min_lon_float
-
-    # Convert the corners coordinates to strings
-    top_left_corner_string, left_top_corner_string = convert_octagon_section_corners_coordinates_to_string(
-                                                                top_left_corner_lat_float, top_left_corner_lon_float,
-                                                                left_top_corner_lat_float, left_top_corner_lon_float)
-
-    return top_left_corner_string, left_top_corner_string
-
-
-def convert_geographical_coordinates_to_box_corners_string(max_lat_str, min_lat_str, max_lon_str, min_lon_str):
+def convert_geographical_coordinates_to_box_corner_strings(max_lat_str, min_lat_str, max_lon_str, min_lon_str):
     # Create the corner strings
     south_east_corner_str = min_lat_str + ", " + max_lon_str
     south_west_corner_str = min_lat_str + ", " + min_lon_str
@@ -201,14 +143,14 @@ def convert_geographical_coordinates_to_box_corners_string(max_lat_str, min_lat_
     return south_east_corner_str, south_west_corner_str, north_west_corner_str, north_east_corner_str
 
 
-def convert_octagon_section_corners_coordinates_to_string(corner_1_lat_float, corner_1_lon_float,
-                                                          corner_2_lat_float, corner_2_lon_float):
+def convert_octagon_section_corners_coordinates_to_corner_strings(corner_1_lat_float, corner_1_lon_float,
+                                                                  corner_2_lat_float, corner_2_lon_float):
     # Convert the corners coordinates to strings
-    corner_1_lat_string = get_latitude_as_string(corner_1_lat_float)
-    corner_1_lon_string = get_longitude_as_string(corner_1_lon_float)
+    corner_1_lat_string = convert_latitude_to_degrees_string(corner_1_lat_float)
+    corner_1_lon_string = convert_longitude_to_degrees_string(corner_1_lon_float)
 
-    corner_2_lat_string = get_latitude_as_string(corner_2_lat_float)
-    corner_2_lon_string = get_longitude_as_string(corner_2_lon_float)
+    corner_2_lat_string = convert_latitude_to_degrees_string(corner_2_lat_float)
+    corner_2_lon_string = convert_longitude_to_degrees_string(corner_2_lon_float)
 
     # Corners as strings
     corner_1_string = corner_1_lat_string + ", " + corner_1_lon_string

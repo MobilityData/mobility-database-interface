@@ -22,7 +22,7 @@ class ProcessBoundingBoxForGtfsMetadata:
         dataset = self.gtfs_representation.get_dataset()
 
         # Extract the box corners coordinates in the dataset representation
-        box_corners = get_box_corners_coordinates_as_string(dataset)
+        box_corners = process_bounding_box_corner_strings(dataset)
 
         south_east_corner = box_corners[0]
         south_west_corner = box_corners[1]

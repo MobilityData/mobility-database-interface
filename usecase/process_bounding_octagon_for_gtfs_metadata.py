@@ -23,7 +23,7 @@ class ProcessBoundingOctagonForGtfsMetadata:
         dataset = self.gtfs_representation.get_dataset()
 
         # Extract the octagon corners coordinates in the dataset representation
-        octagon_corners = get_octagon_corners_coordinates_as_string(dataset)
+        octagon_corners = process_bounding_octagon_corner_strings(dataset)
 
         right_bottom_corner = octagon_corners[0]
         bottom_right_corner = octagon_corners[1]
