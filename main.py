@@ -129,8 +129,8 @@ if __name__ == "__main__":
         for dataset_key, dataset_representation in data_repository.get_dataset_representations().items():
             ProcessStartServiceDateForGtfsMetadata(dataset_representation).execute()
             ProcessEndServiceDateForGtfsMetadata(dataset_representation).execute()
-            #ProcessStartTimestampForGtfsMetadata(dataset_representation).execute()
-            #ProcessEndTimestampForGtfsMetadata(dataset_representation).execute()
+            ProcessStartTimestampForGtfsMetadata(dataset_representation).execute()
+            ProcessEndTimestampForGtfsMetadata(dataset_representation).execute()
             ProcessMainLanguageCodeForGtfsMetadata(dataset_representation).execute()
             ProcessMainTimezoneForGtfsMetadata(dataset_representation).execute()
             ProcessAllTimezonesForGtfsMetadata(dataset_representation).execute()
