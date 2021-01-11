@@ -2,7 +2,7 @@ from representation.gtfs_representation import GtfsRepresentation
 from request_manager.api_request_manager import ApiRequestManager
 
 
-class DatasetEntityCreationForGtfsMetadata:
+class CreateDatasetEntityForGtfsMetadata:
 
     def __init__(self, gtfs_representation, api_request_manager):
         """Constructor for ``DatasetEntityCreationForGtfsMetadata``.
