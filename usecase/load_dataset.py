@@ -3,7 +3,7 @@ from representation.dataset_representation_factory import DatasetRepresentationF
 
 
 class LoadDataset:
-    def __init__(self, data_repository, dataset_representation_factory, datasets, dataset_type):
+    def __init__(self, data_repository, dataset_representation_factory, datasets_infos, dataset_type):
         """Constructor for ``LoadDataset``.
         :param data_repository: Data repository containing the dataset representations.
         :param dataset_representation_factory: The factory to build the dataset representations.
@@ -20,9 +20,9 @@ class LoadDataset:
                                                                         DatasetRepresentationFactory):
                 raise TypeError("Representation factory must be a valid RepresentationFactory.")
             self.dataset_representation_factory = dataset_representation_factory
-            if datasets is None or not isinstance(datasets, dict):
+            if datasets_infos is None or not isinstance(datasets_infos, dict):
                 raise TypeError("Datasets must be a valid dictionary.")
-            self.datasets = datasets
+            self.datasets_infos = datasets_infos
             if dataset_type is None or dataset_type not in ['GTFS', 'GBFS']:
                 raise TypeError("Dataset type must be a valid dataset type - GTFS or GBFS.")
             self.dataset_type = dataset_type
@@ -33,7 +33,7 @@ class LoadDataset:
         """Execute the ``LoadDataset`` use case.
         :return: The data repository containing the loaded dataset representations.
         """
-        for entity_code, dataset_infos in self.datasets.items():
+        for entity_code, dataset_infos in self.datasets_infos.items():
             try:
                 print("--------------- Loading dataset : %s ---------------\n" % dataset_infos['path'])
                 dataset_representation = self.dataset_representation_factory.build_representation(self.dataset_type,

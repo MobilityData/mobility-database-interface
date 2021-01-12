@@ -6,7 +6,7 @@ from representation.dataset_representation_factory import DatasetRepresentationF
 from request_manager.request_manager_containers import Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
 from usecase.download_dataset_as_zip import DownloadDatasetAsZip
-from usecase.extract_sources_url import ExtractSourcesUrl
+from usecase.extract_sources_url_and_name_from_database import ExtractSourcesUrlAndNameFromDatabase
 from usecase.extract_database_md5 import ExtractDatabaseMd5
 from usecase.load_dataset import LoadDataset
 from usecase.process_main_language_code_for_gtfs_metadata import ProcessMainLanguageCodeForGtfsMetadata
@@ -24,13 +24,13 @@ from usecase.process_routes_count_by_type_for_gtfs_metadata import ProcessRoutes
 from usecase.process_agencies_count_for_gtfs_metadata import ProcessAgenciesCountForGtfsMetadata
 
 
-def download_data(path_to_data, dataset_type="GTFS", specific_download=False, specific_entity_code=None):
-    extract_sources_url = ExtractSourcesUrl(Managers.staging_api_request_manager(),
-                                            Managers.staging_sparql_request_manager(),
-                                            dataset_type, specific_download, specific_entity_code)
-    urls = extract_sources_url.execute()
-    download_dataset = DownloadDatasetAsZip(path_to_data, urls)
-    return download_dataset.execute()
+def extract_sources_url_and_name(dataset_type="GTFS", specific_download=False, specific_entity_code=None):
+    extract_sources_url_and_name_infos = ExtractSourcesUrlAndNameFromDatabase(Managers.staging_api_request_manager(),
+                                                                              Managers.staging_sparql_request_manager(),
+                                                                              dataset_type,
+                                                                              specific_download,
+                                                                              specific_entity_code)
+    return extract_sources_url_and_name_infos.execute()
 
 
 def process_data_md5(paths_to_datasets):
@@ -43,8 +43,17 @@ def process_data_md5(paths_to_datasets):
     return process_md5.execute()
 
 
-def load_data(data_repository, dataset_representation_factory, datasets, data_type='GTFS'):
-    load_dataset = LoadDataset(data_repository, dataset_representation_factory, datasets, data_type)
+def create_datasets_infos_dictionary(paths_to_datasets_and_md5, sources_name):
+    datasets_infos = {}
+    for entity_code in paths_to_datasets_and_md5.keys():
+        paths_to_datasets_and_md5[entity_code]["name"] = sources_name[entity_code]
+        datasets_infos[entity_code] = paths_to_datasets_and_md5[entity_code]
+
+    return datasets_infos
+
+
+def load_data(data_repository, dataset_representation_factory, datasets_infos, data_type='GTFS'):
+    load_dataset = LoadDataset(data_repository, dataset_representation_factory, datasets_infos, data_type)
     return load_dataset.execute()
 
 
@@ -109,20 +118,26 @@ if __name__ == "__main__":
 
     # Process data
     if args['download'] is not None:
-        # Download datasets zip files
+        # Extract sources URL and name
         if args['all'] is not None:
-            paths_to_datasets = download_data(args['path_to_tmp_data'], dataset_type=args['data_type'])
+            sources_url, sources_name = extract_sources_url_and_name(dataset_type=args['data_type'])
         elif args['specific'] is not None:
-            paths_to_datasets = download_data(args['path_to_tmp_data'], specific_download=True,
-                                              specific_entity_code=args['specific'])
+            sources_url, sources_name = extract_sources_url_and_name(specific_download=True,
+                                                                     specific_entity_code=args['specific'])
+
+        # Download datasets zip files
+        paths_to_datasets = DownloadDatasetAsZip(args['path_to_tmp_data'], sources_url).execute()
 
         # Process the MD5 hashes
         paths_to_datasets_and_md5 = process_data_md5(paths_to_datasets)
 
+        # Create a datasets infos dictionary with paths to datasets, MD5 hashes and datasets sources name
+        datasets_infos = create_datasets_infos_dictionary(paths_to_datasets_and_md5, sources_name)
+
         # Load the datasets in memory in the data repository
         data_repository = load_data(data_repository,
                                     dataset_representation_factory,
-                                    paths_to_datasets_and_md5,
+                                    datasets_infos,
                                     args['data_type'])
 
         # Process each dataset representation in the data_repository

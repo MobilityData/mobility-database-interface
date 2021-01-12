@@ -73,6 +73,21 @@ class GtfsRepresentationTest(TestCase):
 
     @mock.patch('gtfs_kit.feed.Feed')
     @mock.patch('representation.gtfs_metadata.GtfsMetadata')
+    def test_gtfs_representation_set_metadata_dataset_version_name_should_call_method(self,
+                                                                                      mock_dataset,
+                                                                                      mock_metadata):
+        mock_entity_code = MagicMock()
+        mock_entity_code.__class__ = str
+        mock_dataset.__class__ = Feed
+        mock_metadata.__class__ = GtfsMetadata
+
+        under_test = GtfsRepresentation(mock_entity_code, mock_dataset, mock_metadata)
+        under_test.set_metadata_dataset_version_name("test_dataset_version_name")
+        mock_metadata.set_dataset_version_name.assert_called_once()
+        mock_metadata.set_dataset_version_name.assert_called_with("test_dataset_version_name")
+
+    @mock.patch('gtfs_kit.feed.Feed')
+    @mock.patch('representation.gtfs_metadata.GtfsMetadata')
     def test_gtfs_representation_set_metadata_start_service_date_should_call_method(self, mock_dataset, mock_metadata):
         mock_entity_code = MagicMock()
         mock_entity_code.__class__ = str

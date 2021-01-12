@@ -3,7 +3,7 @@ from request_manager.sparql_request_manager import SparqlRequestManager
 from utilities.entities_codes import EntitiesCodes
 
 
-class ExtractSourcesUrl:
+class ExtractSourcesUrlAndNameFromDatabase:
     # Define index values for entity code in response retrieved by SPARQL query
     ENTITY_CODE_FIRST_INDEX = 37
     ENTITY_CODE_LAST_INDEX = 40
@@ -42,6 +42,7 @@ class ExtractSourcesUrl:
         """
         entity_codes = []
         urls = {}
+        names = {}
 
         # Retrieves the entity codes for which we want to download the dataset
         if not self.specific_download:
@@ -61,7 +62,7 @@ class ExtractSourcesUrl:
         else:
             entity_codes.append(self.specific_entity_code)
 
-        # Retrieves the sources' stable URL for the entity codes found
+        # Retrieves the sources' stable URL and Name for the entity codes found
         for entity_code in entity_codes:
             params = {
                 "action": "wbgetentities",
@@ -75,5 +76,6 @@ class ExtractSourcesUrl:
                 for link in api_response["entities"][entity_code]["claims"]["P55"]:
                     if "openmobilitydata.org" not in link["mainsnak"]["datavalue"]["value"]:
                         urls[entity_code] = link["mainsnak"]["datavalue"]["value"]
+                names[entity_code] = api_response["entities"][entity_code]["labels"]["en"]["value"]
 
-        return urls
+        return urls, names

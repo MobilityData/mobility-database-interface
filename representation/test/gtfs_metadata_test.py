@@ -20,6 +20,22 @@ class GtfsMetadataTest(TestCase):
         under_test = GtfsMetadata(mock_md5_hash)
         self.assertIsInstance(under_test, GtfsMetadata)
 
+    def test_gtfs_metadata_get_dataset_version_name_should_return_dataset_version_name(self):
+        mock_md5_hash = MagicMock()
+        mock_md5_hash.__class__ = str
+
+        under_test = GtfsMetadata(mock_md5_hash)
+        self.assertEqual(under_test.get_dataset_version_name(), "")
+
+    def test_gtfs_metadata_set_dataset_version_name_should_set_dataset_version_name(self):
+        mock_md5_hash = MagicMock()
+        mock_md5_hash.__class__ = str
+
+        under_test = GtfsMetadata(mock_md5_hash)
+        self.assertEqual(under_test.get_dataset_version_name(), "")
+        under_test.set_dataset_version_name("test_dataset_version_name")
+        self.assertEqual(under_test.get_dataset_version_name(), "test_dataset_version_name")
+
     def test_gtfs_metadata_get_start_service_date_should_return_start_service_date(self):
         mock_md5_hash = MagicMock()
         mock_md5_hash.__class__ = str
@@ -217,7 +233,8 @@ class GtfsMetadataTest(TestCase):
         mock_md5_hash.__class__ = str
         mock_md5_hash.__str__.return_value = 'test_md5_hash'
 
-        test_metadata_string = "Main timezone: \n" \
+        test_metadata_string = "Main agency name: \n" \
+                               "Main timezone: \n" \
                                "All timezones: \n" \
                                "Country code: \n" \
                                "Sub country code: \n" \

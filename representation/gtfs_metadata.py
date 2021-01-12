@@ -8,6 +8,7 @@ class GtfsMetadata:
         if md5_hash is None or not isinstance(md5_hash, str):
             raise TypeError('MD5 hash must be a valid MD5 hash string.')
         self.__md5_hash = md5_hash
+        self.__dataset_version_name = ""
         self.__main_timezone = ""
         self.__all_timezones = []
         self.__country_code = ""
@@ -23,6 +24,18 @@ class GtfsMetadata:
         self.__routes_count_by_type = {}
         self.__stops_count_by_type = {}
         self.__stable_url = ""
+
+    def set_dataset_version_name(self, dataset_version_name):
+        """ Set a dataset version name in the GTFS metadata.
+        :param dataset_version_name: The dataset version name to set.
+        """
+        self.__dataset_version_name = dataset_version_name
+
+    def get_dataset_version_name(self):
+        """ Get the dataset version name in the GTFS metadata.
+        :return: The dataset version name to get.
+        """
+        return self.__dataset_version_name
 
     def set_start_service_date(self, start_service_date):
         """ Set a start service date in the GTFS metadata.
@@ -171,7 +184,8 @@ class GtfsMetadata:
     def __str__(self):
         """String representation of the GTFS dataset metadata.
         """
-        return "Main timezone: %s\n" \
+        return "Main agency name: %s\n" \
+               "Main timezone: %s\n" \
                "All timezones: %s\n" \
                "Country code: %s\n" \
                "Sub country code: %s\n" \
@@ -187,7 +201,8 @@ class GtfsMetadata:
                "Stops count by type: %s\n" \
                "Stable url: %s\n" \
                "MD5 hash: %s" \
-               % (self.__main_timezone,
+               % (self.__dataset_version_name,
+                  self.__main_timezone,
                   ', '.join(self.__all_timezones),
                   self.__country_code,
                   self.__sub_country_code,
