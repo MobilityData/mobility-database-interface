@@ -11,6 +11,8 @@ class DatasetRepresentationFactory:
         :param entity_code: The entity code associated to the dataset in the database.
         :param path_to_dataset: The path to the dataset zip file to use for the representation.
         :param md5_hash: The MD5 hash of the dataset version.
+        :param source_name: The name of the source of the dataset.
+        :param download_date: The date when the dataset version was downloaded.
         """
         representation = None
         try:
