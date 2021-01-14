@@ -24,12 +24,6 @@ class GtfsRepresentation:
         """
         return self.__dataset
 
-    def set_metadata_dataset_version_name(self, dataset_version_name):
-        """ Set a dataset version name in the representation of the GTFS dataset metadata.
-        :param dataset_version_name: The dataset version name to set.
-        """
-        self.__metadata.set_dataset_version_name(dataset_version_name)
-
     def set_metadata_start_service_date(self, start_service_date):
         """ Set a start service date in the representation of the GTFS dataset metadata.
         :param start_service_date: The start service date to set.
