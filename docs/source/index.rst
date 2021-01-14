@@ -137,10 +137,10 @@ Source documentation
    :show-inheritance:
 
 
-:mod:`usecase.extract_sources_url`
+:mod:`usecase.extract_sources_url_and_name_from_database`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: usecase.extract_sources_url
+.. automodule:: usecase.extract_sources_url_and_name_from_database
    :members:
    :undoc-members:
    :show-inheritance:
