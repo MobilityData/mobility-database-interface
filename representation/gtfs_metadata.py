@@ -1,14 +1,20 @@
 
 
 class GtfsMetadata:
-    def __init__(self, md5_hash):
+    def __init__(self, md5_hash, source_name, download_date):
         """Constructor for ``GtfsMetadata``.
         :param md5_hash: The MD5 hash of the dataset version.
+        :param source_name: The name of the source of the dataset.
+        :param download_date: The date when the dataset version was downloaded.
         """
         if md5_hash is None or not isinstance(md5_hash, str):
             raise TypeError('MD5 hash must be a valid MD5 hash string.')
+        if source_name is None or not isinstance(source_name, str):
+            raise TypeError('Source name must be a valid source name string.')
+        if download_date is None or not isinstance(download_date, str):
+            raise TypeError('Download date must be a valid date string.')
         self.__md5_hash = md5_hash
-        self.__dataset_version_name = ""
+        self.__dataset_version_name = self.create_dataset_version_name(source_name, download_date, md5_hash)
         self.__main_timezone = ""
         self.__all_timezones = []
         self.__country_code = ""
@@ -25,11 +31,36 @@ class GtfsMetadata:
         self.__stops_count_by_type = {}
         self.__stable_url = ""
 
-    def set_dataset_version_name(self, dataset_version_name):
-        """ Set a dataset version name in the GTFS metadata.
-        :param dataset_version_name: The dataset version name to set.
+    def create_dataset_version_name(self, source_name, download_date, md5_hash):
+        """ Create the dataset version name from the source name, download date and MD5 hash.
+        :param md5_hash: The MD5 hash of the dataset version.
+        :param source_name: The name of the source of the dataset.
+        :param download_date: The date when the dataset version was downloaded.
+        :return: The dataset version name of the dataset version.
         """
-        self.__dataset_version_name = dataset_version_name
+        # Remove "source" from source name string
+        if source_name.find("source") != -1:
+            # Find left index of "source", minus 1 for the preceding space
+            left_index = source_name.find("source") - 1
+            # Compute right index from left index, plus 1 to balance the space previously considered
+            right_index = left_index + len("source") + 1
+            dataset_name = source_name[:left_index] + source_name[right_index:]
+        else:
+            dataset_name = source_name
+
+        # Select a substring from the MD5 hash create unique identifier for the dataset name
+        shorten_md5_hash = md5_hash[:6]
+
+        # Create the full dataset version name
+        dataset_version_name = "%s's %s dataset #%s" % (download_date, dataset_name, shorten_md5_hash)
+
+        return dataset_version_name
+
+    def get_md5_hash(self):
+        """ Get the MD5 hash in the GTFS metadata.
+        :return: The MD5 hash to get.
+        """
+        return self.__md5_hash
 
     def get_dataset_version_name(self):
         """ Get the dataset version name in the GTFS metadata.
@@ -184,7 +215,7 @@ class GtfsMetadata:
     def __str__(self):
         """String representation of the GTFS dataset metadata.
         """
-        return "Main agency name: %s\n" \
+        return "Dataset version name: %s\n" \
                "Main timezone: %s\n" \
                "All timezones: %s\n" \
                "Country code: %s\n" \

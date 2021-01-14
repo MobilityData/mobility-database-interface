@@ -1,6 +1,8 @@
 import argparse
 import sys
 from guppy import hpy
+from datetime import date
+from zipfile import ZipInfo
 from repository.data_repository import DataRepository
 from representation.dataset_representation_factory import DatasetRepresentationFactory
 from request_manager.request_manager_containers import Managers
@@ -43,12 +45,12 @@ def process_data_md5(paths_to_datasets):
     return process_md5.execute()
 
 
-def create_datasets_infos_dictionary(paths_to_datasets_and_md5, sources_name):
+def create_datasets_infos_dictionary(paths_to_datasets_and_md5, sources_name, download_date):
     datasets_infos = {}
     for entity_code in paths_to_datasets_and_md5.keys():
-        paths_to_datasets_and_md5[entity_code]["name"] = sources_name[entity_code]
+        paths_to_datasets_and_md5[entity_code]['source_name'] = sources_name[entity_code]
+        paths_to_datasets_and_md5[entity_code]['download_date'] = download_date
         datasets_infos[entity_code] = paths_to_datasets_and_md5[entity_code]
-
     return datasets_infos
 
 
@@ -131,8 +133,11 @@ if __name__ == "__main__":
         # Process the MD5 hashes
         paths_to_datasets_and_md5 = process_data_md5(paths_to_datasets)
 
+        # Get download date (current date)
+        download_date = date.today().strftime("%Y-%m-%d")
+
         # Create a datasets infos dictionary with paths to datasets, MD5 hashes and datasets sources name
-        datasets_infos = create_datasets_infos_dictionary(paths_to_datasets_and_md5, sources_name)
+        datasets_infos = create_datasets_infos_dictionary(paths_to_datasets_and_md5, sources_name, download_date)
 
         # Load the datasets in memory in the data repository
         data_repository = load_data(data_repository,

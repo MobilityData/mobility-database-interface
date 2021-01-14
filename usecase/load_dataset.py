@@ -7,9 +7,9 @@ class LoadDataset:
         """Constructor for ``LoadDataset``.
         :param data_repository: Data repository containing the dataset representations.
         :param dataset_representation_factory: The factory to build the dataset representations.
-        :param datasets: The dictionary of datasets to load. The key must be the entity code
-        associated to the dataset in the database. The values must be composed of a path
-        to the dataset zip file and a its MD5 hash.
+        :param datasets_infos: The dictionary of datasets infos for the datasets to load.
+        The key must be the entity code associated to the dataset in the database.
+        The values must be composed of a path to the dataset zip file, its MD5 hash and its source name.
         :param dataset_type: URLs of the datasets to download.
         """
         try:
@@ -36,10 +36,13 @@ class LoadDataset:
         for entity_code, dataset_infos in self.datasets_infos.items():
             try:
                 print("--------------- Loading dataset : %s ---------------\n" % dataset_infos['path'])
-                dataset_representation = self.dataset_representation_factory.build_representation(self.dataset_type,
-                                                                                                  entity_code,
-                                                                                                  dataset_infos['path'],
-                                                                                                  dataset_infos['md5'])
+                dataset_representation = \
+                    self.dataset_representation_factory.build_representation(self.dataset_type,
+                                                                             entity_code,
+                                                                             dataset_infos['path'],
+                                                                             dataset_infos['md5'],
+                                                                             dataset_infos['source_name'],
+                                                                             dataset_infos['download_date'])
                 self.data_repository.add_dataset_representation(entity_code, dataset_representation)
             except Exception as e:
                 print("Exception \"%s\" occurred while loading dataset.\n" % e)
