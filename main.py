@@ -20,7 +20,7 @@ from usecase.process_end_service_date_for_gtfs_metadata import ProcessEndService
 from usecase.process_start_timestamp_for_gtfs_metadata import ProcessStartTimestampForGtfsMetadata
 from usecase.process_end_timestamp_for_gtfs_metadata import ProcessEndTimestampForGtfsMetadata
 from usecase.process_stops_count_by_type_for_gtfs_metadata import ProcessStopsCountByTypeForGtfsMetadata
-from usecase.process_routes_count_by_type_for_gtfs_metadata import ProcessRoutesCountByTypeForGtfsMetadata
+from usecase.process_routes_count_by_type_for_gtfs_metadata import process_routes_count_by_type_for_gtfs_metadata
 from usecase.process_agencies_count_for_gtfs_metadata import ProcessAgenciesCountForGtfsMetadata
 
 
@@ -137,7 +137,7 @@ if __name__ == "__main__":
             ProcessBoundingBoxForGtfsMetadata(dataset_representation).execute()
             ProcessBoundingOctagonForGtfsMetadata(dataset_representation).execute()
             ProcessAgenciesCountForGtfsMetadata(dataset_representation).execute()
-            ProcessRoutesCountByTypeForGtfsMetadata(dataset_representation).execute()
+            dataset_representation = process_routes_count_by_type_for_gtfs_metadata(dataset_representation)
             ProcessStopsCountByTypeForGtfsMetadata(dataset_representation).execute()
 
             # Print results
