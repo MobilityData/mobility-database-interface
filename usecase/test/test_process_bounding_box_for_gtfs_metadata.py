@@ -5,7 +5,7 @@ from gtfs_kit.feed import Feed
 from representation.gtfs_metadata import GtfsMetadata
 from representation.gtfs_representation import GtfsRepresentation
 from usecase.process_bounding_box_for_gtfs_metadata import (
-    ProcessBoundingBoxForGtfsMetadata,
+    process_bounding_box_for_gtfs_metadata,
 )
 
 
@@ -13,7 +13,7 @@ class ProcessBoundingBoxForGtfsMetadataTest(TestCase):
     def test_process_bounding_box_with_none_gtfs_representation_should_raise_exception(
         self,
     ):
-        self.assertRaises(TypeError, ProcessBoundingBoxForGtfsMetadata, None)
+        self.assertRaises(TypeError, process_bounding_box_for_gtfs_metadata, None)
 
     def test_process_bounding_box_with_invalid_gtfs_representation_should_raise_exception(
         self,
@@ -21,16 +21,8 @@ class ProcessBoundingBoxForGtfsMetadataTest(TestCase):
         mock_gtfs_representation = MagicMock()
         mock_gtfs_representation.__class__ = str
         self.assertRaises(
-            TypeError, ProcessBoundingBoxForGtfsMetadata, mock_gtfs_representation
+            TypeError, process_bounding_box_for_gtfs_metadata, mock_gtfs_representation
         )
-
-    @mock.patch("representation.gtfs_representation.GtfsRepresentation")
-    def test_process_bounding_box_with_valid_gtfs_representation_should_return_instance(
-        self, mock_gtfs_representation
-    ):
-        mock_gtfs_representation.__class__ = GtfsRepresentation
-        under_test = ProcessBoundingBoxForGtfsMetadata(mock_gtfs_representation)
-        self.assertIsInstance(under_test, ProcessBoundingBoxForGtfsMetadata)
 
     @mock.patch("representation.gtfs_representation.GtfsRepresentation")
     @mock.patch("gtfs_kit.feed.Feed")
@@ -50,9 +42,9 @@ class ProcessBoundingBoxForGtfsMetadataTest(TestCase):
         mock_gtfs_representation.__class__ = GtfsRepresentation
         mock_gtfs_representation.get_dataset.return_value = mock_dataset
 
-        under_test = ProcessBoundingBoxForGtfsMetadata(
+        under_test = process_bounding_box_for_gtfs_metadata(
             mock_gtfs_representation
-        ).execute()
+        )
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_gtfs_representation.get_dataset.assert_called_once()
         mock_stops.assert_called()
