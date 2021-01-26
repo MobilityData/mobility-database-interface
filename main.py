@@ -21,7 +21,7 @@ from usecase.process_start_timestamp_for_gtfs_metadata import ProcessStartTimest
 from usecase.process_end_timestamp_for_gtfs_metadata import ProcessEndTimestampForGtfsMetadata
 from usecase.process_stops_count_by_type_for_gtfs_metadata import ProcessStopsCountByTypeForGtfsMetadata
 from usecase.process_routes_count_by_type_for_gtfs_metadata import ProcessRoutesCountByTypeForGtfsMetadata
-from usecase.process_agencies_count_for_gtfs_metadata import ProcessAgenciesCountForGtfsMetadata
+from usecase.process_agencies_count_for_gtfs_metadata import process_agencies_count_for_gtfs_metadata
 
 
 def download_data(path_to_data, dataset_type="GTFS", specific_download=False, specific_entity_code=None):
@@ -136,7 +136,7 @@ if __name__ == "__main__":
             ProcessAllTimezonesForGtfsMetadata(dataset_representation).execute()
             ProcessBoundingBoxForGtfsMetadata(dataset_representation).execute()
             ProcessBoundingOctagonForGtfsMetadata(dataset_representation).execute()
-            ProcessAgenciesCountForGtfsMetadata(dataset_representation).execute()
+            dataset_representation = process_agencies_count_for_gtfs_metadata(dataset_representation)
             ProcessRoutesCountByTypeForGtfsMetadata(dataset_representation).execute()
             ProcessStopsCountByTypeForGtfsMetadata(dataset_representation).execute()
 
