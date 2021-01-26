@@ -1,2 +1,3 @@
 # Sphinx
-docs/source/*
+docs/source/_static
+docs/source/_template
