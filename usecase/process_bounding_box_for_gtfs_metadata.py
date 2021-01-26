@@ -18,6 +18,8 @@ def process_bounding_box_for_gtfs_metadata(gtfs_representation):
     # Extract the box corners coordinates in the dataset representation and
     # Order the corners inside a bounding box
     # The order is clockwise, from the South East to the North East corner
+    # Documentation about dictionary comprehension can be found at:
+    # https://docs.python.org/3/tutorial/datastructures.html
     bounding_box = {
         f"{index+1}": corner for index, corner in enumerate(process_bounding_box_corner_strings(dataset))
     }
