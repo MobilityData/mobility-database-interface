@@ -22,14 +22,12 @@ from usecase.process_bounding_box_for_gtfs_metadata import (
     process_bounding_box_for_gtfs_metadata,
 )
 from usecase.process_bounding_octagon_for_gtfs_metadata import (
-    ProcessBoundingOctagonForGtfsMetadata,
+    process_bounding_octagon_for_gtfs_metadata,
 )
 from usecase.process_md5 import ProcessMd5
-from usecase.process_start_service_date_for_gtfs_metadata import (
-    ProcessStartServiceDateForGtfsMetadata,
-)
-from usecase.process_end_service_date_for_gtfs_metadata import (
-    ProcessEndServiceDateForGtfsMetadata,
+from usecase.process_service_date_for_gtfs_metadata import (
+    process_start_service_date_for_gtfs_metadata,
+    process_end_service_date_for_gtfs_metadata,
 )
 from usecase.process_start_timestamp_for_gtfs_metadata import (
     ProcessStartTimestampForGtfsMetadata,
@@ -204,15 +202,15 @@ if __name__ == "__main__":
             dataset_key,
             dataset_representation,
         ) in data_repository.get_dataset_representations().items():
-            ProcessStartServiceDateForGtfsMetadata(dataset_representation).execute()
-            ProcessEndServiceDateForGtfsMetadata(dataset_representation).execute()
+            dataset_representation = process_start_service_date_for_gtfs_metadata(dataset_representation)
+            dataset_representation = process_end_service_date_for_gtfs_metadata(dataset_representation)
             ProcessStartTimestampForGtfsMetadata(dataset_representation).execute()
             ProcessEndTimestampForGtfsMetadata(dataset_representation).execute()
             ProcessMainLanguageCodeForGtfsMetadata(dataset_representation).execute()
             ProcessMainTimezoneForGtfsMetadata(dataset_representation).execute()
             ProcessAllTimezonesForGtfsMetadata(dataset_representation).execute()
             dataset_representation = process_bounding_box_for_gtfs_metadata(dataset_representation)
-            ProcessBoundingOctagonForGtfsMetadata(dataset_representation).execute()
+            dataset_representation = process_bounding_octagon_for_gtfs_metadata(dataset_representation)
             ProcessAgenciesCountForGtfsMetadata(dataset_representation).execute()
             ProcessRoutesCountByTypeForGtfsMetadata(dataset_representation).execute()
             ProcessStopsCountByTypeForGtfsMetadata(dataset_representation).execute()
