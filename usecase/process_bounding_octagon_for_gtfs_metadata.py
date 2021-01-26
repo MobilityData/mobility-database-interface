@@ -9,7 +9,7 @@ LEFT_TOP_CORNER_KEY = "5"
 TOP_LEFT_CORNER_KEY = "6"
 TOP_RIGHT_CORNER_KEY = "7"
 RIGHT_TOP_CORNER_KEY = "8"
-BOUNDING_BOX_SETTER = "set_metadata_bounding_box"
+BOUNDING_OCTAGON_SETTER = "set_metadata_bounding_box"
 
 
 def process_bounding_octagon_for_gtfs_metadata(gtfs_representation):
@@ -30,7 +30,9 @@ def process_bounding_octagon_for_gtfs_metadata(gtfs_representation):
         f"{index+1}": corner for index, corner in enumerate(process_bounding_octagon_corner_strings(dataset))
     }
 
-    gtfs_representation.set_metadata_bounding_octagon(bounding_octagon)
+    # Set the bounding octagon in the GTFS representation
+    getattr(gtfs_representation, BOUNDING_OCTAGON_SETTER)(bounding_octagon)
+
     return gtfs_representation
 
 
