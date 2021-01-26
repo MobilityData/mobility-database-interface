@@ -9,7 +9,7 @@ from usecase.process_service_date_for_gtfs_metadata import (
 )
 
 
-class ProcessEndServiceDateForGtfsMetadataTest(TestCase):
+class TestProcessEndServiceDateForGtfsMetadata(TestCase):
     def test_process_end_service_date_with_none_gtfs_representation_should_raise_exception(
         self,
     ):
