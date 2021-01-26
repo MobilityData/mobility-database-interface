@@ -7,8 +7,7 @@ LOCATION_TYPE = 'location_type'
 
 
 def process_stops_count_by_type_for_gtfs_metadata(gtfs_representation):
-    """Execute the ``ProcessStopsCountByTypeForGtfsMetadata`` use case.
-    Process and count by type all the stops in the `stops` file from the GTFS dataset of the representation.
+    """Process and count by type all the stops in the `stops` file from the GTFS dataset of the representation.
     Add the dictionary of the stops count to the representation metadata once processed.
     :return: The representation of the GTFS dataset post-execution.
     :param gtfs_representation: The representation of the GTFS dataset to process.
