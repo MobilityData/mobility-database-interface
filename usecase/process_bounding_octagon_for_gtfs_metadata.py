@@ -23,27 +23,12 @@ def process_bounding_octagon_for_gtfs_metadata(gtfs_representation):
         raise TypeError("GTFS data representation must be a valid GtfsRepresentation.")
     dataset = gtfs_representation.get_dataset()
 
-    # Extract the octagon corners coordinates in the dataset representation
-    (
-        right_bottom_corner,
-        bottom_right_corner,
-        bottom_left_corner,
-        left_bottom_corner,
-        left_top_corner,
-        top_left_corner,
-        top_right_corner,
-        right_top_corner
-    ) = process_bounding_octagon_corner_strings(dataset)
-
+    # Extract the octagon corners coordinates in the dataset representation and
     # Order the corners inside a bounding octagon
-    bounding_octagon = {RIGHT_BOTTOM_CORNER_KEY: right_bottom_corner,
-                        BOTTOM_RIGHT_CORNER_KEY: bottom_right_corner,
-                        BOTTOM_LEFT_CORNER_KEY: bottom_left_corner,
-                        LEFT_BOTTOM_CORNER_KEY: left_bottom_corner,
-                        LEFT_TOP_CORNER_KEY: left_top_corner,
-                        TOP_LEFT_CORNER_KEY: top_left_corner,
-                        TOP_RIGHT_CORNER_KEY: top_right_corner,
-                        RIGHT_TOP_CORNER_KEY: right_top_corner}
+    # The order is clockwise, from the right bottom to the right top corner
+    bounding_octagon = {
+        f"{index+1}": corner for index, corner in enumerate(process_bounding_octagon_corner_strings(dataset))
+    }
 
     gtfs_representation.set_metadata_bounding_octagon(bounding_octagon)
     return gtfs_representation
