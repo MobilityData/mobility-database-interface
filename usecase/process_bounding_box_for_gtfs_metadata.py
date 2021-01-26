@@ -1,10 +1,6 @@
 from representation.gtfs_representation import GtfsRepresentation
 from utilities.geographical_utils import *
 
-SOUTH_EAST_CORNER_KEY = "1"
-SOUTH_WEST_CORNER_KEY = "2"
-NORTH_WEST_CORNER_KEY = "3"
-NORTH_EAST_CORNER_KEY = "4"
 BOUNDING_BOX_SETTER = "set_metadata_bounding_box"
 
 
@@ -19,20 +15,11 @@ def process_bounding_box_for_gtfs_metadata(gtfs_representation):
         raise TypeError("GTFS data representation must be a valid GtfsRepresentation.")
     dataset = gtfs_representation.get_dataset()
 
-    # Extract the box corners coordinates in the dataset representation
-    (
-        south_east_corner,
-        south_west_corner,
-        north_west_corner,
-        north_east_corner,
-    ) = process_bounding_box_corner_strings(dataset)
-
+    # Extract the box corners coordinates in the dataset representation and
     # Order the corners inside a bounding box
+    # The order is clockwise, from the South East to the North East corner
     bounding_box = {
-        SOUTH_EAST_CORNER_KEY: south_east_corner,
-        SOUTH_WEST_CORNER_KEY: south_west_corner,
-        NORTH_WEST_CORNER_KEY: north_west_corner,
-        NORTH_EAST_CORNER_KEY: north_east_corner,
+        f"{index+1}": corner for index, corner in enumerate(process_bounding_box_corner_strings(dataset))
     }
 
     # Set the bounding box in the GTFS representation
