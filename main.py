@@ -19,7 +19,7 @@ from usecase.process_all_timezones_for_gtfs_metadata import (
     ProcessAllTimezonesForGtfsMetadata,
 )
 from usecase.process_bounding_box_for_gtfs_metadata import (
-    ProcessBoundingBoxForGtfsMetadata,
+    process_bounding_box_for_gtfs_metadata,
 )
 from usecase.process_bounding_octagon_for_gtfs_metadata import (
     process_bounding_octagon_for_gtfs_metadata,
@@ -209,7 +209,7 @@ if __name__ == "__main__":
             ProcessMainLanguageCodeForGtfsMetadata(dataset_representation).execute()
             ProcessMainTimezoneForGtfsMetadata(dataset_representation).execute()
             ProcessAllTimezonesForGtfsMetadata(dataset_representation).execute()
-            ProcessBoundingBoxForGtfsMetadata(dataset_representation).execute()
+            dataset_representation = process_bounding_box_for_gtfs_metadata(dataset_representation)
             dataset_representation = process_bounding_octagon_for_gtfs_metadata(dataset_representation)
             ProcessAgenciesCountForGtfsMetadata(dataset_representation).execute()
             ProcessRoutesCountByTypeForGtfsMetadata(dataset_representation).execute()
