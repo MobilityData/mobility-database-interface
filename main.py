@@ -135,7 +135,7 @@ if __name__ == "__main__":
             ProcessMainTimezoneForGtfsMetadata(dataset_representation).execute()
             ProcessAllTimezonesForGtfsMetadata(dataset_representation).execute()
             ProcessBoundingBoxForGtfsMetadata(dataset_representation).execute()
-            process_bounding_octagon_for_gtfs_metadata(dataset_representation)
+            dataset_representation = process_bounding_octagon_for_gtfs_metadata(dataset_representation)
             ProcessAgenciesCountForGtfsMetadata(dataset_representation).execute()
             ProcessRoutesCountByTypeForGtfsMetadata(dataset_representation).execute()
             ProcessStopsCountByTypeForGtfsMetadata(dataset_representation).execute()
