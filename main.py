@@ -36,7 +36,7 @@ from usecase.process_end_timestamp_for_gtfs_metadata import (
     ProcessEndTimestampForGtfsMetadata,
 )
 from usecase.process_stops_count_by_type_for_gtfs_metadata import (
-    ProcessStopsCountByTypeForGtfsMetadata,
+    process_stops_count_by_type_for_gtfs_metadata,
 )
 from usecase.process_routes_count_by_type_for_gtfs_metadata import (
     process_routes_count_by_type_for_gtfs_metadata,
@@ -213,7 +213,7 @@ if __name__ == "__main__":
             dataset_representation = process_bounding_octagon_for_gtfs_metadata(dataset_representation)
             ProcessAgenciesCountForGtfsMetadata(dataset_representation).execute()
             dataset_representation = process_routes_count_by_type_for_gtfs_metadata(dataset_representation)
-            ProcessStopsCountByTypeForGtfsMetadata(dataset_representation).execute()
+            dataset_representation = process_stops_count_by_type_for_gtfs_metadata(dataset_representation)
 
             # Print results
             data_repository.print_dataset_representation(dataset_key)
