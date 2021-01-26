@@ -12,9 +12,9 @@ TROLLEY_BUS = 11
 MONORAIL = 12
 ROUTE_TYPE = 'route_type'
 
+
 def process_routes_count_by_type_for_gtfs_metadata(gtfs_representation):
-    """Execute the ``ProcessRoutesCountByTypeForGtfsMetadata`` use case.
-    Process and count by type all the routes in the `routes` file from the GTFS dataset of the representation.
+    """Process and count by type all the routes in the `routes` file from the GTFS dataset of the representation.
     Add the dictionary of the routes count to the representation metadata once processed.
     :param gtfs_representation: The representation of the GTFS dataset to process.
     :return: The representation of the GTFS dataset post-execution.
