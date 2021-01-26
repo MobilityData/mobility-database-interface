@@ -14,7 +14,7 @@ from usecase.process_main_timezone_for_gtfs_metadata import ProcessMainTimezoneF
 from usecase.process_all_timezones_for_gtfs_metadata import ProcessAllTimezonesForGtfsMetadata
 from usecase.process_bounding_box_for_gtfs_metadata import ProcessBoundingBoxForGtfsMetadata
 from usecase.process_bounding_octagon_for_gtfs_metadata import ProcessBoundingOctagonForGtfsMetadata
-from usecase.process_md5 import ProcessMd5
+from usecase.process_md5 import process_md5
 from usecase.process_start_service_date_for_gtfs_metadata import ProcessStartServiceDateForGtfsMetadata
 from usecase.process_end_service_date_for_gtfs_metadata import ProcessEndServiceDateForGtfsMetadata
 from usecase.process_start_timestamp_for_gtfs_metadata import ProcessStartTimestampForGtfsMetadata
@@ -39,8 +39,7 @@ def process_data_md5(paths_to_datasets):
                                               Managers.staging_sparql_request_manager(),
                                               entity_codes)
     previous_md5_hashes = extract_database_md5.execute()
-    process_md5 = ProcessMd5(paths_to_datasets, previous_md5_hashes)
-    return process_md5.execute()
+    return process_md5(paths_to_datasets, previous_md5_hashes)
 
 
 def load_data(data_repository, dataset_representation_factory, datasets, data_type='GTFS'):
