@@ -1,7 +1,7 @@
 from representation.gtfs_representation import GtfsRepresentation
 from utilities.geographical_utils import *
 
-BOUNDING_OCTAGON_SETTER = "set_metadata_bounding_box"
+BOUNDING_OCTAGON_SETTER = "set_metadata_bounding_octagon"
 
 
 def process_bounding_octagon_for_gtfs_metadata(gtfs_representation):
