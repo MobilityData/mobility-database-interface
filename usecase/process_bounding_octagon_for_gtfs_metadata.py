@@ -1,14 +1,6 @@
 from representation.gtfs_representation import GtfsRepresentation
 from utilities.geographical_utils import *
 
-RIGHT_BOTTOM_CORNER_KEY = "1"
-BOTTOM_RIGHT_CORNER_KEY = "2"
-BOTTOM_LEFT_CORNER_KEY = "3"
-LEFT_BOTTOM_CORNER_KEY = "4"
-LEFT_TOP_CORNER_KEY = "5"
-TOP_LEFT_CORNER_KEY = "6"
-TOP_RIGHT_CORNER_KEY = "7"
-RIGHT_TOP_CORNER_KEY = "8"
 BOUNDING_OCTAGON_SETTER = "set_metadata_bounding_box"
 
 
