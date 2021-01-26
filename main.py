@@ -202,8 +202,8 @@ if __name__ == "__main__":
             dataset_key,
             dataset_representation,
         ) in data_repository.get_dataset_representations().items():
-            process_start_service_date_for_gtfs_metadata(dataset_representation)
-            process_end_service_date_for_gtfs_metadata(dataset_representation)
+            dataset_representation = process_start_service_date_for_gtfs_metadata(dataset_representation)
+            dataset_representation = process_end_service_date_for_gtfs_metadata(dataset_representation)
             ProcessStartTimestampForGtfsMetadata(dataset_representation).execute()
             ProcessEndTimestampForGtfsMetadata(dataset_representation).execute()
             ProcessMainLanguageCodeForGtfsMetadata(dataset_representation).execute()
