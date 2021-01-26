@@ -18,6 +18,8 @@ def process_bounding_octagon_for_gtfs_metadata(gtfs_representation):
     # Extract the octagon corners coordinates in the dataset representation and
     # Order the corners inside a bounding octagon
     # The order is clockwise, from the right bottom to the right top corner
+    # Documentation about dictionary comprehension can be found at:
+    # https://docs.python.org/3/tutorial/datastructures.html
     bounding_octagon = {
         f"{index+1}": corner for index, corner in enumerate(process_bounding_octagon_corner_strings(dataset))
     }
