@@ -42,7 +42,7 @@ from usecase.process_routes_count_by_type_for_gtfs_metadata import (
     process_routes_count_by_type_for_gtfs_metadata,
 )
 from usecase.process_agencies_count_for_gtfs_metadata import (
-    ProcessAgenciesCountForGtfsMetadata,
+    process_agencies_count_for_gtfs_metadata,
 )
 
 
@@ -210,7 +210,7 @@ if __name__ == "__main__":
             ProcessAllTimezonesForGtfsMetadata(dataset_representation).execute()
             dataset_representation = process_bounding_box_for_gtfs_metadata(dataset_representation)
             dataset_representation = process_bounding_octagon_for_gtfs_metadata(dataset_representation)
-            ProcessAgenciesCountForGtfsMetadata(dataset_representation).execute()
+            dataset_representation = process_agencies_count_for_gtfs_metadata(dataset_representation)
             dataset_representation = process_routes_count_by_type_for_gtfs_metadata(dataset_representation)
             dataset_representation = process_stops_count_by_type_for_gtfs_metadata(dataset_representation)
 
