@@ -7,7 +7,7 @@ from representation.gtfs_representation import GtfsRepresentation
 from usecase.process_main_timezone_for_gtfs_metadata import process_main_timezone_for_gtfs_metadata
 
 
-class ProcessMainTimezoneForGtfsMetadataTest(TestCase):
+class TestProcessMainTimezoneForGtfsMetadata(TestCase):
 
     def test_process_main_timezone_with_none(self):
         self.assertRaises(TypeError, process_main_timezone_for_gtfs_metadata, None)
