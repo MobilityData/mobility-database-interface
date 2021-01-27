@@ -31,7 +31,7 @@ def load_dataset(data_repository, dataset_representation_factory, datasets_infos
 
     # Load the datasets indicated in datasets_infos
     for entity_code, dataset_infos in datasets_infos.items():
-        print("--------------- Loading dataset : %s ---------------\n" % dataset_infos['path'])
+        print(F"--------------- Loading dataset : {dataset_infos['path']} ---------------\n")
         dataset_representation = dataset_representation_factory.build_representation(dataset_type,
                                                                                      entity_code,
                                                                                      dataset_infos['path'],
