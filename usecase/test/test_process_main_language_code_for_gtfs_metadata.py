@@ -7,7 +7,7 @@ from representation.gtfs_representation import GtfsRepresentation
 from usecase.process_main_language_code_for_gtfs_metadata import process_main_language_code_for_gtfs_metadata
 
 
-class ProcessMainLanguageCodeForGtfsMetadataTest(TestCase):
+class TestProcessMainLanguageCodeForGtfsMetadata(TestCase):
 
     def test_process_main_language_code_with_none(self):
         self.assertRaises(TypeError, process_main_language_code_for_gtfs_metadata, None)
