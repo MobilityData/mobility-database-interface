@@ -17,5 +17,5 @@ def process_main_language_code_for_gtfs_metadata(gtfs_representation):
 
     # Set the main language code in the GTFS representation
     gtfs_representation.set_metadata_main_language_code(main_language_code)
-    
+
     return gtfs_representation
