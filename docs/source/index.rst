@@ -200,10 +200,10 @@ Source documentation
    :show-inheritance:
 
 
-:mod:`usecase.process_end_service_date_for_gtfs_metadata`
+:mod:`usecase.process_service_date_for_gtfs_metadata`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: usecase.process_end_service_date_for_gtfs_metadata
+.. automodule:: usecase.process_service_date_for_gtfs_metadata
    :members:
    :undoc-members:
    :show-inheritance:
@@ -240,15 +240,6 @@ Source documentation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: usecase.process_routes_count_by_type_for_gtfs_metadata
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-:mod:`usecase.process_start_service_date_for_gtfs_metadata`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: usecase.process_start_service_date_for_gtfs_metadata
    :members:
    :undoc-members:
    :show-inheritance:
