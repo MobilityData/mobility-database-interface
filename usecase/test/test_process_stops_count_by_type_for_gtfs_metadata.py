@@ -11,7 +11,7 @@ from usecase.process_stops_count_by_type_for_gtfs_metadata import (
 )
 
 
-class ProcessStopsCountByTypeForGtfsMetadataTest(TestCase):
+class TestProcessStopsCountByTypeForGtfsMetadata(TestCase):
 
     def test_process_stops_count_with_none_gtfs_representation_should_raise_exception(self):
         self.assertRaises(TypeError, process_stops_count_by_type_for_gtfs_metadata, None)

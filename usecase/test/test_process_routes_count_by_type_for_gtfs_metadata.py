@@ -7,7 +7,7 @@ from representation.gtfs_representation import GtfsRepresentation
 from usecase.process_routes_count_by_type_for_gtfs_metadata import process_routes_count_by_type_for_gtfs_metadata
 
 
-class ProcessRoutesCountByTypeForGtfsMetadataTest(TestCase):
+class TestProcessRoutesCountByTypeForGtfsMetadata(TestCase):
 
     def test_process_routes_count_with_none_gtfs_representation_should_raise_exception(self):
         self.assertRaises(TypeError, process_routes_count_by_type_for_gtfs_metadata, None)
