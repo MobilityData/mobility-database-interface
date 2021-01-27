@@ -6,7 +6,7 @@ MD5_HASH_KEY = "md5"
 
 
 def process_md5(paths_to_datasets, previous_md5_hashes):
-    """Execute the ``ProcessMd5`` use case. Removes the datasets for which the MD5 hash is already in the database.
+    """Computes the MD5 hash of the datasets. Removes the datasets for which the MD5 hash is already in the database.
     N.B.: a dataset for which the MD5 hash is not in the database represents a new dataset version.
     :param paths_to_datasets: The datasets for which to process MD5 hash verification. The `datasets` must be
     a dictionary, where a key is an entity code and a value is a path to a dataset zip file.
