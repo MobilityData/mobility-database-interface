@@ -24,7 +24,7 @@ from usecase.process_bounding_box_for_gtfs_metadata import (
 from usecase.process_bounding_octagon_for_gtfs_metadata import (
     process_bounding_octagon_for_gtfs_metadata,
 )
-from usecase.process_md5 import ProcessMd5
+from usecase.process_md5 import process_md5
 from usecase.process_service_date_for_gtfs_metadata import (
     process_start_service_date_for_gtfs_metadata,
     process_end_service_date_for_gtfs_metadata,
@@ -72,8 +72,7 @@ def process_data_md5(paths_to_datasets):
         entity_codes,
     )
     previous_md5_hashes = extract_database_md5.execute()
-    process_md5 = ProcessMd5(paths_to_datasets, previous_md5_hashes)
-    return process_md5.execute()
+    return process_md5(paths_to_datasets, previous_md5_hashes)
 
 
 def load_data(
