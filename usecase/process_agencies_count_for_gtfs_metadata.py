@@ -15,5 +15,7 @@ def process_agencies_count_for_gtfs_metadata(gtfs_representation):
     # Count agencies
     agencies_count = dataset.agency['agency_name'].size
 
+    # Set the main timezone in the GTFS representation
     gtfs_representation.set_metadata_agencies_count(agencies_count)
+    
     return gtfs_representation
