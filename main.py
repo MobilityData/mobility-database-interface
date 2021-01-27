@@ -10,7 +10,7 @@ from usecase.extract_sources_url import ExtractSourcesUrl
 from usecase.extract_database_md5 import ExtractDatabaseMd5
 from usecase.load_dataset import LoadDataset
 from usecase.process_main_language_code_for_gtfs_metadata import (
-    ProcessMainLanguageCodeForGtfsMetadata,
+    process_main_language_code_for_gtfs_metadata,
 )
 from usecase.process_main_timezone_for_gtfs_metadata import (
     ProcessMainTimezoneForGtfsMetadata,
@@ -205,7 +205,7 @@ if __name__ == "__main__":
             dataset_representation = process_end_service_date_for_gtfs_metadata(dataset_representation)
             ProcessStartTimestampForGtfsMetadata(dataset_representation).execute()
             ProcessEndTimestampForGtfsMetadata(dataset_representation).execute()
-            ProcessMainLanguageCodeForGtfsMetadata(dataset_representation).execute()
+            dataset_representation = process_main_language_code_for_gtfs_metadata(dataset_representation)
             ProcessMainTimezoneForGtfsMetadata(dataset_representation).execute()
             ProcessAllTimezonesForGtfsMetadata(dataset_representation).execute()
             dataset_representation = process_bounding_box_for_gtfs_metadata(dataset_representation)
