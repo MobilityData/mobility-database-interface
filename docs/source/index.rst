@@ -263,15 +263,6 @@ Source documentation
    :show-inheritance:
 
 
-:mod:`utilities.external_utils`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: utilities.external_utils
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 
 Indices and tables
 -------------------
