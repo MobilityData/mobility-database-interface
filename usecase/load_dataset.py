@@ -25,13 +25,13 @@ def load_dataset(data_repository, dataset_representation_factory, datasets_infos
             not isinstance(datasets_infos, dict)
             and not all(key in datasets_infos for key in (PATH_TO_DATASET_KEY, MD5_HASH_KEY))
     ):
-        raise TypeError(F"Datasets must be a valid dictionary, with keys {PATH_TO_DATASET_KEY} and {MD5_HASH_KEY}.")
+        raise TypeError(f"Datasets must be a valid dictionary, with keys {PATH_TO_DATASET_KEY} and {MD5_HASH_KEY}.")
     if dataset_type not in [GTFS_TYPE, GBFS_TYPE]:
-        raise TypeError(F"Dataset type must be a valid dataset type - {GTFS_TYPE} or {GBFS_TYPE}.")
+        raise TypeError(f"Dataset type must be a valid dataset type - {GTFS_TYPE} or {GBFS_TYPE}.")
 
     # Load the datasets indicated in datasets_infos
     for entity_code, dataset_infos in datasets_infos.items():
-        print(F"--------------- Loading dataset : {dataset_infos['path']} ---------------\n")
+        print(f"--------------- Loading dataset : {dataset_infos['path']} ---------------\n")
         dataset_representation = dataset_representation_factory.build_representation(dataset_type,
                                                                                      entity_code,
                                                                                      dataset_infos['path'],
