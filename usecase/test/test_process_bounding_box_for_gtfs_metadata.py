@@ -9,7 +9,7 @@ from usecase.process_bounding_box_for_gtfs_metadata import (
 )
 
 
-class ProcessBoundingBoxForGtfsMetadataTest(TestCase):
+class TestProcessBoundingBoxForGtfsMetadata(TestCase):
     def test_process_bounding_box_with_none_gtfs_representation_should_raise_exception(
         self,
     ):
