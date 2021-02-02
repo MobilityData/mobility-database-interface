@@ -4,7 +4,7 @@ from requests import HTTPError
 
 
 def download_dataset_as_zip(path_to_data, urls):
-    """Execute the ``DownloadDatasetAsZip`` use case.
+    """Download datasets as zip for the given urls.
     :param path_to_data: The path to the folder where to store the dataset zip files.
     :param urls: URLs of the dataset zip files to download.
     :return: The paths to the downloaded dataset zip files.
