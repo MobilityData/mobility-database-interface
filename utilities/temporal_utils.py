@@ -56,16 +56,15 @@ def get_gtfs_dates_by_type(dataset, date_type):
 def get_gtfs_dates_from_calendar(start_or_end_date_key, dataset_calendar, dates_per_service_id_dataframe):
     for index, row in dataset_calendar.iterrows():
         row_date_as_datetime = datetime.strptime(row[start_or_end_date_key], DATE_FORMAT)
+        date_day_as_int = int(row_date_as_datetime.strftime("%w"))
         if start_or_end_date_key == START_DATE:
             timedelta_operator = operator.add
             # Compute the number of days to reach next monday
-            start_date_day_as_int = int(row_date_as_datetime.strftime("%w"))
-            day_offset_to_monday = abs((start_date_day_as_int - 1) % -7)
+            day_offset_to_monday = abs((date_day_as_int - 1) % -7)
         elif start_or_end_date_key == END_DATE:
             timedelta_operator = operator.sub
             # Compute the number of days to reach previous monday
-            end_date_day_as_int = int(row_date_as_datetime.strftime("%w"))
-            day_offset_to_monday = (end_date_day_as_int - 1) % 7
+            day_offset_to_monday = (date_day_as_int - 1) % 7
         else:
             raise Exception("Invalid value for start_or_end_date_key, must be 'start_date' or 'end_date")
 
