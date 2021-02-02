@@ -2,9 +2,7 @@ from unittest import TestCase, mock
 from unittest.mock import MagicMock
 from repository.data_repository import DataRepository
 from representation.dataset_representation_factory import DatasetRepresentationFactory
-from usecase.load_dataset import load_dataset
-
-GTFS_TYPE = "GTFS"
+from usecase.load_dataset import load_dataset, GTFS_TYPE
 
 
 class TestLoadDataset(TestCase):

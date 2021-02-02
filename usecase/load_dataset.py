@@ -31,11 +31,11 @@ def load_dataset(data_repository, dataset_representation_factory, datasets_infos
 
     # Load the datasets indicated in datasets_infos
     for entity_code, dataset_infos in datasets_infos.items():
-        print(f"--------------- Loading dataset : {dataset_infos['path']} ---------------\n")
+        print(f"--------------- Loading dataset : {dataset_infos[PATH_TO_DATASET_KEY]} ---------------\n")
         dataset_representation = dataset_representation_factory.build_representation(dataset_type,
                                                                                      entity_code,
-                                                                                     dataset_infos['path'],
-                                                                                     dataset_infos['md5'])
+                                                                                     dataset_infos[PATH_TO_DATASET_KEY],
+                                                                                     dataset_infos[MD5_HASH_KEY])
         data_repository.add_dataset_representation(entity_code, dataset_representation)
 
     return data_repository
