@@ -7,7 +7,7 @@ from representation.gtfs_representation import GtfsRepresentation
 from usecase.process_timestamp_for_gtfs_metadata import process_start_timestamp_for_gtfs_metadata
 
 
-class ProcessStartTimestampForGtfsMetadataTest(TestCase):
+class TestProcessStartTimestampForGtfsMetadata(TestCase):
 
     def test_process_start_timestamp_with_none_gtfs_representation_should_raise_exception(self):
         self.assertRaises(TypeError, process_start_timestamp_for_gtfs_metadata, None)

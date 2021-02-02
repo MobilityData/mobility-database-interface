@@ -35,10 +35,9 @@ def process_end_timestamp_for_gtfs_metadata(gtfs_representation):
 
 
 def process_timestamp_for_gtfs_metadata(gtfs_representation, timestamp_map):
-    """Execute the ``ProcessStartTimestampForGtfsMetadata`` or ``ProcessEndTimestampForGtfsMetadata`` use case
-    depending on which timestamp_map it receives.
-    Process the start/end timestamp using the `agency`,
-    `calendar`, `calendar_dates`, `trips` and `stop_times` files from the GTFS dataset of the representation.
+    """Process the start/end timestamp using the `agency`,
+    `calendar`, `calendar_dates`, `trips` and `stop_times` files from the GTFS dataset
+    of the representation, depending on which timestamp_map it receives.
     Add the end timestamp to the representation metadata once processed.
     :param gtfs_representation: The representation of the GTFS dataset to process.
     :param timestamp_map: either START_TIMESTAMP_MAP or END_TIMESTAMP_MAP
@@ -72,7 +71,7 @@ def process_timestamp_for_gtfs_metadata(gtfs_representation, timestamp_map):
     # Compute UTC offset for the GTFS dataset
     timezone_offset = get_gtfs_timezone_utc_offset(dataset)
 
-    # Build timestamp string in ISO 8601 YYYY-MM-DDThh:mm:ss±hh:mm format
+    # Build and set timestamp string in ISO 8601 YYYY-MM-DDThh:mm:ss±hh:mm format
     timestamp = service_date.strftime(TIMESTAMP_FORMAT) + "T" + stop_time + timezone_offset
     getattr(gtfs_representation, timestamp_map[TIMESTAMP_SETTER])(timestamp)
 
