@@ -28,8 +28,11 @@ class DownloadDatasetAsZip:
                 print("--------------- Downloading URL : %s ---------------\n" % url)
                 zip_name = url[url.rfind("/")+1:len(url)]
                 zip_path = self.data_folder_path + '%s_%s' % (entity_code, zip_name)
-                zip_file = requests.get(url, allow_redirects=True)
-                open(zip_path, 'wb').write(zip_file.content)
+                zip_file_res = requests.get(url, allow_redirects=True, timeout=None)
+                zip_file_res.raise_for_status()
+                with open(zip_path, 'wb') as zip_file:
+                    zip_file.write(zip_file_res.content)
+
                 paths_to_datasets[entity_code] = zip_path
                 print("Success : %s_%s downloaded in %s\n" % (entity_code, zip_name, self.data_folder_path))
             except Exception as e:

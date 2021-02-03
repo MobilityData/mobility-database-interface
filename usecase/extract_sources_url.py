@@ -1,79 +1,76 @@
-from request_manager.api_request_manager import ApiRequestManager
-from request_manager.sparql_request_manager import SparqlRequestManager
-from utilities.constant import GTFS_CATALOG_OF_SOURCES, GBFS_CATALOG_OF_SOURCES
+import requests
+from request_manager.sparql_request_helper import sparql_request
+from utilities.constants import (
+    GTFS_CATALOG_OF_SOURCES, GBFS_CATALOG_OF_SOURCES,
+    DATASET_VERSION_ENTITY_CODE_FIRST_INDEX,
+    DATASET_VERSION_ENTITY_CODE_LAST_INDEX,
+    ACTION, IDS, LANGUAGES, FORMAT,
+    ENTITIES, CLAIMS, MAINSNAK, DATAVALUE, VALUE,
+    WB_GET_ENTITIES, RESULTS, BINDINGS
+)
+from utilities.validators import validate_urls
 
 
-class ExtractSourcesUrl:
-    # Define index values for entity code in response retrieved by SPARQL query
-    ENTITY_CODE_FIRST_INDEX = 37
-    ENTITY_CODE_LAST_INDEX = 40
-
-    def __init__(self, api_request_manager, sparql_request_manager, dataset_type="GTFS", specific_download=False,
+def extract_source_url(api_url, sparql_api, dataset_type="GTFS", specific_download=False,
                  specific_entity_code=None):
-        """Constructor for ``ExtractSourcesUrl``.
-        :param api_request_manager: API request manager used to process API requests.
-        :param sparql_request_manager: SPARQL request manager used to process SPARQL queries.
-        :param dataset_type: Dataset type, GTFS or GBFS. Default to GTFS.
-        :param specific_download: True if the URL must be extracted for a specific dataset, false otherwise.
-        :param specific_entity_code: Entity code of the specific dataset for which the URL must be extracted.
-        Required if `specific_download` is set to True.
-        """
-        try:
-            if api_request_manager is None or not isinstance(api_request_manager, ApiRequestManager):
-                raise TypeError("API request manager must be a valid ApiRequestManager.")
-            self.api_request_manager = api_request_manager
-            if sparql_request_manager is None or not isinstance(sparql_request_manager, SparqlRequestManager):
-                raise TypeError("SPARQL request manager must be a valid SparqlRequestManager.")
-            self.sparql_request_manager = sparql_request_manager
+    """Extracts a list of urls of a given dataset
+    :param api_url: either STAGING_API_URL or PRODUCTION_API_URL in utilities/constants.py
+    :param sparql_api: either STAGING_SPARQL_URL or PRODUCTION_SPARQL_URL in utilities/constants.py
+    :param dataset_type: Dataset type, GTFS or GBFS. Default to GTFS.
+    :param specific_download: True if the URL must be extracted for a specific dataset, false otherwise.
+    :param specific_entity_code: Entity code of the specific dataset for which the URL must be extracted.
+    Required if `specific_download` is set to True.
+    :return: URLs of the datasets in the database, for the `dataset_type` passed in the constructor.
+    """
 
-            if dataset_type == "GTFS":
-                self.catalog_code = GTFS_CATALOG_OF_SOURCES
-            elif dataset_type == "GBFS":
-                self.catalog_code = GBFS_CATALOG_OF_SOURCES
+    validate_urls(api_url, sparql_api)
+    if dataset_type == "GTFS":
+        catalog_code = GTFS_CATALOG_OF_SOURCES
+    elif dataset_type == "GBFS":
+        catalog_code = GBFS_CATALOG_OF_SOURCES
+    else:
+        raise NotImplementedError()
 
-            self.specific_download = specific_download
-            self.specific_entity_code = specific_entity_code
-        except Exception as e:
-            raise e
+    entity_codes = []
+    urls = {}
 
-    def execute(self):
-        """Execute the ``ExtractSourcesUrl`` use case.
-        :return: URLs of the datasets in the database, for the `dataset_type` passed in the constructor.
-        """
-        entity_codes = []
-        urls = {}
+    # Retrieves the entity codes for which we want to download the dataset
+    if not specific_download:
 
-        # Retrieves the entity codes for which we want to download the dataset
-        if not self.specific_download:
-            sparql_response = self.sparql_request_manager.execute_get(
-                """
-                SELECT *
-                WHERE 
-                {
-                    ?a 
-                    <http://wikibase.svc/prop/statement/P65>
-                    <http://wikibase.svc/entity/%s>
-                }""" % self.catalog_code
+        sparql_response = sparql_request(sparql_api,
+            f"""
+            SELECT *
+            WHERE 
+            {{
+                ?a 
+                <http://wikibase.svc/prop/statement/P65>
+                <http://wikibase.svc/entity/{catalog_code}>
+            }}"""  # double curly bracket escapes a curly bracket
+        )
+
+        for result in sparql_response[RESULTS][BINDINGS]:
+            entity_codes.append(
+                result['a'][VALUE][DATASET_VERSION_ENTITY_CODE_FIRST_INDEX:DATASET_VERSION_ENTITY_CODE_LAST_INDEX]
             )
+    else:
+        entity_codes.append(specific_entity_code)
 
-            for result in sparql_response["results"]["bindings"]:
-                entity_codes.append(result['a']['value'][self.ENTITY_CODE_FIRST_INDEX:self.ENTITY_CODE_LAST_INDEX])
-        else:
-            entity_codes.append(self.specific_entity_code)
+    # Retrieves the sources' stable URL for the entity codes found
+    for entity_code in entity_codes:
+        params = {
+            ACTION: WB_GET_ENTITIES,
+            IDS: f"{entity_code}",
+            LANGUAGES: "en",
+            FORMAT: "json"
+        }
+        api_response = requests.get(api_url, params)
+        api_response.raise_for_status()
+        json_response = api_response.json()
 
-        # Retrieves the sources' stable URL for the entity codes found
-        for entity_code in entity_codes:
-            params = {
-                "action": "wbgetentities",
-                "ids": "%s" % entity_code,
-                "languages": "en",
-                "format": "json"
-            }
-            api_response = self.api_request_manager.execute_get(params)
+        if ENTITIES not in json_response:
+            continue
+        for link in json_response[ENTITIES][entity_code][CLAIMS]["P55"]:
+            if "openmobilitydata.org" not in link[MAINSNAK][DATAVALUE][VALUE]:
+                urls[entity_code] = link[MAINSNAK][DATAVALUE][VALUE]
 
-            if "entities" in api_response:
-                for link in api_response["entities"][entity_code]["claims"]["P55"]:
-                    if "openmobilitydata.org" not in link["mainsnak"]["datavalue"]["value"]:
-                        urls[entity_code] = link["mainsnak"]["datavalue"]["value"]
-
-        return urls
+    return urls

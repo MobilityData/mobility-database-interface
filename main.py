@@ -1,19 +1,18 @@
 import argparse
 import sys
+
 from guppy import hpy
+
 from repository.data_repository import DataRepository
 from representation.dataset_representation_factory import DatasetRepresentationFactory
-from request_manager.request_manager_containers import Managers
+# from request_manager.request_manager_containers import Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
 from usecase.download_dataset_as_zip import DownloadDatasetAsZip
-from usecase.extract_sources_url import ExtractSourcesUrl
-from usecase.extract_database_md5 import ExtractDatabaseMd5
+from usecase.extract_database_md5 import extract_database_md5
+from usecase.extract_sources_url import extract_source_url
 from usecase.load_dataset import LoadDataset
-from usecase.process_main_language_code_for_gtfs_metadata import (
-    process_main_language_code_for_gtfs_metadata,
-)
-from usecase.process_main_timezone_for_gtfs_metadata import (
-    process_main_timezone_for_gtfs_metadata,
+from usecase.process_agencies_count_for_gtfs_metadata import (
+    process_agencies_count_for_gtfs_metadata,
 )
 from usecase.process_all_timezones_for_gtfs_metadata import (
     ProcessAllTimezonesForGtfsMetadata,
@@ -24,7 +23,19 @@ from usecase.process_bounding_box_for_gtfs_metadata import (
 from usecase.process_bounding_octagon_for_gtfs_metadata import (
     process_bounding_octagon_for_gtfs_metadata,
 )
+from usecase.process_end_timestamp_for_gtfs_metadata import (
+    ProcessEndTimestampForGtfsMetadata,
+)
+from usecase.process_main_language_code_for_gtfs_metadata import (
+    process_main_language_code_for_gtfs_metadata,
+)
+from usecase.process_main_timezone_for_gtfs_metadata import (
+    process_main_timezone_for_gtfs_metadata,
+)
 from usecase.process_md5 import process_md5
+from usecase.process_routes_count_by_type_for_gtfs_metadata import (
+    process_routes_count_by_type_for_gtfs_metadata,
+)
 from usecase.process_service_date_for_gtfs_metadata import (
     process_start_service_date_for_gtfs_metadata,
     process_end_service_date_for_gtfs_metadata,
@@ -32,18 +43,10 @@ from usecase.process_service_date_for_gtfs_metadata import (
 from usecase.process_start_timestamp_for_gtfs_metadata import (
     ProcessStartTimestampForGtfsMetadata,
 )
-from usecase.process_end_timestamp_for_gtfs_metadata import (
-    ProcessEndTimestampForGtfsMetadata,
-)
 from usecase.process_stops_count_by_type_for_gtfs_metadata import (
     process_stops_count_by_type_for_gtfs_metadata,
 )
-from usecase.process_routes_count_by_type_for_gtfs_metadata import (
-    process_routes_count_by_type_for_gtfs_metadata,
-)
-from usecase.process_agencies_count_for_gtfs_metadata import (
-    process_agencies_count_for_gtfs_metadata,
-)
+from utilities.constants import STAGING_SPARQL_URL, STAGING_API_URL
 
 
 def download_data(
@@ -52,26 +55,24 @@ def download_data(
     specific_download=False,
     specific_entity_code=None,
 ):
-    extract_sources_url = ExtractSourcesUrl(
-        Managers.staging_api_request_manager(),
-        Managers.staging_sparql_request_manager(),
+    urls = extract_source_url(
+        STAGING_API_URL,
+        STAGING_SPARQL_URL,
         dataset_type,
         specific_download,
         specific_entity_code,
     )
-    urls = extract_sources_url.execute()
     download_dataset = DownloadDatasetAsZip(path_to_data, urls)
     return download_dataset.execute()
 
 
 def process_data_md5(paths_to_datasets):
     entity_codes = list(paths_to_datasets.keys())
-    extract_database_md5 = ExtractDatabaseMd5(
-        Managers.staging_api_request_manager(),
-        Managers.staging_sparql_request_manager(),
+    previous_md5_hashes = extract_database_md5(
+        STAGING_API_URL,
+        STAGING_SPARQL_URL,
         entity_codes,
     )
-    previous_md5_hashes = extract_database_md5.execute()
     return process_md5(paths_to_datasets, previous_md5_hashes)
 
 

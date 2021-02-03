@@ -31,7 +31,7 @@ def process_md5(paths_to_datasets, previous_md5_hashes):
         path_to_dataset = paths_to_datasets[entity_code]
         previous_md5_hash = previous_md5_hashes[entity_code]
 
-        print(F"--------------- Processing MD5 : {path_to_dataset} ---------------\n")
+        print(f"--------------- Processing MD5 : {path_to_dataset} ---------------\n")
         try:
             with open(path_to_dataset, "rb") as f:
                 while data := f.read(DATA_CHUNK_BYTE_SIZE):
@@ -42,7 +42,7 @@ def process_md5(paths_to_datasets, previous_md5_hashes):
         md5_hash = md5_hash.hexdigest()
         if md5_hash not in previous_md5_hash:
             paths_to_datasets_and_md5[entity_code] = {PATH_TO_DATASET_KEY: path_to_dataset, MD5_HASH_KEY: md5_hash}
-            print(F"Success : new MD5 hash {md5_hash} for {path_to_dataset}, dataset kept for further processing\n")
+            print(f"Success : new MD5 hash {md5_hash} for {path_to_dataset}, dataset kept for further processing\n")
         else:
             print(f"Success : MD5 hash {md5_hash} already exists for {path_to_dataset}, dataset discarded\n")
 
