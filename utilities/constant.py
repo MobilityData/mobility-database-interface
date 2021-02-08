@@ -1,6 +1,6 @@
 # Entity codes from the Mobility database
-GTFS_CATALOG_OF_SOURCES = "Q78"
-GBFS_CATALOG_OF_SOURCES = "Q86"
+GTFS_CATALOG_OF_SOURCES_CODE = "Q78"
+GBFS_CATALOG_OF_SOURCES_CODE = "Q86"
 
 # External constants
 STAGING_SPARQL_URL = "http://staging.mobilitydatabase.org:8282//proxy/wdqs/bigdata/namespace/wdq/sparql"

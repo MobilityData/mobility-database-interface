@@ -1,6 +1,6 @@
 from request_manager.api_request_manager import ApiRequestManager
 from request_manager.sparql_request_manager import SparqlRequestManager
-from utilities.constant import GTFS_CATALOG_OF_SOURCES, GBFS_CATALOG_OF_SOURCES
+from utilities.constant import GTFS_CATALOG_OF_SOURCES_CODE, GBFS_CATALOG_OF_SOURCES_CODE
 
 
 class ExtractDatabaseMd5:
@@ -61,11 +61,11 @@ class ExtractDatabaseMd5:
             # and initialize entity element in the MD5 hashes dictionary. This operation makes sure that an entity
             # with no MD5 hash in the database, but in a catalog of sources, gets initialized with an empty set
             # in the MD5 hashes dictionary (required for further MD5 processing).
-            if (GTFS_CATALOG_OF_SOURCES in dataset_version_codes or
-                GBFS_CATALOG_OF_SOURCES in dataset_version_codes):
+            if (GTFS_CATALOG_OF_SOURCES_CODE in dataset_version_codes or
+                GBFS_CATALOG_OF_SOURCES_CODE in dataset_version_codes):
 
-                dataset_version_codes.discard(GTFS_CATALOG_OF_SOURCES)
-                dataset_version_codes.discard(GBFS_CATALOG_OF_SOURCES)
+                dataset_version_codes.discard(GTFS_CATALOG_OF_SOURCES_CODE)
+                dataset_version_codes.discard(GBFS_CATALOG_OF_SOURCES_CODE)
                 previous_md5_hashes[entity_code] = set()
 
             # Retrieves the MD5 hashes for the dataset version codes found.
