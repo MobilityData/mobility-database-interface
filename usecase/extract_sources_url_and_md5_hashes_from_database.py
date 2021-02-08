@@ -64,7 +64,19 @@ SPARQL_SOURCE_REQUEST = (
     }}""")
 
 
-def extract_from_database(api_request_manager, sparql_request_manager, extract_database_map):
+def extract_gtfs_sources_url_and_md5_hashes_from_database(api_request_manager, sparql_request_manager):
+    return extract_sources_url_and_md5_hashes_from_database(api_request_manager,
+                                                            sparql_request_manager,
+                                                            GTFS_SOURCES_URL_MAP)
+
+
+def extract_gbfs_sources_url_and_md5_hashes_from_database(api_request_manager, sparql_request_manager):
+    return extract_sources_url_and_md5_hashes_from_database(api_request_manager,
+                                                            sparql_request_manager,
+                                                            GBFS_SOURCES_URL_MAP)
+
+
+def extract_sources_url_and_md5_hashes_from_database(api_request_manager, sparql_request_manager, extract_database_map):
     """Constructor for ``ExtractSourcesUrl``.
     :param api_request_manager: API request manager used to process API requests.
     :param sparql_request_manager: SPARQL request manager used to process SPARQL queries.

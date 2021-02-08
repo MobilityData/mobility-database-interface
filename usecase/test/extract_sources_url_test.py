@@ -1,7 +1,7 @@
 from unittest import TestCase, mock
 from request_manager.api_request_manager import ApiRequestManager
 from request_manager.sparql_request_manager import SparqlRequestManager
-from usecase.extract_sources_url import ExtractSourcesUrl
+from usecase.extract_sources_url_and_md5_hashes_from_database import ExtractSourcesUrl
 
 
 class ExtractSourcesUrlTest(TestCase):
