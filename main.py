@@ -7,8 +7,8 @@ from repository.data_repository import DataRepository
 from representation.dataset_representation_factory import DatasetRepresentationFactory
 from request_manager.request_manager_containers import Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
-from usecase.extract_database_md5 import ExtractDatabaseMd5
 from usecase.download_dataset_as_zip import download_dataset_as_zip
+from usecase.extract_database_md5 import ExtractDatabaseMd5
 from usecase.extract_sources_url import ExtractSourcesUrl
 from usecase.process_agencies_count_for_gtfs_metadata import (
     process_agencies_count_for_gtfs_metadata,
