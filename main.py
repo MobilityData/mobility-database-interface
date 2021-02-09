@@ -8,7 +8,7 @@ from usecase.compare_gtfs_stops import CompareGtfsStops
 from usecase.download_dataset_as_zip import DownloadDatasetAsZip
 from usecase.extract_sources_url import ExtractSourcesUrl
 from usecase.extract_database_md5 import ExtractDatabaseMd5
-from usecase.load_dataset import LoadDataset
+from usecase.load_dataset import load_dataset
 from usecase.process_main_language_code_for_gtfs_metadata import (
     process_main_language_code_for_gtfs_metadata,
 )
@@ -78,10 +78,7 @@ def process_data_md5(paths_to_datasets):
 def load_data(
     data_repository, dataset_representation_factory, datasets, data_type="GTFS"
 ):
-    load_dataset = LoadDataset(
-        data_repository, dataset_representation_factory, datasets, data_type
-    )
-    return load_dataset.execute()
+    return load_dataset(data_repository, dataset_representation_factory, datasets, data_type)
 
 
 def compare_stops(dataset):
