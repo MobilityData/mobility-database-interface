@@ -7,7 +7,7 @@ from repository.data_repository import DataRepository
 from representation.dataset_representation_factory import DatasetRepresentationFactory
 from request_manager.request_manager_containers import Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
-from usecase.download_dataset_as_zip import DownloadDatasetAsZip
+from usecase.download_dataset_as_zip import download_dataset_as_zip
 from usecase.extract_database_md5 import ExtractDatabaseMd5
 from usecase.extract_sources_url import ExtractSourcesUrl
 from usecase.process_agencies_count_for_gtfs_metadata import (
@@ -60,8 +60,8 @@ def download_data(
         specific_entity_code,
     )
     urls = extract_sources_url.execute()
-    download_dataset = DownloadDatasetAsZip(path_to_data, urls)
-    return download_dataset.execute()
+    download_dataset = download_dataset_as_zip(path_to_data, urls)
+    return download_dataset
 
 
 def process_data_md5(paths_to_datasets):
