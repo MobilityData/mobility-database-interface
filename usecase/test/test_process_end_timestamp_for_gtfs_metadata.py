@@ -4,25 +4,18 @@ from unittest.mock import MagicMock, PropertyMock
 from gtfs_kit.feed import Feed
 from representation.gtfs_metadata import GtfsMetadata
 from representation.gtfs_representation import GtfsRepresentation
-from usecase.process_end_timestamp_for_gtfs_metadata import ProcessEndTimestampForGtfsMetadata
+from usecase.process_timestamp_for_gtfs_metadata import process_end_timestamp_for_gtfs_metadata
 
 
-class ProcessEndTimestampForGtfsMetadataTest(TestCase):
+class TestProcessEndTimestampForGtfsMetadata(TestCase):
 
     def test_process_end_timestamp_with_none_gtfs_representation_should_raise_exception(self):
-        self.assertRaises(TypeError, ProcessEndTimestampForGtfsMetadata, None)
+        self.assertRaises(TypeError, process_end_timestamp_for_gtfs_metadata, None)
 
     def test_process_end_timestamp_with_invalid_gtfs_representation_should_raise_exception(self):
         mock_gtfs_representation = MagicMock()
         mock_gtfs_representation.__class__ = str
-        self.assertRaises(TypeError, ProcessEndTimestampForGtfsMetadata, mock_gtfs_representation)
-
-    @mock.patch('representation.gtfs_representation.GtfsRepresentation')
-    def test_process_end_timestamp_with_valid_gtfs_representation_should_return_instance(self,
-                                                                                           mock_gtfs_representation):
-        mock_gtfs_representation.__class__ = GtfsRepresentation
-        under_test = ProcessEndTimestampForGtfsMetadata(mock_gtfs_representation)
-        self.assertIsInstance(under_test, ProcessEndTimestampForGtfsMetadata)
+        self.assertRaises(TypeError, process_end_timestamp_for_gtfs_metadata, mock_gtfs_representation)
 
     @mock.patch('representation.gtfs_representation.GtfsRepresentation')
     @mock.patch('gtfs_kit.feed.Feed')
@@ -56,7 +49,7 @@ class ProcessEndTimestampForGtfsMetadataTest(TestCase):
         mock_gtfs_representation.__class__ = GtfsRepresentation
         mock_gtfs_representation.get_dataset.return_value = mock_dataset
 
-        under_test = ProcessEndTimestampForGtfsMetadata(mock_gtfs_representation).execute()
+        under_test = process_end_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_gtfs_representation.get_dataset.assert_called_once()
         mock_calendar.assert_called()
