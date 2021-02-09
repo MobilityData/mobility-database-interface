@@ -95,6 +95,5 @@ class DatasetRepresentationFactoryTest(TestCase):
         mock_md5_hash = MagicMock()
         mock_md5_hash.__class__ = str
 
-        under_test = build_representation(str(mock_dataset_type), mock_entity_code,
-                                          mock_path_to_dataset, mock_md5_hash)
-        self.assertIsNone(under_test)
+        self.assertRaises(NotImplementedError, build_representation, str(mock_dataset_type),
+                          mock_entity_code, None, mock_md5_hash)

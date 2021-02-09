@@ -38,5 +38,4 @@ def build_gtfs_representation(entity_code, path_to_dataset, md5_hash):
 
 
 def build_gbfs_representation(entity_code, path_to_dataset, md5_hash):
-    # TODO
-    pass
+    raise NotImplementedError
