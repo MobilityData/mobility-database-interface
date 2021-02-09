@@ -66,48 +66,15 @@ Source documentation
    :show-inheritance:
 
 
-:mod:`request_manager.api_client`
+:mod:`request_manager.sparql_request_helper`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: request_manager.api_client
+.. automodule:: request_manager.sparql_request_helper
    :members:
    :undoc-members:
    :show-inheritance:
 
 
-:mod:`request_manager.api_request_manager`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: request_manager.api_request_manager
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-:mod:`request_manager.sparql_client`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: request_manager.sparql_client
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-:mod:`request_manager.sparql_request_manager`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: request_manager.sparql_request_manager
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-:mod:`request_manager.request_manager_containers`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: request_manager.request_manager_containers
-   :members:
-   :show-inheritance:
 
 
 :mod:`usecase.compare_gtfs_stops`
