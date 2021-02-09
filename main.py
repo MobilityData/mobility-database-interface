@@ -2,7 +2,6 @@ import argparse
 import sys
 from guppy import hpy
 from repository.data_repository import DataRepository
-from representation.dataset_representation_factory import DatasetRepresentationFactory
 from request_manager.request_manager_containers import Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
 from usecase.download_dataset_as_zip import DownloadDatasetAsZip
@@ -76,10 +75,10 @@ def process_data_md5(paths_to_datasets):
 
 
 def load_data(
-    data_repository, dataset_representation_factory, datasets, data_type="GTFS"
+    data_repository, datasets, data_type="GTFS"
 ):
     load_dataset = LoadDataset(
-        data_repository, dataset_representation_factory, datasets, data_type
+        data_repository, datasets, data_type
     )
     return load_dataset.execute()
 
@@ -168,9 +167,6 @@ if __name__ == "__main__":
     # Initialize DataRepository
     data_repository = DataRepository()
 
-    # Initialize DatasetRepresentationFactory
-    dataset_representation_factory = DatasetRepresentationFactory()
-
     # Process data
     if args["download"] is not None:
         # Download datasets zip files
@@ -191,7 +187,6 @@ if __name__ == "__main__":
         # Load the datasets in memory in the data repository
         data_repository = load_data(
             data_repository,
-            dataset_representation_factory,
             paths_to_datasets_and_md5,
             args["data_type"],
         )
