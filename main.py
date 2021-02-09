@@ -1,21 +1,22 @@
 import argparse
 import sys
+
 from guppy import hpy
+
 from repository.data_repository import DataRepository
 from request_manager.request_manager_containers import Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
-from usecase.download_dataset_as_zip import DownloadDatasetAsZip
-from usecase.extract_sources_url import ExtractSourcesUrl
-from usecase.extract_database_md5 import ExtractDatabaseMd5
+from usecase.download_dataset_as_zip import download_dataset_as_zip
+from usecase.process_agencies_count_for_gtfs_metadata import (
+    process_agencies_count_for_gtfs_metadata,
+)
+from usecase.extract_sources_url_and_md5_hashes_from_database import (
+    extract_gtfs_sources_url_and_md5_hashes_from_database,
+    extract_gbfs_sources_url_and_md5_hashes_from_database
+)
 from usecase.load_dataset import load_dataset
-from usecase.process_main_language_code_for_gtfs_metadata import (
-    process_main_language_code_for_gtfs_metadata,
-)
-from usecase.process_main_timezone_for_gtfs_metadata import (
-    process_main_timezone_for_gtfs_metadata,
-)
 from usecase.process_all_timezones_for_gtfs_metadata import (
-    ProcessAllTimezonesForGtfsMetadata,
+    process_all_timezones_for_gtfs_metadata,
 )
 from usecase.process_bounding_box_for_gtfs_metadata import (
     process_bounding_box_for_gtfs_metadata,
@@ -23,55 +24,27 @@ from usecase.process_bounding_box_for_gtfs_metadata import (
 from usecase.process_bounding_octagon_for_gtfs_metadata import (
     process_bounding_octagon_for_gtfs_metadata,
 )
+from usecase.process_main_language_code_for_gtfs_metadata import (
+    process_main_language_code_for_gtfs_metadata,
+)
+from usecase.process_main_timezone_for_gtfs_metadata import (
+    process_main_timezone_for_gtfs_metadata,
+)
 from usecase.process_md5 import process_md5
+from usecase.process_routes_count_by_type_for_gtfs_metadata import (
+    process_routes_count_by_type_for_gtfs_metadata,
+)
 from usecase.process_service_date_for_gtfs_metadata import (
     process_start_service_date_for_gtfs_metadata,
     process_end_service_date_for_gtfs_metadata,
 )
-from usecase.process_start_timestamp_for_gtfs_metadata import (
-    ProcessStartTimestampForGtfsMetadata,
-)
-from usecase.process_end_timestamp_for_gtfs_metadata import (
-    ProcessEndTimestampForGtfsMetadata,
-)
 from usecase.process_stops_count_by_type_for_gtfs_metadata import (
     process_stops_count_by_type_for_gtfs_metadata,
 )
-from usecase.process_routes_count_by_type_for_gtfs_metadata import (
-    process_routes_count_by_type_for_gtfs_metadata,
+from usecase.process_timestamp_for_gtfs_metadata import (
+    process_start_timestamp_for_gtfs_metadata,
+    process_end_timestamp_for_gtfs_metadata
 )
-from usecase.process_agencies_count_for_gtfs_metadata import (
-    process_agencies_count_for_gtfs_metadata,
-)
-
-
-def download_data(
-    path_to_data,
-    dataset_type="GTFS",
-    specific_download=False,
-    specific_entity_code=None,
-):
-    extract_sources_url = ExtractSourcesUrl(
-        Managers.staging_api_request_manager(),
-        Managers.staging_sparql_request_manager(),
-        dataset_type,
-        specific_download,
-        specific_entity_code,
-    )
-    urls = extract_sources_url.execute()
-    download_dataset = DownloadDatasetAsZip(path_to_data, urls)
-    return download_dataset.execute()
-
-
-def process_data_md5(paths_to_datasets):
-    entity_codes = list(paths_to_datasets.keys())
-    extract_database_md5 = ExtractDatabaseMd5(
-        Managers.staging_api_request_manager(),
-        Managers.staging_sparql_request_manager(),
-        entity_codes,
-    )
-    previous_md5_hashes = extract_database_md5.execute()
-    return process_md5(paths_to_datasets, previous_md5_hashes)
 
 
 def compare_stops(dataset):
@@ -161,19 +134,15 @@ if __name__ == "__main__":
     # Process data
     if args["download"] is not None:
         # Download datasets zip files
-        if args["all"] is not None:
-            paths_to_datasets = download_data(
-                args["path_to_tmp_data"], dataset_type=args["data_type"]
-            )
-        elif args["specific"] is not None:
-            paths_to_datasets = download_data(
-                args["path_to_tmp_data"],
-                specific_download=True,
-                specific_entity_code=args["specific"],
-            )
+        urls, previous_md5_hashes = extract_gtfs_sources_url_and_md5_hashes_from_database(
+            Managers.staging_api_request_manager(),
+            Managers.staging_sparql_request_manager()
+        )
+
+        paths_to_datasets = download_dataset_as_zip(args["path_to_tmp_data"], urls)
 
         # Process the MD5 hashes
-        paths_to_datasets_and_md5 = process_data_md5(paths_to_datasets)
+        paths_to_datasets_and_md5 = process_md5(paths_to_datasets, previous_md5_hashes)
 
         # Load the datasets in memory in the data repository
         data_repository = load_dataset(
@@ -189,11 +158,11 @@ if __name__ == "__main__":
         ) in data_repository.get_dataset_representations().items():
             dataset_representation = process_start_service_date_for_gtfs_metadata(dataset_representation)
             dataset_representation = process_end_service_date_for_gtfs_metadata(dataset_representation)
-            ProcessStartTimestampForGtfsMetadata(dataset_representation).execute()
-            ProcessEndTimestampForGtfsMetadata(dataset_representation).execute()
+            dataset_representation = process_start_timestamp_for_gtfs_metadata(dataset_representation)
+            dataset_representation = process_end_timestamp_for_gtfs_metadata(dataset_representation)
             dataset_representation = process_main_language_code_for_gtfs_metadata(dataset_representation)
             dataset_representation = process_main_timezone_for_gtfs_metadata(dataset_representation)
-            ProcessAllTimezonesForGtfsMetadata(dataset_representation).execute()
+            dataset_representation = process_all_timezones_for_gtfs_metadata(dataset_representation)
             dataset_representation = process_bounding_box_for_gtfs_metadata(dataset_representation)
             dataset_representation = process_bounding_octagon_for_gtfs_metadata(dataset_representation)
             dataset_representation = process_agencies_count_for_gtfs_metadata(dataset_representation)
