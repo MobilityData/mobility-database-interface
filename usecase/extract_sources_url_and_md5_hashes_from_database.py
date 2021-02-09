@@ -76,12 +76,13 @@ def extract_gbfs_sources_url_and_md5_hashes_from_database(api_request_manager, s
                                                             GBFS_SOURCES_URL_MAP)
 
 
-def extract_sources_url_and_md5_hashes_from_database(api_request_manager, sparql_request_manager, extract_database_map):
-    """Constructor for ``ExtractSourcesUrl``.
+def extract_sources_url_and_md5_hashes_from_database(api_request_manager, sparql_request_manager, data_type_map):
+    """ Extract the stable URLs and MD5 hashes from previous dataset versions
+    for each dataset of a data type in the database.
     :param api_request_manager: API request manager used to process API requests.
     :param sparql_request_manager: SPARQL request manager used to process SPARQL queries.
-    :param extract_database_map: Either SOURCES_URL_MAP or MD5_HASHES_MAP.
-    Required if `specific_download` is set to True.
+    :param data_type_map: Either SOURCES_URL_MAP or MD5_HASHES_MAP.
+    :return: the URLs and MD5 hashes for each dataset of a data type in the database.
     """
     if not isinstance(api_request_manager, ApiRequestManager):
         raise TypeError("API request manager must be a valid ApiRequestManager.")
@@ -92,7 +93,7 @@ def extract_sources_url_and_md5_hashes_from_database(api_request_manager, sparql
     previous_md5_hashes = {}
 
     # Retrieves the entity codes for which we want to download the dataset
-    sparql_response = sparql_request_manager.execute_get(extract_database_map[SPARQL_CATALOG_REQUEST])
+    sparql_response = sparql_request_manager.execute_get(data_type_map[SPARQL_CATALOG_REQUEST])
 
     for result in sparql_response[SPARQL_RESULTS_KEY][SPARQL_RESULT_CATEGORY_KEY]:
         entity_codes.append(result[SPARQL_FIELD_KEY][SPARQL_VALUE_KEY][SPARQL_ENTITY_CODE_FIRST_INDEX:
