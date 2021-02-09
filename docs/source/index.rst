@@ -128,19 +128,10 @@ Source documentation
    :show-inheritance:
 
 
-:mod:`usecase.extract_database_md5`
+:mod:`usecase.extract_sources_url_and_md5_hashes_from_database`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: usecase.extract_database_md5
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-:mod:`usecase.extract_sources_url`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: usecase.extract_sources_url
+.. automodule:: usecase.extract_sources_url_and_md5_hashes_from_database
    :members:
    :undoc-members:
    :show-inheritance:
@@ -209,15 +200,6 @@ Source documentation
    :show-inheritance:
 
 
-:mod:`usecase.process_end_timestamp_for_gtfs_metadata`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: usecase.process_end_timestamp_for_gtfs_metadata
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 :mod:`usecase.process_main_language_code_for_gtfs_metadata`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -245,10 +227,10 @@ Source documentation
    :show-inheritance:
 
 
-:mod:`usecase.process_start_timestamp_for_gtfs_metadata`
+:mod:`usecase.process_timestamp_for_gtfs_metadata`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: usecase.process_start_timestamp_for_gtfs_metadata
+.. automodule:: usecase.process_timestamp_for_gtfs_metadata
    :members:
    :undoc-members:
    :show-inheritance:
