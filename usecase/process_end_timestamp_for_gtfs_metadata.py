@@ -1,6 +1,7 @@
 import pandas as pd
-from representation.gtfs_representation import GtfsRepresentation
+
 from utilities.temporal_utils import get_gtfs_dates_by_type, get_gtfs_timezone_utc_offset, get_gtfs_stop_times_for_date
+from utilities.validators import validate_gtfs_representation
 
 
 class ProcessEndTimestampForGtfsMetadata:
@@ -8,12 +9,8 @@ class ProcessEndTimestampForGtfsMetadata:
         """Constructor for ``ProcessEndTimestampForGtfsMetadata``.
         :param gtfs_representation: The representation of the GTFS dataset to process.
         """
-        try:
-            if gtfs_representation is None or not isinstance(gtfs_representation, GtfsRepresentation):
-                raise TypeError("GTFS data representation must be a valid GtfsRepresentation.")
-            self.gtfs_representation = gtfs_representation
-        except Exception as e:
-            raise e
+        validate_gtfs_representation(gtfs_representation)
+        self.gtfs_representation = gtfs_representation
 
     def execute(self):
         """Execute the ``ProcessEndTimestampForGtfsMetadata`` use case. Process the end timestamp using the `agency`,
