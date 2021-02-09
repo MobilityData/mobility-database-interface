@@ -200,15 +200,6 @@ Source documentation
    :show-inheritance:
 
 
-:mod:`usecase.process_end_timestamp_for_gtfs_metadata`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: usecase.process_end_timestamp_for_gtfs_metadata
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 :mod:`usecase.process_main_language_code_for_gtfs_metadata`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -236,10 +227,10 @@ Source documentation
    :show-inheritance:
 
 
-:mod:`usecase.process_start_timestamp_for_gtfs_metadata`
+:mod:`usecase.process_timestamp_for_gtfs_metadata`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: usecase.process_start_timestamp_for_gtfs_metadata
+.. automodule:: usecase.process_timestamp_for_gtfs_metadata
    :members:
    :undoc-members:
    :show-inheritance:
