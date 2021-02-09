@@ -10,12 +10,12 @@ from usecase.compare_gtfs_stops import CompareGtfsStops
 from usecase.download_dataset_as_zip import DownloadDatasetAsZip
 from usecase.extract_database_md5 import ExtractDatabaseMd5
 from usecase.extract_sources_url import ExtractSourcesUrl
-from usecase.load_dataset import LoadDataset
 from usecase.process_agencies_count_for_gtfs_metadata import (
     process_agencies_count_for_gtfs_metadata,
 )
+from usecase.load_dataset import load_dataset
 from usecase.process_all_timezones_for_gtfs_metadata import (
-    ProcessAllTimezonesForGtfsMetadata,
+    process_all_timezones_for_gtfs_metadata,
 )
 from usecase.process_bounding_box_for_gtfs_metadata import (
     process_bounding_box_for_gtfs_metadata,
@@ -78,10 +78,7 @@ def process_data_md5(paths_to_datasets):
 def load_data(
     data_repository, dataset_representation_factory, datasets, data_type="GTFS"
 ):
-    load_dataset = LoadDataset(
-        data_repository, dataset_representation_factory, datasets, data_type
-    )
-    return load_dataset.execute()
+    return load_dataset(data_repository, dataset_representation_factory, datasets, data_type)
 
 
 def compare_stops(dataset):
@@ -207,7 +204,7 @@ if __name__ == "__main__":
             dataset_representation = process_end_timestamp_for_gtfs_metadata(dataset_representation)
             dataset_representation = process_main_language_code_for_gtfs_metadata(dataset_representation)
             dataset_representation = process_main_timezone_for_gtfs_metadata(dataset_representation)
-            ProcessAllTimezonesForGtfsMetadata(dataset_representation).execute()
+            dataset_representation = process_all_timezones_for_gtfs_metadata(dataset_representation)
             dataset_representation = process_bounding_box_for_gtfs_metadata(dataset_representation)
             dataset_representation = process_bounding_octagon_for_gtfs_metadata(dataset_representation)
             dataset_representation = process_agencies_count_for_gtfs_metadata(dataset_representation)
