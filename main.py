@@ -4,7 +4,6 @@ import sys
 from guppy import hpy
 
 from repository.data_repository import DataRepository
-from representation.dataset_representation_factory import DatasetRepresentationFactory
 from request_manager.request_manager_containers import Managers
 from usecase.compare_gtfs_stops import CompareGtfsStops
 from usecase.download_dataset_as_zip import download_dataset_as_zip
@@ -46,12 +45,6 @@ from usecase.process_timestamp_for_gtfs_metadata import (
     process_start_timestamp_for_gtfs_metadata,
     process_end_timestamp_for_gtfs_metadata
 )
-
-
-def load_data(
-    data_repository, dataset_representation_factory, datasets, data_type="GTFS"
-):
-    return load_dataset(data_repository, dataset_representation_factory, datasets, data_type)
 
 
 def compare_stops(dataset):
@@ -138,9 +131,6 @@ if __name__ == "__main__":
     # Initialize DataRepository
     data_repository = DataRepository()
 
-    # Initialize DatasetRepresentationFactory
-    dataset_representation_factory = DatasetRepresentationFactory()
-
     # Process data
     if args["download"] is not None:
         # Download datasets zip files
@@ -155,9 +145,8 @@ if __name__ == "__main__":
         paths_to_datasets_and_md5 = process_md5(paths_to_datasets, previous_md5_hashes)
 
         # Load the datasets in memory in the data repository
-        data_repository = load_data(
+        data_repository = load_dataset(
             data_repository,
-            dataset_representation_factory,
             paths_to_datasets_and_md5,
             args["data_type"],
         )
