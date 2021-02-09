@@ -1,5 +1,5 @@
 import pandas as pd
-from representation.gtfs_representation import GtfsRepresentation
+from utilities.validators import validate_gtfs_representation
 from utilities.temporal_utils import get_gtfs_dates_by_type, get_gtfs_timezone_utc_offset, get_gtfs_stop_times_for_date
 
 PD_DATE_FORMAT = '%Y%m%d'
@@ -43,8 +43,7 @@ def process_timestamp_for_gtfs_metadata(gtfs_representation, timestamp_map):
     :param timestamp_map: either START_TIMESTAMP_MAP or END_TIMESTAMP_MAP
     :return: The representation of the GTFS dataset post-execution.
     """
-    if not isinstance(gtfs_representation, GtfsRepresentation):
-        raise TypeError("GTFS data representation must be a valid GtfsRepresentation.")
+    validate_gtfs_representation(gtfs_representation)
     dataset = gtfs_representation.get_dataset()
 
     # Extract the start dates in the dataset representation
