@@ -8,8 +8,14 @@ class ExtractSourcesUrl:
     ENTITY_CODE_FIRST_INDEX = 37
     ENTITY_CODE_LAST_INDEX = 40
 
-    def __init__(self, api_request_manager, sparql_request_manager, dataset_type="GTFS", specific_download=False,
-                 specific_entity_code=None):
+    def __init__(
+        self,
+        api_request_manager,
+        sparql_request_manager,
+        dataset_type="GTFS",
+        specific_download=False,
+        specific_entity_code=None,
+    ):
         """Constructor for ``ExtractSourcesUrl``.
         :param api_request_manager: API request manager used to process API requests.
         :param sparql_request_manager: SPARQL request manager used to process SPARQL queries.
@@ -19,11 +25,19 @@ class ExtractSourcesUrl:
         Required if `specific_download` is set to True.
         """
         try:
-            if api_request_manager is None or not isinstance(api_request_manager, ApiRequestManager):
-                raise TypeError("API request manager must be a valid ApiRequestManager.")
+            if api_request_manager is None or not isinstance(
+                api_request_manager, ApiRequestManager
+            ):
+                raise TypeError(
+                    "API request manager must be a valid ApiRequestManager."
+                )
             self.api_request_manager = api_request_manager
-            if sparql_request_manager is None or not isinstance(sparql_request_manager, SparqlRequestManager):
-                raise TypeError("SPARQL request manager must be a valid SparqlRequestManager.")
+            if sparql_request_manager is None or not isinstance(
+                sparql_request_manager, SparqlRequestManager
+            ):
+                raise TypeError(
+                    "SPARQL request manager must be a valid SparqlRequestManager."
+                )
             self.sparql_request_manager = sparql_request_manager
 
             if dataset_type == "GTFS":
@@ -53,11 +67,16 @@ class ExtractSourcesUrl:
                     ?a 
                     <http://wikibase.svc/prop/statement/P65>
                     <http://wikibase.svc/entity/%s>
-                }""" % self.catalog_code
+                }"""
+                % self.catalog_code
             )
 
             for result in sparql_response["results"]["bindings"]:
-                entity_codes.append(result['a']['value'][self.ENTITY_CODE_FIRST_INDEX:self.ENTITY_CODE_LAST_INDEX])
+                entity_codes.append(
+                    result["a"]["value"][
+                        self.ENTITY_CODE_FIRST_INDEX : self.ENTITY_CODE_LAST_INDEX
+                    ]
+                )
         else:
             entity_codes.append(self.specific_entity_code)
 
@@ -67,13 +86,16 @@ class ExtractSourcesUrl:
                 "action": "wbgetentities",
                 "ids": "%s" % entity_code,
                 "languages": "en",
-                "format": "json"
+                "format": "json",
             }
             api_response = self.api_request_manager.execute_get(params)
 
             if "entities" in api_response:
                 for link in api_response["entities"][entity_code]["claims"]["P55"]:
-                    if "openmobilitydata.org" not in link["mainsnak"]["datavalue"]["value"]:
+                    if (
+                        "openmobilitydata.org"
+                        not in link["mainsnak"]["datavalue"]["value"]
+                    ):
                         urls[entity_code] = link["mainsnak"]["datavalue"]["value"]
 
         return urls

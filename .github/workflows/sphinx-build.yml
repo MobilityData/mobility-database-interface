@@ -30,9 +30,8 @@ jobs:
           sudo apt-get install libspatialindex-dev
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
       - name: Generate documentation
-        run: |
-          if [ ! -d "docs/build" ]; then mkdir docs/build; fi
-          cd docs && make html
+        run: sphinx-build -W -c docs/ . ./docs/build
+
       - name: Upload artifact
         uses: actions/upload-artifact@v1
         with:

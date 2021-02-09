@@ -2,10 +2,8 @@ from SPARQLWrapper import JSON
 
 
 class SparqlRequestManager:
-
     def __init__(self, client):
-        """Constructor for ``SparqlRequestManager``.
-        """
+        """Constructor for ``SparqlRequestManager``."""
         try:
             if client is None:
                 raise TypeError("Client must be a valid ApiClient.")

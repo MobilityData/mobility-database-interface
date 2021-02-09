@@ -1,0 +1,23 @@
+repos:
+-   repo: https://github.com/psf/black
+    rev: 20.8b1
+    hooks:
+    - id: black
+      language_version: python3.8
+-   repo: local
+    hooks:
+    - id: pytest-check
+      name: pytest-check
+      entry: pytest
+      language: system
+      pass_filenames: false
+      always_run: true
+-   repo: local
+    hooks:
+      - id: build-docs-rst
+        name: build-docs-rst
+        entry: sphinx-apidoc
+        args: ["-o", "docs/build-autodoc", ".", "*test*", "./main.py"]
+        language: system
+        pass_filenames: false
+        always_run: true

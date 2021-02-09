@@ -7,7 +7,9 @@ GTFS_TYPE = "GTFS"
 GBFS_TYPE = "GBFS"
 
 
-def load_dataset(data_repository, dataset_representation_factory, datasets_infos, dataset_type):
+def load_dataset(
+    data_repository, dataset_representation_factory, datasets_infos, dataset_type
+):
     """Load the datasets in memory in the data repository.
     :param data_repository: Data repository containing the dataset representations.
     :param dataset_representation_factory: The factory to build the dataset representations.
@@ -21,21 +23,28 @@ def load_dataset(data_repository, dataset_representation_factory, datasets_infos
         raise TypeError("Data repository must be a valid DataRepository.")
     if not isinstance(dataset_representation_factory, DatasetRepresentationFactory):
         raise TypeError("Representation factory must be a valid RepresentationFactory.")
-    if (
-            not isinstance(datasets_infos, dict)
-            and not all(key in datasets_infos for key in (PATH_TO_DATASET_KEY, MD5_HASH_KEY))
+    if not isinstance(datasets_infos, dict) and not all(
+        key in datasets_infos for key in (PATH_TO_DATASET_KEY, MD5_HASH_KEY)
     ):
-        raise TypeError(f"Datasets must be a valid dictionary, with keys {PATH_TO_DATASET_KEY} and {MD5_HASH_KEY}.")
+        raise TypeError(
+            f"Datasets must be a valid dictionary, with keys {PATH_TO_DATASET_KEY} and {MD5_HASH_KEY}."
+        )
     if dataset_type not in [GTFS_TYPE, GBFS_TYPE]:
-        raise TypeError(f"Dataset type must be a valid dataset type - {GTFS_TYPE} or {GBFS_TYPE}.")
+        raise TypeError(
+            f"Dataset type must be a valid dataset type - {GTFS_TYPE} or {GBFS_TYPE}."
+        )
 
     # Load the datasets indicated in datasets_infos
     for entity_code, dataset_infos in datasets_infos.items():
-        print(f"--------------- Loading dataset : {dataset_infos[PATH_TO_DATASET_KEY]} ---------------\n")
-        dataset_representation = dataset_representation_factory.build_representation(dataset_type,
-                                                                                     entity_code,
-                                                                                     dataset_infos[PATH_TO_DATASET_KEY],
-                                                                                     dataset_infos[MD5_HASH_KEY])
+        print(
+            f"--------------- Loading dataset : {dataset_infos[PATH_TO_DATASET_KEY]} ---------------\n"
+        )
+        dataset_representation = dataset_representation_factory.build_representation(
+            dataset_type,
+            entity_code,
+            dataset_infos[PATH_TO_DATASET_KEY],
+            dataset_infos[MD5_HASH_KEY],
+        )
         data_repository.add_dataset_representation(entity_code, dataset_representation)
 
     return data_repository

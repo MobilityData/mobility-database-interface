@@ -42,7 +42,7 @@ from usecase.process_stops_count_by_type_for_gtfs_metadata import (
 )
 from usecase.process_timestamp_for_gtfs_metadata import (
     process_start_timestamp_for_gtfs_metadata,
-    process_end_timestamp_for_gtfs_metadata
+    process_end_timestamp_for_gtfs_metadata,
 )
 
 
@@ -78,7 +78,9 @@ def process_data_md5(paths_to_datasets):
 def load_data(
     data_repository, dataset_representation_factory, datasets, data_type="GTFS"
 ):
-    return load_dataset(data_repository, dataset_representation_factory, datasets, data_type)
+    return load_dataset(
+        data_repository, dataset_representation_factory, datasets, data_type
+    )
 
 
 def compare_stops(dataset):
@@ -198,18 +200,42 @@ if __name__ == "__main__":
             dataset_key,
             dataset_representation,
         ) in data_repository.get_dataset_representations().items():
-            dataset_representation = process_start_service_date_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_end_service_date_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_start_timestamp_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_end_timestamp_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_main_language_code_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_main_timezone_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_all_timezones_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_bounding_box_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_bounding_octagon_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_agencies_count_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_routes_count_by_type_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_stops_count_by_type_for_gtfs_metadata(dataset_representation)
+            dataset_representation = process_start_service_date_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_end_service_date_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_start_timestamp_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_end_timestamp_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_main_language_code_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_main_timezone_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_all_timezones_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_bounding_box_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_bounding_octagon_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_agencies_count_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_routes_count_by_type_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_stops_count_by_type_for_gtfs_metadata(
+                dataset_representation
+            )
 
             # Print results
             data_repository.print_dataset_representation(dataset_key)

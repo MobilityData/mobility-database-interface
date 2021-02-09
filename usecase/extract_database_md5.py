@@ -16,11 +16,19 @@ class ExtractDatabaseMd5:
         One MD5 hash exists per dataset version of each entity.
         """
         try:
-            if api_request_manager is None or not isinstance(api_request_manager, ApiRequestManager):
-                raise TypeError("API request manager must be a valid ApiRequestManager.")
+            if api_request_manager is None or not isinstance(
+                api_request_manager, ApiRequestManager
+            ):
+                raise TypeError(
+                    "API request manager must be a valid ApiRequestManager."
+                )
             self.api_request_manager = api_request_manager
-            if sparql_request_manager is None or not isinstance(sparql_request_manager, SparqlRequestManager):
-                raise TypeError("SPARQL request manager must be a valid SparqlRequestManager.")
+            if sparql_request_manager is None or not isinstance(
+                sparql_request_manager, SparqlRequestManager
+            ):
+                raise TypeError(
+                    "SPARQL request manager must be a valid SparqlRequestManager."
+                )
             self.sparql_request_manager = sparql_request_manager
             if entity_codes is None or not isinstance(entity_codes, list):
                 raise TypeError("Entity codes must be a valid entity codes list.")
@@ -49,20 +57,26 @@ class ExtractDatabaseMd5:
                     ?a 
                     <http://wikibase.svc/prop/statement/P48>
                     <http://wikibase.svc/entity/%s>
-                }""" % entity_code
+                }"""
+                % entity_code
             )
 
             for result in sparql_response["results"]["bindings"]:
-                dataset_version_codes.add(result['a']['value'][self.DATASET_VERSION_ENTITY_CODE_FIRST_INDEX:
-                                                               self.DATASET_VERSION_ENTITY_CODE_LAST_INDEX])
+                dataset_version_codes.add(
+                    result["a"]["value"][
+                        self.DATASET_VERSION_ENTITY_CODE_FIRST_INDEX : self.DATASET_VERSION_ENTITY_CODE_LAST_INDEX
+                    ]
+                )
 
             # Verify if entity if part of a catalog of sources.
             # If yes, removes the catalog of sources entity code, which appears in the results of a source entity,
             # and initialize entity element in the MD5 hashes dictionary. This operation makes sure that an entity
             # with no MD5 hash in the database, but in a catalog of sources, gets initialized with an empty set
             # in the MD5 hashes dictionary (required for further MD5 processing).
-            if (GTFS_CATALOG_OF_SOURCES in dataset_version_codes or
-                GBFS_CATALOG_OF_SOURCES in dataset_version_codes):
+            if (
+                GTFS_CATALOG_OF_SOURCES in dataset_version_codes
+                or GBFS_CATALOG_OF_SOURCES in dataset_version_codes
+            ):
 
                 dataset_version_codes.discard(GTFS_CATALOG_OF_SOURCES)
                 dataset_version_codes.discard(GBFS_CATALOG_OF_SOURCES)
@@ -74,7 +88,7 @@ class ExtractDatabaseMd5:
                     "action": "wbgetentities",
                     "ids": "%s" % version_code,
                     "languages": "en",
-                    "format": "json"
+                    "format": "json",
                 }
                 api_response = self.api_request_manager.execute_get(params)
 

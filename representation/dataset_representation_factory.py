@@ -4,7 +4,9 @@ from representation.gtfs_representation import GtfsRepresentation
 
 
 class DatasetRepresentationFactory:
-    def build_representation(self, dataset_type, entity_code, path_to_dataset, md5_hash):
+    def build_representation(
+        self, dataset_type, entity_code, path_to_dataset, md5_hash
+    ):
         """Dataset representation builder method.
         The factory builds and return dataset representation accordingly to the dataset type.
         :param dataset_type: The type of the dataset, either GTFS or GBFS.
@@ -14,13 +16,16 @@ class DatasetRepresentationFactory:
         """
         representation = None
         try:
-            if dataset_type == 'GTFS':
-                dataset = gtfs_kit.read_feed(path_to_dataset, dist_units='km')
+            if dataset_type == "GTFS":
+                dataset = gtfs_kit.read_feed(path_to_dataset, dist_units="km")
                 metadata = GtfsMetadata(md5_hash)
                 representation = GtfsRepresentation(entity_code, dataset, metadata)
-            elif dataset_type == 'GBFS':
+            elif dataset_type == "GBFS":
                 # TODO
                 pass
         except Exception as e:
-            raise Exception("Exception \"%s\" occurred while building the dataset representation.\n" % e)
+            raise Exception(
+                'Exception "%s" occurred while building the dataset representation.\n'
+                % e
+            )
         return representation

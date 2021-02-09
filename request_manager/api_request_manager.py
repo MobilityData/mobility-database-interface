@@ -1,10 +1,6 @@
-
-
 class ApiRequestManager:
-
     def __init__(self, client):
-        """Constructor for ``ApiRequestManager``.
-        """
+        """Constructor for ``ApiRequestManager``."""
         try:
             if client is None:
                 raise TypeError("Client must be a valid ApiClient.")
