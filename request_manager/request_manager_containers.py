@@ -3,21 +3,21 @@ from request_manager.api_client import ApiClient
 from request_manager.api_request_manager import ApiRequestManager
 from request_manager.sparql_client import SparqlClient
 from request_manager.sparql_request_manager import SparqlRequestManager
-import utilities.external_utils
+from utilities.constant import STAGING_API_URL, STAGING_SPARQL_URL, PRODUCTION_API_URL, PRODUCTION_SPARQL_URL
 
 
 class Configs(containers.DeclarativeContainer):
     """Configuration containers for dependency injection for request managers usage.
     """
     staging_api_config = providers.Configuration('config')
-    staging_api_config.set("url", utilities.external_utils.get_staging_api_url())
+    staging_api_config.set("url", STAGING_API_URL)
     staging_sparql_config = providers.Configuration('config')
-    staging_sparql_config.set("url", utilities.external_utils.get_staging_sparql_url())
+    staging_sparql_config.set("url", STAGING_SPARQL_URL)
 
     production_api_config = providers.Configuration('config')
-    production_api_config.set("url", utilities.external_utils.get_production_api_url())
+    production_api_config.set("url", PRODUCTION_API_URL)
     production_sparql_config = providers.Configuration('config')
-    production_sparql_config.set("url", utilities.external_utils.get_production_sparql_url())
+    production_sparql_config.set("url", PRODUCTION_SPARQL_URL)
 
 
 class Clients(containers.DeclarativeContainer):

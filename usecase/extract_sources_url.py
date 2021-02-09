@@ -1,6 +1,6 @@
 from request_manager.api_request_manager import ApiRequestManager
 from request_manager.sparql_request_manager import SparqlRequestManager
-from utilities.entities_codes import EntitiesCodes
+from utilities.constant import GTFS_CATALOG_OF_SOURCES, GBFS_CATALOG_OF_SOURCES
 
 
 class ExtractSourcesUrl:
@@ -27,9 +27,9 @@ class ExtractSourcesUrl:
             self.sparql_request_manager = sparql_request_manager
 
             if dataset_type == "GTFS":
-                self.catalog_code = EntitiesCodes.GTFS_CATALOG_OF_SOURCES.value
+                self.catalog_code = GTFS_CATALOG_OF_SOURCES
             elif dataset_type == "GBFS":
-                self.catalog_code = EntitiesCodes.GBFS_CATALOG_OF_SOURCES.value
+                self.catalog_code = GBFS_CATALOG_OF_SOURCES
 
             self.specific_download = specific_download
             self.specific_entity_code = specific_entity_code

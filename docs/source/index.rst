@@ -200,10 +200,10 @@ Source documentation
    :show-inheritance:
 
 
-:mod:`usecase.process_end_service_date_for_gtfs_metadata`
+:mod:`usecase.process_service_date_for_gtfs_metadata`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: usecase.process_end_service_date_for_gtfs_metadata
+.. automodule:: usecase.process_service_date_for_gtfs_metadata
    :members:
    :undoc-members:
    :show-inheritance:
@@ -245,15 +245,6 @@ Source documentation
    :show-inheritance:
 
 
-:mod:`usecase.process_start_service_date_for_gtfs_metadata`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: usecase.process_start_service_date_for_gtfs_metadata
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
 :mod:`usecase.process_start_timestamp_for_gtfs_metadata`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -267,15 +258,6 @@ Source documentation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. automodule:: usecase.process_stops_count_by_type_for_gtfs_metadata
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-:mod:`utilities.external_utils`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: utilities.external_utils
    :members:
    :undoc-members:
    :show-inheritance:

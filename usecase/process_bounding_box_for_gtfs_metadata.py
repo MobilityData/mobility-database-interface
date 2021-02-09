@@ -1,39 +1,30 @@
 from representation.gtfs_representation import GtfsRepresentation
 from utilities.geographical_utils import *
 
+BOUNDING_BOX_SETTER = "set_metadata_bounding_box"
 
-class ProcessBoundingBoxForGtfsMetadata:
-    def __init__(self, gtfs_representation):
-        """Constructor for ``ProcessBoundingBoxForGtfsMetadata``.
-        :param gtfs_representation: The representation of the GTFS dataset to process.
-        """
-        try:
-            if gtfs_representation is None or not isinstance(gtfs_representation, GtfsRepresentation):
-                raise TypeError("GTFS data representation must be a valid GtfsRepresentation.")
-            self.gtfs_representation = gtfs_representation
-        except Exception as e:
-            raise e
 
-    def execute(self):
-        """Execute the ``ProcessBoundingBoxForGtfsMetadata`` use case. Process the bounding box using the`stops` file
-        from the GTFS dataset of the representation. Add the bounding box to the representation metadata once processed.
-        :return: The representation of the GTFS dataset post-execution.
-        """
-        dataset = self.gtfs_representation.get_dataset()
+def process_bounding_box_for_gtfs_metadata(gtfs_representation):
+    """Execute the ``ProcessBoundingBoxForGtfsMetadata`` use case.
+    Process the bounding box using the`stops` file from the GTFS dataset of the representation.
+    Add the bounding box to the representation metadata once processed.
+    :param gtfs_representation: The representation of the GTFS dataset to process.
+    :return: The representation of the GTFS dataset post-execution.
+    """
+    if not isinstance(gtfs_representation, GtfsRepresentation):
+        raise TypeError("GTFS data representation must be a valid GtfsRepresentation.")
+    dataset = gtfs_representation.get_dataset()
 
-        # Extract the box corners coordinates in the dataset representation
-        box_corners = process_bounding_box_corner_strings(dataset)
+    # Extract the box corners coordinates in the dataset representation and
+    # Order the corners inside a bounding box
+    # The order is clockwise, from the South East to the North East corner
+    # Documentation about dictionary comprehension can be found at:
+    # https://docs.python.org/3/tutorial/datastructures.html
+    bounding_box = {
+        f"{index+1}": corner for index, corner in enumerate(process_bounding_box_corner_strings(dataset))
+    }
 
-        south_east_corner = box_corners[0]
-        south_west_corner = box_corners[1]
-        north_west_corner = box_corners[2]
-        north_east_corner = box_corners[3]
+    # Set the bounding box in the GTFS representation
+    getattr(gtfs_representation, BOUNDING_BOX_SETTER)(bounding_box)
 
-        # Order the corners inside a bounding box
-        bounding_box = {"1": south_east_corner,
-                        "2": south_west_corner,
-                        "3": north_west_corner,
-                        "4": north_east_corner}
-
-        self.gtfs_representation.set_metadata_bounding_box(bounding_box)
-        return self.gtfs_representation
+    return gtfs_representation

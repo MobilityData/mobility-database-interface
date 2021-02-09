@@ -6,12 +6,12 @@ from LatLon23 import Latitude, Longitude
 from utilities.geographical_utils import *
 
 
-class GeographicalUtilsTest(TestCase):
+class TestGeographicalUtils(TestCase):
 
     @mock.patch('gtfs_kit.feed.Feed')
     def test_process_bounding_box_corner_strings_should_return_corners_as_string(self, mock_dataset):
-        mock_stops = PropertyMock(return_value=pd.DataFrame({'stop_lat': [45.508888, 44.508888],
-                                                             'stop_lon': [-73.561668, -74.561668]}))
+        mock_stops = PropertyMock(return_value=pd.DataFrame({STOP_LAT: [45.508888, 44.508888],
+                                                             STOP_LON: [-73.561668, -74.561668]}))
         type(mock_dataset).stops = mock_stops
 
         under_test_1, under_test_2, under_test_3, under_test_4 = process_bounding_box_corner_strings(mock_dataset)
@@ -25,8 +25,8 @@ class GeographicalUtilsTest(TestCase):
 
     @mock.patch('gtfs_kit.feed.Feed')
     def test_process_bounding_octagon_corner_strings_should_return_corners_as_string(self, mock_dataset):
-        mock_stops = PropertyMock(return_value=pd.DataFrame({'stop_lat': [3, -3, 0, 0, 2, -2, 2, -2],
-                                                             'stop_lon': [0, 0, 3, -3, 2, 2, -2, -2]}))
+        mock_stops = PropertyMock(return_value=pd.DataFrame({STOP_LAT: [3, -3, 0, 0, 2, -2, 2, -2],
+                                                             STOP_LON: [0, 0, 3, -3, 2, 2, -2, -2]}))
         type(mock_dataset).stops = mock_stops
 
         under_test = process_bounding_octagon_corner_strings(mock_dataset)
@@ -52,8 +52,8 @@ class GeographicalUtilsTest(TestCase):
 
     @mock.patch('gtfs_kit.feed.Feed')
     def test_process_geographical_coordinates_as_string_should_return_coordinates_as_string(self, mock_dataset):
-        mock_stops = PropertyMock(return_value=pd.DataFrame({'stop_lat': [45.508888, 44.508888],
-                                                             'stop_lon': [-73.561668, -74.561668]}))
+        mock_stops = PropertyMock(return_value=pd.DataFrame({STOP_LAT: [45.508888, 44.508888],
+                                                             STOP_LON: [-73.561668, -74.561668]}))
         type(mock_dataset).stops = mock_stops
 
         under_test_1, under_test_2, under_test_3, under_test_4 = \
@@ -68,8 +68,8 @@ class GeographicalUtilsTest(TestCase):
 
     @mock.patch('gtfs_kit.feed.Feed')
     def test_extract_geographical_coordinates_as_float_should_return_coordinates_as_float(self, mock_dataset):
-        mock_stops = PropertyMock(return_value=pd.DataFrame({'stop_lat': [45.508888, 44.508888],
-                                                             'stop_lon': [-73.561668, -74.561668]}))
+        mock_stops = PropertyMock(return_value=pd.DataFrame({STOP_LAT: [45.508888, 44.508888],
+                                                             STOP_LON: [-73.561668, -74.561668]}))
         type(mock_dataset).stops = mock_stops
 
         under_test_1, under_test_2, under_test_3, under_test_4 = \
@@ -82,27 +82,16 @@ class GeographicalUtilsTest(TestCase):
         mock_stops.assert_called()
         self.assertEqual(mock_stops.call_count, 1)
 
-    def test_convert_latitude_to_degrees_string_with_latitude_float_should_return_latitude_as_string(self):
-        mock_latitude = MagicMock()
-        mock_latitude.__float__.return_value = 44.508888
-
-        under_test = convert_latitude_to_degrees_string(float(mock_latitude))
-        self.assertEqual(under_test, '44°30\'31.997"N')
-
-    def test_convert_longitude_to_degrees_string_with_longitude_float_should_return_longitude_as_string(self):
-        mock_longitude = MagicMock()
-        mock_longitude.__float__.return_value = -74.561668
-
-        under_test = convert_longitude_to_degrees_string(float(mock_longitude))
-        self.assertEqual(under_test, '74°33\'42.005"W')
-
     @mock.patch('gtfs_kit.feed.Feed')
     def test_process_upper_right_octagon_local_corners_should_return_corners_as_string(self, mock_dataset):
-        mock_stops = PropertyMock(return_value=pd.DataFrame({'stop_lat': [3, -3, 0, 0, 2, -2, 2, -2],
-                                                             'stop_lon': [0, 0, 3, -3, 2, 2, -2, -2]}))
+        mock_stops = PropertyMock(return_value=pd.DataFrame({STOP_LAT: [3, -3, 0, 0, 2, -2, 2, -2],
+                                                             STOP_LON: [0, 0, 3, -3, 2, 2, -2, -2]}))
         type(mock_dataset).stops = mock_stops
 
-        under_test_1, under_test_2 = process_octagon_local_corners(mock_dataset.stops, 3, 3, True, True)
+        under_test_1, under_test_2 = process_octagon_local_corners(mock_dataset.stops,
+                                                                   3,
+                                                                   3,
+                                                                   OCTAGON_UPPER_RIGHT_CORNER_MAP)
 
         self.assertEqual(under_test_1, '3°0\'0.000"N, 1°0\'0.000"E')
         self.assertEqual(under_test_2, '1°0\'0.000"N, 3°0\'0.000"E')
@@ -111,11 +100,14 @@ class GeographicalUtilsTest(TestCase):
 
     @mock.patch('gtfs_kit.feed.Feed')
     def test_process_lower_right_octagon_local_corners_should_return_corners_as_string(self, mock_dataset):
-        mock_stops = PropertyMock(return_value=pd.DataFrame({'stop_lat': [3, -3, 0, 0, 2, -2, 2, -2],
-                                                             'stop_lon': [0, 0, 3, -3, 2, 2, -2, -2]}))
+        mock_stops = PropertyMock(return_value=pd.DataFrame({STOP_LAT: [3, -3, 0, 0, 2, -2, 2, -2],
+                                                             STOP_LON: [0, 0, 3, -3, 2, 2, -2, -2]}))
         type(mock_dataset).stops = mock_stops
 
-        under_test_1, under_test_2 = process_octagon_local_corners(mock_dataset.stops, -3, 3, False, False)
+        under_test_1, under_test_2 = process_octagon_local_corners(mock_dataset.stops,
+                                                                   -3,
+                                                                   3,
+                                                                   OCTAGON_LOWER_RIGHT_CORNER_MAP)
 
         self.assertEqual(under_test_1, '3°0\'0.000"S, 1°0\'0.000"E')
         self.assertEqual(under_test_2, '1°0\'0.000"S, 3°0\'0.000"E')
@@ -124,11 +116,14 @@ class GeographicalUtilsTest(TestCase):
 
     @mock.patch('gtfs_kit.feed.Feed')
     def test_process_lower_left_octagon_local_corners_should_return_corners_as_string(self, mock_dataset):
-        mock_stops = PropertyMock(return_value=pd.DataFrame({'stop_lat': [3, -3, 0, 0, 2, -2, 2, -2],
-                                                             'stop_lon': [0, 0, 3, -3, 2, 2, -2, -2]}))
+        mock_stops = PropertyMock(return_value=pd.DataFrame({STOP_LAT: [3, -3, 0, 0, 2, -2, 2, -2],
+                                                             STOP_LON: [0, 0, 3, -3, 2, 2, -2, -2]}))
         type(mock_dataset).stops = mock_stops
 
-        under_test_1, under_test_2 = process_octagon_local_corners(mock_dataset.stops, -3, -3, True, False)
+        under_test_1, under_test_2 = process_octagon_local_corners(mock_dataset.stops,
+                                                                   -3,
+                                                                   -3,
+                                                                   OCTAGON_LOWER_LEFT_CORNER_MAP)
 
         self.assertEqual(under_test_1, '3°0\'0.000"S, 1°0\'0.000"W')
         self.assertEqual(under_test_2, '1°0\'0.000"S, 3°0\'0.000"W')
@@ -137,11 +132,14 @@ class GeographicalUtilsTest(TestCase):
 
     @mock.patch('gtfs_kit.feed.Feed')
     def test_process_upper_left_octagon_local_corners_should_return_corners_as_string(self, mock_dataset):
-        mock_stops = PropertyMock(return_value=pd.DataFrame({'stop_lat': [3, -3, 0, 0, 2, -2, 2, -2],
-                                                             'stop_lon': [0, 0, 3, -3, 2, 2, -2, -2]}))
+        mock_stops = PropertyMock(return_value=pd.DataFrame({STOP_LAT: [3, -3, 0, 0, 2, -2, 2, -2],
+                                                             STOP_LON: [0, 0, 3, -3, 2, 2, -2, -2]}))
         type(mock_dataset).stops = mock_stops
 
-        under_test_1, under_test_2 = process_octagon_local_corners(mock_dataset.stops, 3, -3, False, True)
+        under_test_1, under_test_2 = process_octagon_local_corners(mock_dataset.stops,
+                                                                   3,
+                                                                   -3,
+                                                                   OCTAGON_UPPER_LEFT_CORNER_MAP)
 
         self.assertEqual(under_test_1, '3°0\'0.000"N, 1°0\'0.000"W')
         self.assertEqual(under_test_2, '1°0\'0.000"N, 3°0\'0.000"W')
@@ -192,24 +190,16 @@ class GeographicalUtilsTest(TestCase):
         self.assertEqual(under_test_1, '3°0\'0.000"N, 1°0\'0.000"E')
         self.assertEqual(under_test_2, '1°0\'0.000"N, 3°0\'0.000"E')
 
-    @mock.patch('LatLon23.Latitude')
-    def test_convert_coordinate_to_degrees_and_minutes_string_with_latitude_should_return_latitude_string(self,
-                                                                                                          mock_lat):
-        mock_lat.to_string.side_effect = ['45', '30', '31.997', 'N']
+    def test_convert_coordinate_to_degrees_and_minutes_string_with_latitude_should_return_latitude_string(self):
+        mock_lat = MagicMock()
+        mock_lat.__float__.return_value = 45.508888
 
-        under_test = convert_coordinate_to_degrees_and_minutes_string(mock_lat)
-
+        under_test = convert_coordinate_to_degrees_and_minutes_string(Latitude, float(mock_lat))
         self.assertEqual(under_test, '45°30\'31.997"N')
-        mock_lat.to_string.assert_called()
-        self.assertEqual(mock_lat.to_string.call_count, 4)
 
-    @mock.patch('LatLon23.Longitude')
-    def test_convert_coordinate_to_degrees_and_minutes_string_with_longitude_should_return_longitude_string(self,
-                                                                                                            mock_lon):
-        mock_lon.to_string.side_effect = ['73', '33', '42.005', 'W']
+    def test_convert_coordinate_to_degrees_and_minutes_string_with_longitude_should_return_longitude_string(self):
+        mock_lon = MagicMock()
+        mock_lon.__float__.return_value = -73.561668
 
-        under_test = convert_coordinate_to_degrees_and_minutes_string(mock_lon)
-
+        under_test = convert_coordinate_to_degrees_and_minutes_string(Longitude, float(mock_lon))
         self.assertEqual(under_test, '73°33\'42.005"W')
-        mock_lon.to_string.assert_called()
-        self.assertEqual(mock_lon.to_string.call_count, 4)
