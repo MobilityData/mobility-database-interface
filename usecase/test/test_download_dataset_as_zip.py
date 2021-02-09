@@ -15,7 +15,7 @@ def ignore_resource_warnings(test_func):
     return test
 
 
-class DownloadDatasetAsZipTest(TestCase):
+class TestDownloadDatasetAsZip(TestCase):
 
     def test_download_dataset_with_none_path_to_data_should_raise_exception(self):
         mock_urls = MagicMock()
