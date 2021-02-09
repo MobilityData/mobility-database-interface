@@ -3,6 +3,9 @@ from representation.gtfs_metadata import GtfsMetadata
 from representation.gtfs_representation import GtfsRepresentation
 from requests.exceptions import MissingSchema
 
+GTFS_TYPE = "GTFS"
+GBFS_TYPE = "GBFS"
+
 
 def build_representation(dataset_type, entity_code, path_to_dataset, md5_hash):
     """Dataset representation builder function.
@@ -13,9 +16,9 @@ def build_representation(dataset_type, entity_code, path_to_dataset, md5_hash):
     :param md5_hash: The MD5 hash of the dataset version.
     """
     representation = None
-    if dataset_type == 'GTFS':
+    if dataset_type == GTFS_TYPE:
         representation = build_gtfs_representation(entity_code, path_to_dataset, md5_hash)
-    elif dataset_type == 'GBFS':
+    elif dataset_type == GBFS_TYPE:
         representation = build_gbfs_representation(entity_code, path_to_dataset, md5_hash)
     return representation
 
