@@ -128,19 +128,10 @@ Source documentation
    :show-inheritance:
 
 
-:mod:`usecase.extract_database_md5`
+:mod:`usecase.extract_sources_url_and_md5_hashes_from_database`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: usecase.extract_database_md5
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-
-:mod:`usecase.extract_sources_url`
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: usecase.extract_sources_url
+.. automodule:: usecase.extract_sources_url_and_md5_hashes_from_database
    :members:
    :undoc-members:
    :show-inheritance:
