@@ -28,6 +28,14 @@ utilities.temporal\_utils module
    :undoc-members:
    :show-inheritance:
 
+utilities.validators module
+---------------------------
+
+.. automodule:: utilities.validators
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 Module contents
 ---------------
 

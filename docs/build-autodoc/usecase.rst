@@ -20,18 +20,10 @@ usecase.download\_dataset\_as\_zip module
    :undoc-members:
    :show-inheritance:
 
-usecase.extract\_database\_md5 module
--------------------------------------
+usecase.extract\_sources\_url\_and\_md5\_hashes\_from\_database module
+----------------------------------------------------------------------
 
-.. automodule:: usecase.extract_database_md5
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-usecase.extract\_sources\_url module
-------------------------------------
-
-.. automodule:: usecase.extract_sources_url
+.. automodule:: usecase.extract_sources_url_and_md5_hashes_from_database
    :members:
    :undoc-members:
    :show-inheritance:

@@ -17,7 +17,7 @@ repos:
       - id: build-docs-rst
         name: build-docs-rst
         entry: sphinx-apidoc
-        args: ["-o", "docs/build-autodoc", ".", "*test*", "./main.py"]
+        args: ["-f", "-o", "docs/build-autodoc", ".", "*test*", "./main.py"]
         language: system
         pass_filenames: false
         always_run: true
