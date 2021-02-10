@@ -12,7 +12,7 @@ from usecase.process_agencies_count_for_gtfs_metadata import (
 )
 from usecase.extract_sources_url_and_md5_hashes_from_database import (
     extract_gtfs_sources_url_and_md5_hashes_from_database,
-    extract_gbfs_sources_url_and_md5_hashes_from_database
+    extract_gbfs_sources_url_and_md5_hashes_from_database,
 )
 from usecase.load_dataset import load_dataset
 from usecase.process_all_timezones_for_gtfs_metadata import (
@@ -43,7 +43,7 @@ from usecase.process_stops_count_by_type_for_gtfs_metadata import (
 )
 from usecase.process_timestamp_for_gtfs_metadata import (
     process_start_timestamp_for_gtfs_metadata,
-    process_end_timestamp_for_gtfs_metadata
+    process_end_timestamp_for_gtfs_metadata,
 )
 
 
@@ -134,9 +134,12 @@ if __name__ == "__main__":
     # Process data
     if args["download"] is not None:
         # Download datasets zip files
-        urls, previous_md5_hashes = extract_gtfs_sources_url_and_md5_hashes_from_database(
+        (
+            urls,
+            previous_md5_hashes,
+        ) = extract_gtfs_sources_url_and_md5_hashes_from_database(
             Managers.staging_api_request_manager(),
-            Managers.staging_sparql_request_manager()
+            Managers.staging_sparql_request_manager(),
         )
 
         paths_to_datasets = download_dataset_as_zip(args["path_to_tmp_data"], urls)
@@ -156,18 +159,42 @@ if __name__ == "__main__":
             dataset_key,
             dataset_representation,
         ) in data_repository.get_dataset_representations().items():
-            dataset_representation = process_start_service_date_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_end_service_date_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_start_timestamp_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_end_timestamp_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_main_language_code_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_main_timezone_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_all_timezones_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_bounding_box_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_bounding_octagon_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_agencies_count_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_routes_count_by_type_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_stops_count_by_type_for_gtfs_metadata(dataset_representation)
+            dataset_representation = process_start_service_date_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_end_service_date_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_start_timestamp_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_end_timestamp_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_main_language_code_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_main_timezone_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_all_timezones_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_bounding_box_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_bounding_octagon_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_agencies_count_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_routes_count_by_type_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_stops_count_by_type_for_gtfs_metadata(
+                dataset_representation
+            )
 
             # Print results
             data_repository.print_dataset_representation(dataset_key)

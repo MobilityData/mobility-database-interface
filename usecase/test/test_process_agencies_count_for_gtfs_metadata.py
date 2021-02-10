@@ -4,32 +4,43 @@ from unittest.mock import MagicMock, PropertyMock
 from gtfs_kit.feed import Feed
 from representation.gtfs_metadata import GtfsMetadata
 from representation.gtfs_representation import GtfsRepresentation
-from usecase.process_agencies_count_for_gtfs_metadata import process_agencies_count_for_gtfs_metadata
+from usecase.process_agencies_count_for_gtfs_metadata import (
+    process_agencies_count_for_gtfs_metadata,
+)
 
 
 class TestProcessAgenciesCountForGtfsMetadata(TestCase):
-
     def test_process_agencies_count_with_none(self):
         self.assertRaises(TypeError, process_agencies_count_for_gtfs_metadata, None)
 
     def test_process_agencies_count_with_invalid_gtfs_repr(self):
         mock_gtfs_representation = MagicMock()
         mock_gtfs_representation.__class__ = str
-        self.assertRaises(TypeError, process_agencies_count_for_gtfs_metadata, mock_gtfs_representation)
+        self.assertRaises(
+            TypeError,
+            process_agencies_count_for_gtfs_metadata,
+            mock_gtfs_representation,
+        )
 
-    @mock.patch('representation.gtfs_representation.GtfsRepresentation')
-    def test_process_agencies_count_with_valid_gtfs_repr(self,
-                                                      mock_gtfs_representation):
+    @mock.patch("representation.gtfs_representation.GtfsRepresentation")
+    def test_process_agencies_count_with_valid_gtfs_repr(
+        self, mock_gtfs_representation
+    ):
         mock_gtfs_representation.__class__ = GtfsRepresentation
         under_test = process_agencies_count_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
 
-    @mock.patch('representation.gtfs_representation.GtfsRepresentation')
-    @mock.patch('gtfs_kit.feed.Feed')
-    @mock.patch('representation.gtfs_metadata.GtfsMetadata')
-    def test_process_agencies_count(self, mock_gtfs_representation,
-                                   mock_dataset, mock_metadata):
-        mock_agency = PropertyMock(return_value=pd.DataFrame({'agency_name': ['test_agency_1', 'test_agency_2']}))
+    @mock.patch("representation.gtfs_representation.GtfsRepresentation")
+    @mock.patch("gtfs_kit.feed.Feed")
+    @mock.patch("representation.gtfs_metadata.GtfsMetadata")
+    def test_process_agencies_count(
+        self, mock_gtfs_representation, mock_dataset, mock_metadata
+    ):
+        mock_agency = PropertyMock(
+            return_value=pd.DataFrame(
+                {"agency_name": ["test_agency_1", "test_agency_2"]}
+            )
+        )
 
         mock_dataset.__class__ = Feed
         type(mock_dataset).agency = mock_agency

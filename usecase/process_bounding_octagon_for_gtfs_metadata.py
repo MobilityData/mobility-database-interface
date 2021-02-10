@@ -20,18 +20,11 @@ def process_bounding_octagon_for_gtfs_metadata(gtfs_representation):
     # Documentation about dictionary comprehension can be found at:
     # https://docs.python.org/3/tutorial/datastructures.html
     bounding_octagon = {
-        f"{index+1}": corner for index, corner in enumerate(process_bounding_octagon_corner_strings(dataset))
+        f"{index+1}": corner
+        for index, corner in enumerate(process_bounding_octagon_corner_strings(dataset))
     }
 
     # Set the bounding octagon in the GTFS representation
     getattr(gtfs_representation, BOUNDING_OCTAGON_SETTER)(bounding_octagon)
 
     return gtfs_representation
-
-
-
-
-
-
-
-

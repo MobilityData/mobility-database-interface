@@ -17,21 +17,29 @@ def build_representation(dataset_type, entity_code, path_to_dataset, md5_hash):
     """
     representation = None
     if dataset_type == GTFS_TYPE:
-        representation = build_gtfs_representation(entity_code, path_to_dataset, md5_hash)
+        representation = build_gtfs_representation(
+            entity_code, path_to_dataset, md5_hash
+        )
     elif dataset_type == GBFS_TYPE:
-        representation = build_gbfs_representation(entity_code, path_to_dataset, md5_hash)
+        representation = build_gbfs_representation(
+            entity_code, path_to_dataset, md5_hash
+        )
     return representation
 
 
 def build_gtfs_representation(entity_code, path_to_dataset, md5_hash):
     try:
-        dataset = gtfs_kit.read_feed(path_to_dataset, dist_units='km')
+        dataset = gtfs_kit.read_feed(path_to_dataset, dist_units="km")
     except TypeError as te:
-        raise TypeError(f"Exception '{te}' occurred while reading the GTFS dataset with the GTFS kit library."
-                        f"The dataset must be a valid GTFS zip file or URL.\n")
+        raise TypeError(
+            f"Exception '{te}' occurred while reading the GTFS dataset with the GTFS kit library."
+            f"The dataset must be a valid GTFS zip file or URL.\n"
+        )
     except MissingSchema as ms:
-        raise MissingSchema(f"Exception '{ms}' occurred while opening the GTFS dataset with the GTFS kit library."
-                            f"The dataset must be a valid GTFS zip file or URL.\n")
+        raise MissingSchema(
+            f"Exception '{ms}' occurred while opening the GTFS dataset with the GTFS kit library."
+            f"The dataset must be a valid GTFS zip file or URL.\n"
+        )
     metadata = GtfsMetadata(md5_hash)
     representation = GtfsRepresentation(entity_code, dataset, metadata)
     return representation

@@ -11,7 +11,7 @@ def process_main_timezone_for_gtfs_metadata(gtfs_representation):
     dataset = gtfs_representation.get_dataset()
 
     # Extract the main timezone from the first row in the dataset agency
-    main_timezone = dataset.agency['agency_timezone'].iloc[0]
+    main_timezone = dataset.agency["agency_timezone"].iloc[0]
 
     # Set the main timezone in the GTFS representation
     gtfs_representation.set_metadata_main_timezone(main_timezone)

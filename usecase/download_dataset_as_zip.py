@@ -18,7 +18,7 @@ def download_dataset_as_zip(path_to_data, urls):
     for entity_code, url in urls.items():
         print(f"--------------- Downloading URL : {url} ---------------\n")
         slash_index = url.rfind("/")
-        zip_name = url[slash_index+1:]
+        zip_name = url[slash_index + 1 :]
         zip_path = os.path.join(path_to_data, f"{entity_code}_{zip_name}")
         try:
             zip_file_req = requests.get(url, allow_redirects=True)
@@ -28,7 +28,7 @@ def download_dataset_as_zip(path_to_data, urls):
             continue
 
         zip_file = zip_file_req.content
-        with open(zip_path, 'wb') as file:
+        with open(zip_path, "wb") as file:
             file.write(zip_file)
 
         paths_to_datasets[entity_code] = zip_path

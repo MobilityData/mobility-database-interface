@@ -3,7 +3,7 @@ from utilities.validators import validate_gtfs_representation
 STOP = 0
 STATION = 1
 ENTRANCE = 2
-LOCATION_TYPE = 'location_type'
+LOCATION_TYPE = "location_type"
 
 
 def process_stops_count_by_type_for_gtfs_metadata(gtfs_representation):
@@ -23,14 +23,22 @@ def process_stops_count_by_type_for_gtfs_metadata(gtfs_representation):
     # Count stops by location type
     # Generic Node (3) and Boarding Area (4) are not considered
     # because they relate to an existing Stop or Station.
-    stops_count = dataset.stops[LOCATION_TYPE].loc[dataset.stops[LOCATION_TYPE] == STOP].size
-    stations_count = dataset.stops[LOCATION_TYPE].loc[dataset.stops[LOCATION_TYPE] == STATION].size
-    entrances_count = dataset.stops[LOCATION_TYPE].loc[dataset.stops[LOCATION_TYPE] == ENTRANCE].size
+    stops_count = (
+        dataset.stops[LOCATION_TYPE].loc[dataset.stops[LOCATION_TYPE] == STOP].size
+    )
+    stations_count = (
+        dataset.stops[LOCATION_TYPE].loc[dataset.stops[LOCATION_TYPE] == STATION].size
+    )
+    entrances_count = (
+        dataset.stops[LOCATION_TYPE].loc[dataset.stops[LOCATION_TYPE] == ENTRANCE].size
+    )
 
     # Create the dictionary of stops count by type
-    stops_count_by_type = {'stop': stops_count,
-                           'station': stations_count,
-                           'entrance': entrances_count}
+    stops_count_by_type = {
+        "stop": stops_count,
+        "station": stations_count,
+        "entrance": entrances_count,
+    }
 
     gtfs_representation.set_metadata_stops_count_by_type(stops_count_by_type)
     return gtfs_representation
