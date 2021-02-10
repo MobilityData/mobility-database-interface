@@ -1,4 +1,4 @@
-from representation.gtfs_representation import GtfsRepresentation
+from utilities.validators import validate_gtfs_representation
 
 STOP_TIMEZONE_KEY = "stop_timezone"
 AGENCY_TIMEZONE_KEY = "agency_timezone"
@@ -10,8 +10,7 @@ def process_all_timezones_for_gtfs_metadata(gtfs_representation):
     :param gtfs_representation: The representation of the GTFS dataset to process.
     :return: The representation of the GTFS dataset post-execution.
     """
-    if not isinstance(gtfs_representation, GtfsRepresentation):
-        raise TypeError("GTFS data representation must be a valid GtfsRepresentation.")
+    validate_gtfs_representation(gtfs_representation)
     dataset = gtfs_representation.get_dataset()
 
     # Extract the all the timezones using the stop_timezone in the dataset stops

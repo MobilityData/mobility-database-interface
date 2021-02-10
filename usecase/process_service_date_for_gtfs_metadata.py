@@ -1,7 +1,7 @@
 import pandas as pd
-from representation.gtfs_representation import GtfsRepresentation
-from utilities.temporal_utils import get_gtfs_dates_by_type
 
+from utilities.temporal_utils import get_gtfs_dates_by_type
+from utilities.validators import validate_gtfs_representation
 
 PD_DATE_FORMAT = "%Y%m%d"
 SERVICE_DATE_FORMAT = "%Y-%m-%d"
@@ -45,8 +45,7 @@ def process_service_date_for_gtfs_metadata(gtfs_representation, service_date_map
     :param service_date_map: Either START_DATE_MAP or END_DATE_MAP.
     :return: The representation of the GTFS dataset post-execution.
     """
-    if not isinstance(gtfs_representation, GtfsRepresentation):
-        raise TypeError("GTFS data representation must be a valid GtfsRepresentation.")
+    validate_gtfs_representation(gtfs_representation)
     dataset = gtfs_representation.get_dataset()
     feed_info = dataset.feed_info
 

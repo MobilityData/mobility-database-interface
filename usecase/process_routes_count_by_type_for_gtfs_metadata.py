@@ -1,4 +1,4 @@
-from representation.gtfs_representation import GtfsRepresentation
+from utilities.validators import validate_gtfs_representation
 
 TRAM = 0
 SUBWAY = 1
@@ -19,9 +19,7 @@ def process_routes_count_by_type_for_gtfs_metadata(gtfs_representation):
     :param gtfs_representation: The representation of the GTFS dataset to process.
     :return: The representation of the GTFS dataset post-execution.
     """
-    if not isinstance(gtfs_representation, GtfsRepresentation):
-        raise TypeError("GTFS data representation must be a valid GtfsRepresentation.")
-
+    validate_gtfs_representation(gtfs_representation)
     dataset = gtfs_representation.get_dataset()
 
     # Count routes by route type

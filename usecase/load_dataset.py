@@ -1,5 +1,5 @@
 from repository.data_repository import DataRepository
-from representation.dataset_representation_factory import DatasetRepresentationFactory
+from representation.dataset_representation_factory import build_representation
 
 PATH_TO_DATASET_KEY = "path"
 MD5_HASH_KEY = "md5"
@@ -7,12 +7,9 @@ GTFS_TYPE = "GTFS"
 GBFS_TYPE = "GBFS"
 
 
-def load_dataset(
-    data_repository, dataset_representation_factory, datasets_infos, dataset_type
-):
+def load_dataset(data_repository, datasets_infos, dataset_type):
     """Load the datasets in memory in the data repository.
     :param data_repository: Data repository containing the dataset representations.
-    :param dataset_representation_factory: The factory to build the dataset representations.
     :param datasets_infos: The dictionary of datasets infos to load. The key must be the entity code
     associated to the dataset in the database. The values must be composed of a path
     to the dataset zip file and a its MD5 hash.
@@ -21,8 +18,6 @@ def load_dataset(
     """
     if not isinstance(data_repository, DataRepository):
         raise TypeError("Data repository must be a valid DataRepository.")
-    if not isinstance(dataset_representation_factory, DatasetRepresentationFactory):
-        raise TypeError("Representation factory must be a valid RepresentationFactory.")
     if not isinstance(datasets_infos, dict) and not all(
         key in datasets_infos for key in (PATH_TO_DATASET_KEY, MD5_HASH_KEY)
     ):
@@ -39,7 +34,7 @@ def load_dataset(
         print(
             f"--------------- Loading dataset : {dataset_infos[PATH_TO_DATASET_KEY]} ---------------\n"
         )
-        dataset_representation = dataset_representation_factory.build_representation(
+        dataset_representation = build_representation(
             dataset_type,
             entity_code,
             dataset_infos[PATH_TO_DATASET_KEY],

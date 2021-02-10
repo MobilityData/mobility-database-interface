@@ -1,4 +1,4 @@
-from representation.gtfs_representation import GtfsRepresentation
+from utilities.validators import validate_gtfs_representation
 
 STOP = 0
 STATION = 1
@@ -12,9 +12,7 @@ def process_stops_count_by_type_for_gtfs_metadata(gtfs_representation):
     :return: The representation of the GTFS dataset post-execution.
     :param gtfs_representation: The representation of the GTFS dataset to process.
     """
-    if not isinstance(gtfs_representation, GtfsRepresentation):
-        raise TypeError("GTFS data representation must be a valid GtfsRepresentation.")
-
+    validate_gtfs_representation(gtfs_representation)
     dataset = gtfs_representation.get_dataset()
 
     # Transform the blank location types to 0
