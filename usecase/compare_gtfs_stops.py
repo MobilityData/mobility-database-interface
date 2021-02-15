@@ -11,9 +11,10 @@ class CompareGtfsStops:
         self.stops_2 = gtfs_2.get_stops()
 
     def execute(self):
-        """Execute comparison between the two GTFS datasets.
-        """
+        """Execute comparison between the two GTFS datasets."""
         stops_longitude_latitude_too_close = StopsLongitudeLatitudeTooClose()
         for i in range(len(self.stops_1)):
             for j in range(len(self.stops_2)):
-                stops_longitude_latitude_too_close.execute(self.stops_1.iloc[i], self.stops_2.iloc[j])
+                stops_longitude_latitude_too_close.execute(
+                    self.stops_1.iloc[i], self.stops_2.iloc[j]
+                )

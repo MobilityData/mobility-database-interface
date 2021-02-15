@@ -2,13 +2,11 @@ import requests
 
 
 class ApiClient:
-
     def __init__(self, config):
-        """Constructor for ``ApiClient``.
-        """
+        """Constructor for ``ApiClient``."""
         self.__session = None
         try:
-            self.__url = config['url']
+            self.__url = config["url"]
         except Exception as e:
             raise e
 
@@ -31,4 +29,3 @@ class ApiClient:
         :return: The URL of the API client.
         """
         return self.__url
-
