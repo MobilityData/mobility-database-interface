@@ -18,10 +18,8 @@ from usecase.load_dataset import load_dataset
 from usecase.process_all_timezones_for_gtfs_metadata import (
     process_all_timezones_for_gtfs_metadata,
 )
-from usecase.process_bounding_box_for_gtfs_metadata import (
+from usecase.process_geopraphical_boundaries_for_gtfs_metadata import (
     process_bounding_box_for_gtfs_metadata,
-)
-from usecase.process_bounding_octagon_for_gtfs_metadata import (
     process_bounding_octagon_for_gtfs_metadata,
 )
 from usecase.process_main_language_code_for_gtfs_metadata import (

@@ -52,18 +52,10 @@ usecase.process\_all\_timezones\_for\_gtfs\_metadata module
    :undoc-members:
    :show-inheritance:
 
-usecase.process\_bounding\_box\_for\_gtfs\_metadata module
-----------------------------------------------------------
+usecase.process\_geopraphical\_boundaries\_for\_gtfs\_metadata module
+---------------------------------------------------------------------
 
-.. automodule:: usecase.process_bounding_box_for_gtfs_metadata
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-usecase.process\_bounding\_octagon\_for\_gtfs\_metadata module
---------------------------------------------------------------
-
-.. automodule:: usecase.process_bounding_octagon_for_gtfs_metadata
+.. automodule:: usecase.process_geopraphical_boundaries_for_gtfs_metadata
    :members:
    :undoc-members:
    :show-inheritance:

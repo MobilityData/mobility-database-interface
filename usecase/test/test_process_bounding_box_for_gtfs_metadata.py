@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, PropertyMock
 from gtfs_kit.feed import Feed
 from representation.gtfs_metadata import GtfsMetadata
 from representation.gtfs_representation import GtfsRepresentation
-from usecase.process_bounding_box_for_gtfs_metadata import (
+from usecase.process_geopraphical_boundaries_for_gtfs_metadata import (
     process_bounding_box_for_gtfs_metadata,
 )
 
