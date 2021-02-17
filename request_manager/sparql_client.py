@@ -3,13 +3,11 @@ from SPARQLWrapper import SPARQLWrapper
 
 
 class SparqlClient:
-
     def __init__(self, config):
-        """Constructor for ``SparqlClient``.
-        """
+        """Constructor for ``SparqlClient``."""
         self.__service = None
         try:
-            self.__url = config['url']
+            self.__url = config["url"]
         except Exception as e:
             raise e
 
@@ -18,7 +16,10 @@ class SparqlClient:
         :return: The wrapper service of the SPARQL client.
         """
         if self.__service is None:
-            user_agent = "WDQS-example Python/%s.%s" % (sys.version_info[0], sys.version_info[1])
+            user_agent = "WDQS-example Python/%s.%s" % (
+                sys.version_info[0],
+                sys.version_info[1],
+            )
             self.__service = SPARQLWrapper(self.__url, agent=user_agent)
         return self.__service
 
