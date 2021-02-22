@@ -10,7 +10,7 @@ DATE = "date"
 DATASET_DATE_TYPE = "dataset_date_type"
 FEED_DATE_KEY = "feed_date_type"
 MIN_MAX_ATTR = "min_max_attr"
-SERVICE_DATE_ATTR = "service_date_setter"
+SERVICE_DATE_ATTR = "service_date_attr"
 
 START_DATE_MAP = {
     DATASET_DATE_TYPE: "start_date",
