@@ -1,4 +1,4 @@
-from representation.gtfs_representation import GtfsRepresentation
+from utilities.validators import validate_gtfs_representation
 
 
 def process_main_language_code_for_gtfs_metadata(gtfs_representation):
@@ -7,13 +7,11 @@ def process_main_language_code_for_gtfs_metadata(gtfs_representation):
     :param gtfs_representation: The representation of the GTFS dataset to process.
     :return: The representation of the GTFS dataset post-execution.
     """
-    if not isinstance(gtfs_representation, GtfsRepresentation):
-        raise TypeError("GTFS data representation must be a valid GtfsRepresentation.")
-
+    validate_gtfs_representation(gtfs_representation)
     dataset = gtfs_representation.get_dataset()
 
     # Extract the main language code from the first row in the dataset agency
-    main_language_code = dataset.agency['agency_lang'].iloc[0]
+    main_language_code = dataset.agency["agency_lang"].iloc[0]
 
     # Set the main language code in the GTFS representation
     gtfs_representation.set_metadata_main_language_code(main_language_code)

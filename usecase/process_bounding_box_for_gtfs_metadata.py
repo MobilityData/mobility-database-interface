@@ -1,5 +1,5 @@
-from representation.gtfs_representation import GtfsRepresentation
-from utilities.geographical_utils import *
+from utilities.geographical_utils import process_bounding_box_corner_strings
+from utilities.validators import validate_gtfs_representation
 
 BOUNDING_BOX_SETTER = "set_metadata_bounding_box"
 
@@ -11,8 +11,7 @@ def process_bounding_box_for_gtfs_metadata(gtfs_representation):
     :param gtfs_representation: The representation of the GTFS dataset to process.
     :return: The representation of the GTFS dataset post-execution.
     """
-    if not isinstance(gtfs_representation, GtfsRepresentation):
-        raise TypeError("GTFS data representation must be a valid GtfsRepresentation.")
+    validate_gtfs_representation(gtfs_representation)
     dataset = gtfs_representation.get_dataset()
 
     # Extract the box corners coordinates in the dataset representation and
@@ -21,7 +20,8 @@ def process_bounding_box_for_gtfs_metadata(gtfs_representation):
     # Documentation about dictionary comprehension can be found at:
     # https://docs.python.org/3/tutorial/datastructures.html
     bounding_box = {
-        f"{index+1}": corner for index, corner in enumerate(process_bounding_box_corner_strings(dataset))
+        f"{index+1}": corner
+        for index, corner in enumerate(process_bounding_box_corner_strings(dataset))
     }
 
     # Set the bounding box in the GTFS representation

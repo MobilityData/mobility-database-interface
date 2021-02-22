@@ -3,29 +3,25 @@ import sys
 
 import requests
 from guppy import hpy
-
 from repository.data_repository import DataRepository
-from representation.dataset_representation_factory import DatasetRepresentationFactory
 from request_manager.sparql_request_helper import sparql_request
 from usecase.compare_gtfs_stops import CompareGtfsStops
-from usecase.download_dataset_as_zip import DownloadDatasetAsZip
-from usecase.extract_database_md5 import extract_database_md5
-from usecase.extract_sources_url import extract_source_url
-from usecase.load_dataset import LoadDataset
+from usecase.download_dataset_as_zip import download_dataset_as_zip
 from usecase.process_agencies_count_for_gtfs_metadata import (
     process_agencies_count_for_gtfs_metadata,
 )
+from usecase.extract_sources_url_and_md5_hashes_from_database import (
+    extract_gtfs_sources_url_and_md5_hashes_from_database,
+)
+from usecase.load_dataset import load_dataset
 from usecase.process_all_timezones_for_gtfs_metadata import (
-    ProcessAllTimezonesForGtfsMetadata,
+    process_all_timezones_for_gtfs_metadata,
 )
 from usecase.process_bounding_box_for_gtfs_metadata import (
     process_bounding_box_for_gtfs_metadata,
 )
 from usecase.process_bounding_octagon_for_gtfs_metadata import (
     process_bounding_octagon_for_gtfs_metadata,
-)
-from usecase.process_end_timestamp_for_gtfs_metadata import (
-    ProcessEndTimestampForGtfsMetadata,
 )
 from usecase.process_main_language_code_for_gtfs_metadata import (
     process_main_language_code_for_gtfs_metadata,
@@ -41,49 +37,14 @@ from usecase.process_service_date_for_gtfs_metadata import (
     process_start_service_date_for_gtfs_metadata,
     process_end_service_date_for_gtfs_metadata,
 )
-from usecase.process_start_timestamp_for_gtfs_metadata import (
-    ProcessStartTimestampForGtfsMetadata,
-)
 from usecase.process_stops_count_by_type_for_gtfs_metadata import (
     process_stops_count_by_type_for_gtfs_metadata,
 )
+from usecase.process_timestamp_for_gtfs_metadata import (
+    process_start_timestamp_for_gtfs_metadata,
+    process_end_timestamp_for_gtfs_metadata,
+)
 from utilities.constants import STAGING_SPARQL_URL, STAGING_API_URL
-
-
-def download_data(
-    path_to_data,
-    dataset_type="GTFS",
-    specific_download=False,
-    specific_entity_code=None,
-):
-    urls = extract_source_url(
-        STAGING_API_URL,
-        STAGING_SPARQL_URL,
-        dataset_type,
-        specific_download,
-        specific_entity_code,
-    )
-    download_dataset = DownloadDatasetAsZip(path_to_data, urls)
-    return download_dataset.execute()
-
-
-def process_data_md5(paths_to_datasets):
-    entity_codes = list(paths_to_datasets.keys())
-    previous_md5_hashes = extract_database_md5(
-        STAGING_API_URL,
-        STAGING_SPARQL_URL,
-        entity_codes,
-    )
-    return process_md5(paths_to_datasets, previous_md5_hashes)
-
-
-def load_data(
-    data_repository, dataset_representation_factory, datasets, data_type="GTFS"
-):
-    load_dataset = LoadDataset(
-        data_repository, dataset_representation_factory, datasets, data_type
-    )
-    return load_dataset.execute()
 
 
 def compare_stops(dataset):
@@ -95,7 +56,7 @@ def print_items_by_query(query):
     # Get all data from Wikibase image
     # Can be also use to get all related data to an entity,
     # i.e. all sub-entities of "Public transport operator", like STM, MBTA, etc.
-    sparql_response = sparql_request(STAGING_SPARQL_URL)
+    sparql_response = sparql_request(STAGING_SPARQL_URL, query)
     results = []
     print(sparql_response)
     for result in sparql_response["results"]["bindings"]:
@@ -168,30 +129,25 @@ if __name__ == "__main__":
     # Initialize DataRepository
     data_repository = DataRepository()
 
-    # Initialize DatasetRepresentationFactory
-    dataset_representation_factory = DatasetRepresentationFactory()
-
     # Process data
     if args["download"] is not None:
         # Download datasets zip files
-        if args["all"] is not None:
-            paths_to_datasets = download_data(
-                args["path_to_tmp_data"], dataset_type=args["data_type"]
-            )
-        elif args["specific"] is not None:
-            paths_to_datasets = download_data(
-                args["path_to_tmp_data"],
-                specific_download=True,
-                specific_entity_code=args["specific"],
-            )
+        (
+            urls,
+            previous_md5_hashes,
+        ) = extract_gtfs_sources_url_and_md5_hashes_from_database(
+            STAGING_API_URL,
+            STAGING_SPARQL_URL,
+        )
+
+        paths_to_datasets = download_dataset_as_zip(args["path_to_tmp_data"], urls)
 
         # Process the MD5 hashes
-        paths_to_datasets_and_md5 = process_data_md5(paths_to_datasets)
+        paths_to_datasets_and_md5 = process_md5(paths_to_datasets, previous_md5_hashes)
 
         # Load the datasets in memory in the data repository
-        data_repository = load_data(
+        data_repository = load_dataset(
             data_repository,
-            dataset_representation_factory,
             paths_to_datasets_and_md5,
             args["data_type"],
         )
@@ -201,18 +157,42 @@ if __name__ == "__main__":
             dataset_key,
             dataset_representation,
         ) in data_repository.get_dataset_representations().items():
-            dataset_representation = process_start_service_date_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_end_service_date_for_gtfs_metadata(dataset_representation)
-            ProcessStartTimestampForGtfsMetadata(dataset_representation).execute()
-            ProcessEndTimestampForGtfsMetadata(dataset_representation).execute()
-            dataset_representation = process_main_language_code_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_main_timezone_for_gtfs_metadata(dataset_representation)
-            ProcessAllTimezonesForGtfsMetadata(dataset_representation).execute()
-            dataset_representation = process_bounding_box_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_bounding_octagon_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_agencies_count_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_routes_count_by_type_for_gtfs_metadata(dataset_representation)
-            dataset_representation = process_stops_count_by_type_for_gtfs_metadata(dataset_representation)
+            dataset_representation = process_start_service_date_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_end_service_date_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_start_timestamp_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_end_timestamp_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_main_language_code_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_main_timezone_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_all_timezones_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_bounding_box_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_bounding_octagon_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_agencies_count_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_routes_count_by_type_for_gtfs_metadata(
+                dataset_representation
+            )
+            dataset_representation = process_stops_count_by_type_for_gtfs_metadata(
+                dataset_representation
+            )
 
             # Print results
             data_repository.print_dataset_representation(dataset_key)
