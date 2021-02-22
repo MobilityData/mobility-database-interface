@@ -1,5 +1,5 @@
 from unittest import TestCase, mock
-from unittest.mock import Mock, MagicMock
+from unittest.mock import Mock
 
 from usecase.extract_sources_url_and_md5_hashes_from_database import (
     extract_gtfs_sources_url_and_md5_hashes_from_database,
@@ -17,7 +17,6 @@ from utilities.constants import (
     VALUE,
     RESULTS,
     BINDINGS,
-    GTFS_CATALOG_OF_SOURCES_CODE,
 )
 
 
@@ -126,7 +125,7 @@ class TestExtractSourcesUrlAndMd5HashesFromDatabase(TestCase):
         self, mock_api_request, mock_sparql_request
     ):
         mock_api_request.return_value = Mock()
-        mock_api_request.return_value.json.return_value = [
+        mock_api_request.return_value.json.side_effect = [
             {
                 "entities": {
                     "Q82": {
@@ -157,7 +156,7 @@ class TestExtractSourcesUrlAndMd5HashesFromDatabase(TestCase):
             },
         ]
 
-        mock_sparql_request.return_value = [
+        mock_sparql_request.side_effect = [
             {
                 "results": {
                     "bindings": [
@@ -194,69 +193,18 @@ class TestExtractSourcesUrlAndMd5HashesFromDatabase(TestCase):
             STAGING_API_URL, STAGING_SPARQL_URL
         )
         self.assertEqual(
-            under_test_urls, {"Q82": "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip"}
+            {"Q82": "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip"}, under_test_urls
         )
         self.assertEqual(under_test_md5, {"Q82": {"test_md5_hash"}})
-        mock_api_request.execute_get.assert_called()
-        self.assertEqual(mock_api_request.execute_get.call_count, 2)
-        mock_sparql_request.execute_get.assert_called()
-        self.assertEqual(mock_sparql_request.execute_get.call_count, 2)
 
-    @mock.patch("request_manager.sparql_request_manager.SparqlRequestManager")
-    def test_extract_gbfs_with_none_api_request_manager_should_raise_exception(
-        self, mock_sparql_request_manager
-    ):
-        mock_sparql_request_manager.__class__ = SparqlRequestManager
-        self.assertRaises(
-            TypeError,
-            extract_gbfs_sources_url_and_md5_hashes_from_database,
-            None,
-            mock_sparql_request_manager,
-        )
-
-    @mock.patch("request_manager.sparql_request_manager.SparqlRequestManager")
-    def test_extract_gbfs_with_invalid_api_request_manager_should_raise_exception(
-        self, mock_sparql_request_manager
-    ):
-        mock_sparql_request_manager.__class__ = SparqlRequestManager
-        self.assertRaises(
-            TypeError,
-            extract_gbfs_sources_url_and_md5_hashes_from_database,
-            mock_sparql_request_manager,
-            mock_sparql_request_manager,
-        )
-
-    @mock.patch("request_manager.api_request_manager.ApiRequestManager")
-    def test_extract_gbfs_with_none_sparql_request_manager_should_raise_exception(
-        self, mock_api_request_manager
-    ):
-        mock_api_request_manager.__class__ = ApiRequestManager
-        self.assertRaises(
-            TypeError,
-            extract_gbfs_sources_url_and_md5_hashes_from_database,
-            mock_api_request_manager,
-            None,
-        )
-
-    @mock.patch("request_manager.api_request_manager.ApiRequestManager")
-    def test_extract_gbfs_with_invalid_sparql_request_manager_should_raise_exception(
-        self, mock_api_request_manager
-    ):
-        mock_api_request_manager.__class__ = ApiRequestManager
-        self.assertRaises(
-            TypeError,
-            extract_gbfs_sources_url_and_md5_hashes_from_database,
-            mock_api_request_manager,
-            mock_api_request_manager,
-        )
-
-    @mock.patch("request_manager.api_request_manager.ApiRequestManager")
-    @mock.patch("request_manager.sparql_request_manager.SparqlRequestManager")
+    @mock.patch(
+        "usecase.extract_sources_url_and_md5_hashes_from_database.sparql_request"
+    )
+    @mock.patch("usecase.extract_sources_url_and_md5_hashes_from_database.requests.get")
     def test_extract_gbfs_with_valid_parameters_should_return_urls_and_md5_hashes(
-        self, mock_api_request_manager, mock_sparql_request_manager
+        self, mock_api_request, mock_sparql_request
     ):
-        mock_api_request_manager.__class__ = ApiRequestManager
-        mock_api_request_manager.execute_get.side_effect = [
+        mock_api_request.return_value.json.side_effect = [
             {
                 "entities": {
                     "Q82": {
@@ -287,8 +235,7 @@ class TestExtractSourcesUrlAndMd5HashesFromDatabase(TestCase):
             },
         ]
 
-        mock_sparql_request_manager.__class__ = SparqlRequestManager
-        mock_sparql_request_manager.execute_get.return_value = {
+        mock_sparql_request.return_value = {
             "results": {
                 "bindings": [
                     {
@@ -304,13 +251,9 @@ class TestExtractSourcesUrlAndMd5HashesFromDatabase(TestCase):
             under_test_urls,
             under_test_md5,
         ) = extract_gbfs_sources_url_and_md5_hashes_from_database(
-            mock_api_request_manager, mock_sparql_request_manager
+            STAGING_API_URL, STAGING_SPARQL_URL
         )
         self.assertEqual(
             under_test_urls, {"Q82": "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip"}
         )
         self.assertEqual(under_test_md5, {"Q82": {"test_md5_hash"}})
-        mock_api_request_manager.execute_get.assert_called()
-        self.assertEqual(mock_api_request_manager.execute_get.call_count, 2)
-        mock_sparql_request_manager.execute_get.assert_called()
-        self.assertEqual(mock_sparql_request_manager.execute_get.call_count, 2)
