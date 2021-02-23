@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, PropertyMock
 from gtfs_kit.feed import Feed
 from representation.gtfs_metadata import GtfsMetadata
 from representation.gtfs_representation import GtfsRepresentation
-from usecase.process_bounding_octagon_for_gtfs_metadata import (
+from usecase.process_geopraphical_boundaries_for_gtfs_metadata import (
     process_bounding_octagon_for_gtfs_metadata,
 )
 
@@ -45,17 +45,16 @@ class TestProcessBoundingOctagonForGtfsMetadata(TestCase):
 
         mock_metadata.__class__ = GtfsMetadata
         mock_gtfs_representation.__class__ = GtfsRepresentation
-        type(mock_gtfs_representation).dataset = mock_dataset
-        type(mock_gtfs_representation).metadata = mock_metadata
+        mock_gtfs_representation.get_dataset.return_value = mock_dataset
 
         under_test = process_bounding_octagon_for_gtfs_metadata(
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_gtfs_representation.get_dataset.assert_called_once()
         mock_stops.assert_called()
         self.assertEqual(mock_stops.call_count, 5)
-        self.assertEqual(
-            mock_metadata.bounding_octagon,
+        mock_gtfs_representation.set_metadata_bounding_octagon.assert_called_with(
             {
                 "1": "1°0'0.000\"S, 3°0'0.000\"E",
                 "2": "3°0'0.000\"S, 1°0'0.000\"E",
@@ -65,5 +64,5 @@ class TestProcessBoundingOctagonForGtfsMetadata(TestCase):
                 "6": "3°0'0.000\"N, 1°0'0.000\"W",
                 "7": "3°0'0.000\"N, 1°0'0.000\"E",
                 "8": "1°0'0.000\"N, 3°0'0.000\"E",
-            },
+            }
         )
