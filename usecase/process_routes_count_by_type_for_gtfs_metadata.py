@@ -12,6 +12,17 @@ TROLLEY_BUS = 11
 MONORAIL = 12
 ROUTE_TYPE = "route_type"
 
+TRAM_KEY = "tram"
+SUBWAY_KEY = "subway"
+RAIL_KEY = "rail"
+BUS_KEY = "bus"
+FERRY_KEY = "ferry"
+CABLE_TRAM_KEY = "cable_tram"
+AERIAL_LIFT_KEY = "aerial_lift"
+FUNICULAR_KEY = "funicular"
+TROLLEY_BUS_KEY = "trolley_bus"
+MONORAIL_KEY = "monorail"
+
 
 def process_routes_count_by_type_for_gtfs_metadata(gtfs_representation):
     """Process and count by type all the routes in the `routes` file from the GTFS dataset of the representation.
@@ -20,7 +31,8 @@ def process_routes_count_by_type_for_gtfs_metadata(gtfs_representation):
     :return: The representation of the GTFS dataset post-execution.
     """
     validate_gtfs_representation(gtfs_representation)
-    dataset = gtfs_representation.get_dataset()
+    dataset = gtfs_representation.dataset
+    metadata = gtfs_representation.metadata
 
     # Count routes by route type
     trams_count = (
@@ -54,17 +66,17 @@ def process_routes_count_by_type_for_gtfs_metadata(gtfs_representation):
 
     # Create the dictionary of routes count by type
     routes_count_by_type = {
-        "tram": trams_count,
-        "subway": subways_count,
-        "rail": rails_count,
-        "bus": buses_count,
-        "ferry": ferries_count,
-        "cable_tram": cable_trams_count,
-        "aerial_lift": aerial_lifts_count,
-        "funicular": funiculars_count,
-        "trolley_bus": trolley_buses_count,
-        "monorail": monorails_count,
+        TRAM_KEY: trams_count,
+        SUBWAY_KEY: subways_count,
+        RAIL_KEY: rails_count,
+        BUS_KEY: buses_count,
+        FERRY_KEY: ferries_count,
+        CABLE_TRAM_KEY: cable_trams_count,
+        AERIAL_LIFT_KEY: aerial_lifts_count,
+        FUNICULAR_KEY: funiculars_count,
+        TROLLEY_BUS_KEY: trolley_buses_count,
+        MONORAIL_KEY: monorails_count,
     }
 
-    gtfs_representation.set_metadata_routes_count_by_type(routes_count_by_type)
+    metadata.routes_count_by_type = routes_count_by_type
     return gtfs_representation

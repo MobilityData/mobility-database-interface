@@ -69,11 +69,11 @@ class TestProcessEndTimestampForGtfsMetadata(TestCase):
 
         mock_metadata.__class__ = GtfsMetadata
         mock_gtfs_representation.__class__ = GtfsRepresentation
-        mock_gtfs_representation.get_dataset.return_value = mock_dataset
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
 
         under_test = process_end_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        mock_gtfs_representation.get_dataset.assert_called_once()
         mock_calendar.assert_called()
         self.assertEqual(mock_calendar.call_count, 2)
         mock_calendar_dates.assert_called()
@@ -84,6 +84,4 @@ class TestProcessEndTimestampForGtfsMetadata(TestCase):
         self.assertEqual(mock_stop_times.call_count, 2)
         mock_agency.assert_called()
         self.assertEqual(mock_agency.call_count, 1)
-        mock_gtfs_representation.set_metadata_end_timestamp.assert_called_with(
-            "2020-10-10T05:00:00-05:00"
-        )
+        self.assertEqual(mock_metadata.end_timestamp, "2020-10-10T05:00:00-05:00")

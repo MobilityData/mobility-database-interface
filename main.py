@@ -1,10 +1,10 @@
 import argparse
 import sys
 
+import requests
 from guppy import hpy
-
 from repository.data_repository import DataRepository
-from request_manager.request_manager_containers import Managers
+from request_manager.sparql_request_helper import sparql_request
 from usecase.compare_gtfs_stops import CompareGtfsStops
 from usecase.download_dataset_as_zip import download_dataset_as_zip
 from usecase.process_agencies_count_for_gtfs_metadata import (
@@ -12,7 +12,6 @@ from usecase.process_agencies_count_for_gtfs_metadata import (
 )
 from usecase.extract_sources_url_and_md5_hashes_from_database import (
     extract_gtfs_sources_url_and_md5_hashes_from_database,
-    extract_gbfs_sources_url_and_md5_hashes_from_database,
 )
 from usecase.load_dataset import load_dataset
 from usecase.process_all_timezones_for_gtfs_metadata import (
@@ -43,6 +42,7 @@ from usecase.process_timestamp_for_gtfs_metadata import (
     process_start_timestamp_for_gtfs_metadata,
     process_end_timestamp_for_gtfs_metadata,
 )
+from utilities.constants import STAGING_SPARQL_URL, STAGING_API_URL
 
 
 def compare_stops(dataset):
@@ -54,8 +54,7 @@ def print_items_by_query(query):
     # Get all data from Wikibase image
     # Can be also use to get all related data to an entity,
     # i.e. all sub-entities of "Public transport operator", like STM, MBTA, etc.
-    sparql_request_manager = Managers.staging_sparql_request_manager()
-    sparql_response = sparql_request_manager.execute_get(query)
+    sparql_response = sparql_request(STAGING_SPARQL_URL, query)
     results = []
     print(sparql_response)
     for result in sparql_response["results"]["bindings"]:
@@ -64,7 +63,6 @@ def print_items_by_query(query):
         results.append(result["a"]["value"][37:40])
 
     # Get data for a specific entity from Wikibase image
-    api_request_manager = Managers.staging_api_request_manager()
     for result in results:
         params = {
             "action": "wbgetentities",
@@ -72,7 +70,7 @@ def print_items_by_query(query):
             "languages": "en",
             "format": "json",
         }
-        api_request = api_request_manager.execute_get(params)
+        api_request = requests.get(STAGING_API_URL, params)
         print(api_request)
 
 
@@ -136,8 +134,8 @@ if __name__ == "__main__":
             urls,
             previous_md5_hashes,
         ) = extract_gtfs_sources_url_and_md5_hashes_from_database(
-            Managers.staging_api_request_manager(),
-            Managers.staging_sparql_request_manager(),
+            STAGING_API_URL,
+            STAGING_SPARQL_URL,
         )
 
         paths_to_datasets = download_dataset_as_zip(args["path_to_tmp_data"], urls)
