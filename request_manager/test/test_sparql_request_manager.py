@@ -20,3 +20,8 @@ class TestSparqlRequestManager(TestCase):
         query = 132314
 
         self.assertRaises(Exception, sparql_request, STAGING_SPARQL_URL, query)
+
+    def test_sparql_get_request_query_empty_str(self):
+        query = ""
+
+        self.assertRaises(Exception, sparql_request, STAGING_SPARQL_URL, query)
