@@ -22,3 +22,18 @@ class ApiRequestManager:
                 raise e
             else:
                 return response
+
+    def execute_post(self, data):
+        """Execute GET request with the API client.
+        :param params: The params for the request to make to the API client.
+        :return: The response returned by the API client.
+        """
+        if data is not None:
+            try:
+                session = self.__api_client.get_session()
+                url = self.__api_client.get_url()
+                response = session.post(url=url, data=data)
+            except Exception as e:
+                raise e
+            else:
+                return response

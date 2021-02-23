@@ -1,7 +1,7 @@
 from utilities.geographical_utils import process_bounding_box_corner_strings
 from utilities.validators import validate_gtfs_representation
 
-BOUNDING_BOX_SETTER = "set_metadata_bounding_box"
+BOUNDING_BOX_ATTR = "bounding_box"
 
 
 def process_bounding_box_for_gtfs_metadata(gtfs_representation):
@@ -12,7 +12,8 @@ def process_bounding_box_for_gtfs_metadata(gtfs_representation):
     :return: The representation of the GTFS dataset post-execution.
     """
     validate_gtfs_representation(gtfs_representation)
-    dataset = gtfs_representation.get_dataset()
+    dataset = gtfs_representation.dataset
+    metadata = gtfs_representation.metadata
 
     # Extract the box corners coordinates in the dataset representation and
     # Order the corners inside a bounding box
@@ -25,6 +26,6 @@ def process_bounding_box_for_gtfs_metadata(gtfs_representation):
     }
 
     # Set the bounding box in the GTFS representation
-    getattr(gtfs_representation, BOUNDING_BOX_SETTER)(bounding_box)
+    setattr(metadata, BOUNDING_BOX_ATTR, bounding_box)
 
     return gtfs_representation

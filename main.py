@@ -46,6 +46,9 @@ from usecase.process_timestamp_for_gtfs_metadata import (
     process_start_timestamp_for_gtfs_metadata,
     process_end_timestamp_for_gtfs_metadata,
 )
+from usecase.create_dataset_entity_for_gtfs_metadata import (
+    create_dataset_entity_for_gtfs_metadata,
+)
 
 
 def compare_stops(dataset):
@@ -217,6 +220,9 @@ if __name__ == "__main__":
             dataset_representation = process_stops_count_by_type_for_gtfs_metadata(
                 dataset_representation
             )
+            dataset_representation = create_dataset_entity_for_gtfs_metadata(
+                dataset_representation, Managers.staging_api_request_manager()
+            )
 
             # Print results
             data_repository.print_dataset_representation(dataset_key)
@@ -226,6 +232,6 @@ if __name__ == "__main__":
         # TODO dataset = load_data(args['load'])
         pass
 
-    # Print memory usage 
+    # Print memory usage
     print("\n--------------- Memory Usage ---------------\n")
     print(hpy().heap())

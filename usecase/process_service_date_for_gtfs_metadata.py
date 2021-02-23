@@ -10,20 +10,20 @@ DATE = "date"
 DATASET_DATE_TYPE = "dataset_date_type"
 FEED_DATE_KEY = "feed_date_type"
 MIN_MAX_ATTR = "min_max_attr"
-SERVICE_DATE_SETTER = "service_date_setter"
+SERVICE_DATE_ATTR = "service_date_setter"
 
 START_DATE_MAP = {
     DATASET_DATE_TYPE: "start_date",
     FEED_DATE_KEY: "feed_start_date",
     MIN_MAX_ATTR: "min",
-    SERVICE_DATE_SETTER: "set_metadata_start_service_date",
+    SERVICE_DATE_ATTR: "start_service_date",
 }
 
 END_DATE_MAP = {
     DATASET_DATE_TYPE: "end_date",
     FEED_DATE_KEY: "feed_end_date",
     MIN_MAX_ATTR: "max",
-    SERVICE_DATE_SETTER: "set_metadata_end_service_date",
+    SERVICE_DATE_ATTR: "end_service_date",
 }
 
 
@@ -46,7 +46,8 @@ def process_service_date_for_gtfs_metadata(gtfs_representation, service_date_map
     :return: The representation of the GTFS dataset post-execution.
     """
     validate_gtfs_representation(gtfs_representation)
-    dataset = gtfs_representation.get_dataset()
+    dataset = gtfs_representation.dataset
+    metadata = gtfs_representation.metadata
     feed_info = dataset.feed_info
 
     if (
@@ -80,6 +81,6 @@ def process_service_date_for_gtfs_metadata(gtfs_representation, service_date_map
     # Set the start service date in the GTFS representation
     # or
     # Set the end service date in the GTFS representation
-    getattr(gtfs_representation, service_date_map[SERVICE_DATE_SETTER])(service_date)
+    setattr(metadata, service_date_map[SERVICE_DATE_ATTR], service_date)
 
     return gtfs_representation
