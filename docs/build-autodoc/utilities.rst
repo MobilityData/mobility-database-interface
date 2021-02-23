@@ -4,10 +4,10 @@ utilities package
 Submodules
 ----------
 
-utilities.constant module
--------------------------
+utilities.constants module
+--------------------------
 
-.. automodule:: utilities.constant
+.. automodule:: utilities.constants
    :members:
    :undoc-members:
    :show-inheritance:
