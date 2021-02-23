@@ -13,7 +13,7 @@ def sparql_request(sparql_api, query):
             f"sparql_api should be {PRODUCTION_SPARQL_URL} or {STAGING_SPARQL_URL}"
         )
     if not isinstance(query, str) or len(query) == 0:
-        raise Exception("query should not be empty ")
+        raise Exception("query should not be empty")
 
     service = SPARQLWrapper(sparql_api, agent=SPARQL_USER_AGENT)
     service.setQuery(query)
