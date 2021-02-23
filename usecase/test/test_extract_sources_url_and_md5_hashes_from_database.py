@@ -193,7 +193,7 @@ class TestExtractSourcesUrlAndMd5HashesFromDatabase(TestCase):
             STAGING_API_URL, STAGING_SPARQL_URL
         )
         self.assertEqual(
-            {"Q82": "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip"}, under_test_urls
+            under_test_urls, {"Q82": "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip"}
         )
         self.assertEqual(under_test_md5, {"Q82": {"test_md5_hash"}})
 
