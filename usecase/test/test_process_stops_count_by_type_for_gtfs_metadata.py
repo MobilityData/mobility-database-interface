@@ -55,15 +55,15 @@ class TestProcessStopsCountByTypeForGtfsMetadata(TestCase):
 
         mock_metadata.__class__ = GtfsMetadata
         mock_gtfs_representation.__class__ = GtfsRepresentation
-        mock_gtfs_representation.get_dataset.return_value = mock_dataset
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
 
         under_test = process_stops_count_by_type_for_gtfs_metadata(
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
-        mock_gtfs_representation.get_dataset.assert_called_once()
         mock_stops.assert_called()
         self.assertEqual(mock_stops.call_count, 10)
-        mock_gtfs_representation.set_metadata_stops_count_by_type.assert_called_with(
-            {"stop": 6, "station": 2, "entrance": 1}
+        self.assertEqual(
+            mock_metadata.stops_count_by_type, {"stop": 6, "station": 2, "entrance": 1}
         )

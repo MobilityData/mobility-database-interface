@@ -6,6 +6,17 @@ from representation.gtfs_metadata import GtfsMetadata
 from representation.gtfs_representation import GtfsRepresentation
 from usecase.process_routes_count_by_type_for_gtfs_metadata import (
     process_routes_count_by_type_for_gtfs_metadata,
+    ROUTE_TYPE,
+    TRAM_KEY,
+    SUBWAY_KEY,
+    RAIL_KEY,
+    BUS_KEY,
+    FERRY_KEY,
+    CABLE_TRAM_KEY,
+    AERIAL_LIFT_KEY,
+    FUNICULAR_KEY,
+    TROLLEY_BUS_KEY,
+    MONORAIL_KEY,
 )
 
 
@@ -45,7 +56,7 @@ class TestProcessRoutesCountByTypeForGtfsMetadata(TestCase):
         self, mock_gtfs_representation, mock_dataset, mock_metadata
     ):
         mock_routes = PropertyMock(
-            return_value=pd.DataFrame({"route_type": [0, 2, 5, 0, 12, 1, 0, 0, 0]})
+            return_value=pd.DataFrame({ROUTE_TYPE: [0, 2, 5, 0, 12, 1, 0, 0, 0]})
         )
 
         mock_dataset.__class__ = Feed
@@ -53,26 +64,27 @@ class TestProcessRoutesCountByTypeForGtfsMetadata(TestCase):
 
         mock_metadata.__class__ = GtfsMetadata
         mock_gtfs_representation.__class__ = GtfsRepresentation
-        mock_gtfs_representation.get_dataset.return_value = mock_dataset
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
 
         under_test = process_routes_count_by_type_for_gtfs_metadata(
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
-        mock_gtfs_representation.get_dataset.assert_called_once()
         mock_routes.assert_called()
         self.assertEqual(mock_routes.call_count, 20)
-        mock_gtfs_representation.set_metadata_routes_count_by_type.assert_called_with(
+        self.assertEqual(
+            mock_metadata.routes_count_by_type,
             {
-                "tram": 5,
-                "subway": 1,
-                "rail": 1,
-                "bus": 0,
-                "ferry": 0,
-                "cable_tram": 1,
-                "aerial_lift": 0,
-                "funicular": 0,
-                "trolley_bus": 0,
-                "monorail": 1,
-            }
+                TRAM_KEY: 5,
+                SUBWAY_KEY: 1,
+                RAIL_KEY: 1,
+                BUS_KEY: 0,
+                FERRY_KEY: 0,
+                CABLE_TRAM_KEY: 1,
+                AERIAL_LIFT_KEY: 0,
+                FUNICULAR_KEY: 0,
+                TROLLEY_BUS_KEY: 0,
+                MONORAIL_KEY: 1,
+            },
         )

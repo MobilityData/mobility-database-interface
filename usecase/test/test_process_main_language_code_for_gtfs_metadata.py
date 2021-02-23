@@ -44,15 +44,13 @@ class TestProcessMainLanguageCodeForGtfsMetadata(TestCase):
 
         mock_metadata.__class__ = GtfsMetadata
         mock_gtfs_representation.__class__ = GtfsRepresentation
-        mock_gtfs_representation.get_dataset.return_value = mock_dataset
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
 
         under_test = process_main_language_code_for_gtfs_metadata(
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
-        mock_gtfs_representation.get_dataset.assert_called_once()
         mock_agency.assert_called()
         self.assertEqual(mock_agency.call_count, 1)
-        mock_gtfs_representation.set_metadata_main_language_code.assert_called_with(
-            "fr"
-        )
+        self.assertEqual(mock_metadata.main_language_code, "fr")
