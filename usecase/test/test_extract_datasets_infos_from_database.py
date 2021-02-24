@@ -1,10 +1,10 @@
 from unittest import TestCase, mock
 from unittest.mock import Mock
 
-from usecase.extract_sources_url_name_and_md5_hashes_from_database import (
-    extract_gtfs_sources_url_name_and_md5_hashes_from_database,
-    extract_gbfs_sources_url_name_and_md5_hashes_from_database,
-    extract_md5_hashes,
+from usecase.extract_datasets_infos_from_database import (
+    extract_gtfs_datasets_infos_from_database,
+    extract_gbfs_datasets_infos_from_database,
+    extract_previous_md5_hashes,
     extract_source_url_and_name,
 )
 from utilities.constants import (
@@ -23,12 +23,8 @@ from utilities.constants import (
 
 
 class TestExtractDatabaseMd5(TestCase):
-    @mock.patch(
-        "usecase.extract_sources_url_name_and_md5_hashes_from_database.sparql_request"
-    )
-    @mock.patch(
-        "usecase.extract_sources_url_name_and_md5_hashes_from_database.requests.get"
-    )
+    @mock.patch("usecase.extract_datasets_infos_from_database.sparql_request")
+    @mock.patch("usecase.extract_datasets_infos_from_database.requests.get")
     def test_extract_database_md5_with_existing_entity_codes_should_return_md5_dict(
         self, mock_api_request, mock_sparql_request
     ):
@@ -60,17 +56,13 @@ class TestExtractDatabaseMd5(TestCase):
         }
         mock_api_request.return_value.raise_for_status.return_value = None
 
-        under_test = extract_md5_hashes(
+        under_test = extract_previous_md5_hashes(
             STAGING_API_URL, STAGING_SPARQL_URL, test_entity
         )
         self.assertEqual(under_test, test_md5)
 
-    @mock.patch(
-        "usecase.extract_sources_url_name_and_md5_hashes_from_database.sparql_request"
-    )
-    @mock.patch(
-        "usecase.extract_sources_url_name_and_md5_hashes_from_database.requests.get"
-    )
+    @mock.patch("usecase.extract_datasets_infos_from_database.sparql_request")
+    @mock.patch("usecase.extract_datasets_infos_from_database.requests.get")
     def test_extract_database_md5_with_non_existing_entity_should_return_empty_md5_dict(
         self, mock_api_request, mock_sparql_request
     ):
@@ -86,16 +78,14 @@ class TestExtractDatabaseMd5(TestCase):
         }
         mock_api_request.return_value.raise_for_status.return_value = None
 
-        under_test = extract_md5_hashes(
+        under_test = extract_previous_md5_hashes(
             STAGING_API_URL, STAGING_SPARQL_URL, test_entity
         )
         self.assertEqual(under_test, test_md5)
 
 
 class TestExtractSourcesUrlAndNameTest(TestCase):
-    @mock.patch(
-        "usecase.extract_sources_url_name_and_md5_hashes_from_database.requests.get"
-    )
+    @mock.patch("usecase.extract_datasets_infos_from_database.requests.get")
     def test_extract_sources_url_and_name_with_default_parameters_should_return_urls_and_names_dictionary(
         self,
         mock_api_request,
@@ -130,13 +120,9 @@ class TestExtractSourcesUrlAndNameTest(TestCase):
         self.assertEqual(under_test_name, "test_name")
 
 
-class TestExtractSourcesUrlAndMd5HashesFromDatabase(TestCase):
-    @mock.patch(
-        "usecase.extract_sources_url_name_and_md5_hashes_from_database.sparql_request"
-    )
-    @mock.patch(
-        "usecase.extract_sources_url_name_and_md5_hashes_from_database.requests.get"
-    )
+class TestExtractDatasetsInfosFromDatabase(TestCase):
+    @mock.patch("usecase.extract_datasets_infos_from_database.sparql_request")
+    @mock.patch("usecase.extract_datasets_infos_from_database.requests.get")
     def test_extract_gtfs_with_valid_parameters_should_return_urls_and_md5_hashes(
         self, mock_api_request, mock_sparql_request
     ):
@@ -201,25 +187,21 @@ class TestExtractSourcesUrlAndMd5HashesFromDatabase(TestCase):
             },
         ]
 
-        (
-            under_test_urls,
-            under_test_names,
-            under_test_md5,
-        ) = extract_gtfs_sources_url_name_and_md5_hashes_from_database(
+        under_test = extract_gtfs_datasets_infos_from_database(
             STAGING_API_URL, STAGING_SPARQL_URL
         )
-        self.assertEqual(
-            under_test_urls, {"Q82": "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip"}
-        )
-        self.assertEqual(under_test_names, {"Q82": "test_name"})
-        self.assertEqual(under_test_md5, {"Q82": {"test_md5_hash"}})
+        self.assertEqual(len(under_test), 1)
 
-    @mock.patch(
-        "usecase.extract_sources_url_name_and_md5_hashes_from_database.sparql_request"
-    )
-    @mock.patch(
-        "usecase.extract_sources_url_name_and_md5_hashes_from_database.requests.get"
-    )
+        under_test_dataset_info = under_test[0]
+        self.assertEqual(
+            under_test_dataset_info.url,
+            "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip",
+        )
+        self.assertEqual(under_test_dataset_info.source_name, "test_name")
+        self.assertEqual(under_test_dataset_info.previous_md5_hashes, {"test_md5_hash"})
+
+    @mock.patch("usecase.extract_datasets_infos_from_database.sparql_request")
+    @mock.patch("usecase.extract_datasets_infos_from_database.requests.get")
     def test_extract_gbfs_with_valid_parameters_should_return_urls_and_md5_hashes(
         self, mock_api_request, mock_sparql_request
     ):
@@ -265,15 +247,15 @@ class TestExtractSourcesUrlAndMd5HashesFromDatabase(TestCase):
             }
         }
 
-        (
-            under_test_urls,
-            under_test_names,
-            under_test_md5,
-        ) = extract_gbfs_sources_url_name_and_md5_hashes_from_database(
+        under_test = extract_gtfs_datasets_infos_from_database(
             STAGING_API_URL, STAGING_SPARQL_URL
         )
+        self.assertEqual(len(under_test), 1)
+
+        under_test_dataset_info = under_test[0]
         self.assertEqual(
-            under_test_urls, {"Q82": "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip"}
+            under_test_dataset_info.url,
+            "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip",
         )
-        self.assertEqual(under_test_names, {"Q82": "test_name"})
-        self.assertEqual(under_test_md5, {"Q82": {"test_md5_hash"}})
+        self.assertEqual(under_test_dataset_info.source_name, "test_name")
+        self.assertEqual(under_test_dataset_info.previous_md5_hashes, {"test_md5_hash"})

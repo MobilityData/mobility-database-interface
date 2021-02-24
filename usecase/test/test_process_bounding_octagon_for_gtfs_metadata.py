@@ -33,24 +33,30 @@ class TestProcessBoundingOctagonForGtfsMetadata(TestCase):
     def test_process_bounding_octagon_execution_should_set_bounding_box_metadata(
         self, mock_gtfs_representation, mock_dataset, mock_metadata
     ):
-        mock_dataset.__class__ = Feed
-        mock_dataset.stops = pd.DataFrame(
-            {
-                "stop_lat": [3, -3, 0, 0, 2, -2, 2, -2],
-                "stop_lon": [0, 0, 3, -3, 2, 2, -2, -2],
-            }
+        mock_stops = PropertyMock(
+            return_value=pd.DataFrame(
+                {
+                    "stop_lat": [3, -3, 0, 0, 2, -2, 2, -2],
+                    "stop_lon": [0, 0, 3, -3, 2, 2, -2, -2],
+                }
+            )
         )
+        mock_dataset.__class__ = Feed
+        type(mock_dataset).stops = mock_stops
 
         mock_metadata.__class__ = GtfsMetadata
         mock_gtfs_representation.__class__ = GtfsRepresentation
-        mock_gtfs_representation.dataset = mock_dataset
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
 
         under_test = process_bounding_octagon_for_gtfs_metadata(
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_stops.assert_called()
+        self.assertEqual(mock_stops.call_count, 5)
         self.assertEqual(
-            mock_gtfs_representation.metadata.bounding_octagon,
+            mock_metadata.bounding_octagon,
             {
                 "1": {LAT: -1, LON: 3},
                 "2": {LAT: -3, LON: 1},

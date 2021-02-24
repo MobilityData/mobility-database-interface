@@ -31,19 +31,25 @@ class TestProcessBoundingBoxForGtfsMetadata(TestCase):
     def test_process_bounding_box_execution_should_set_bounding_box_metadata(
         self, mock_gtfs_representation, mock_dataset, mock_metadata
     ):
-        mock_dataset.__class__ = Feed
-        mock_dataset.stops = pd.DataFrame(
-            {"stop_lat": [45.508888], "stop_lon": [-73.561668]}
+        mock_stops = PropertyMock(
+            return_value=pd.DataFrame(
+                {"stop_lat": [45.508888], "stop_lon": [-73.561668]}
+            )
         )
+        mock_dataset.__class__ = Feed
+        type(mock_dataset).stops = mock_stops
 
         mock_metadata.__class__ = GtfsMetadata
         mock_gtfs_representation.__class__ = GtfsRepresentation
-        mock_gtfs_representation.dataset = mock_dataset
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
 
         under_test = process_bounding_box_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_stops.assert_called()
+        self.assertEqual(mock_stops.call_count, 1)
         self.assertEqual(
-            mock_gtfs_representation.metadata.bounding_box,
+            mock_metadata.bounding_box,
             {
                 "1": {LAT: [45.508888], LON: [-73.561668]},
                 "2": {LAT: [45.508888], LON: [-73.561668]},

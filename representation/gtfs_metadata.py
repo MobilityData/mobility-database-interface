@@ -1,23 +1,23 @@
+from representation.dataset_infos import DatasetInfos
+
 SOURCE = "source"
 SHORTEN_MD5_HASH_LEN = 6
 
 
 class GtfsMetadata:
-    def __init__(self, md5_hash, source_name, download_date):
+    def __init__(self, dataset_infos):
         """Constructor for ``GtfsMetadata``.
-        :param md5_hash: The MD5 hash of the dataset version.
-        :param source_name: The name of the source of the dataset.
-        :param download_date: The date when the dataset version was downloaded.
+        :param dataset_infos: The processing infos of the dataset.
         """
-        if not isinstance(md5_hash, str):
-            raise TypeError("MD5 hash must be a valid MD5 hash string.")
-        if not isinstance(source_name, str):
-            raise TypeError("Source name must be a valid source name string.")
-        if not isinstance(download_date, str):
-            raise TypeError("Download date must be a valid date string.")
-        self.md5_hash = md5_hash
+        if not isinstance(dataset_infos, DatasetInfos):
+            raise TypeError("Dataset infos must be a valid DatasetInfos.")
+
+        self.source_entity_code = dataset_infos.entity_code
+        self.md5_hash = dataset_infos.md5_hash
         self.dataset_version_name = self.create_dataset_version_name(
-            source_name, download_date, md5_hash
+            dataset_infos.source_name,
+            dataset_infos.download_date,
+            dataset_infos.md5_hash,
         )
         self.main_timezone = ""
         self.all_timezones = []
