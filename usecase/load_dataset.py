@@ -1,10 +1,7 @@
 from repository.data_repository import DataRepository
 from representation.dataset_representation_factory import build_representation
+from utilities.validators import validate_datasets_infos
 
-PATH_TO_DATASET_KEY = "path"
-MD5_HASH_KEY = "md5"
-SOURCE_NAME_KEY = "source_name"
-DOWNLOAD_DATE_KEY = "download_date"
 GTFS_TYPE = "GTFS"
 GBFS_TYPE = "GBFS"
 
@@ -20,30 +17,27 @@ def load_dataset(data_repository, datasets_infos, dataset_type):
     """
     if not isinstance(data_repository, DataRepository):
         raise TypeError("Data repository must be a valid DataRepository.")
-    if not isinstance(datasets_infos, dict) and not all(
-        key in datasets_infos for key in (PATH_TO_DATASET_KEY, MD5_HASH_KEY)
-    ):
-        raise TypeError(
-            f"Datasets must be a valid dictionary, with keys {PATH_TO_DATASET_KEY} and {MD5_HASH_KEY}."
-        )
     if dataset_type not in [GTFS_TYPE, GBFS_TYPE]:
         raise TypeError(
             f"Dataset type must be a valid dataset type - {GTFS_TYPE} or {GBFS_TYPE}."
         )
+    validate_datasets_infos(datasets_infos)
 
     # Load the datasets indicated in datasets_infos
-    for entity_code, dataset_infos in datasets_infos.items():
+    for dataset_infos in datasets_infos:
         print(
-            f"--------------- Loading dataset : {dataset_infos[PATH_TO_DATASET_KEY]} ---------------\n"
+            f"--------------- Loading dataset : {dataset_infos.zip_path} ---------------\n"
         )
         dataset_representation = build_representation(
             dataset_type,
-            entity_code,
-            dataset_infos[PATH_TO_DATASET_KEY],
-            dataset_infos[MD5_HASH_KEY],
-            dataset_infos[SOURCE_NAME_KEY],
-            dataset_infos[DOWNLOAD_DATE_KEY],
+            dataset_infos.entity_code,
+            dataset_infos.zip_path,
+            dataset_infos.md5_hash,
+            dataset_infos.source_name,
+            dataset_infos.download_date,
         )
-        data_repository.add_dataset_representation(entity_code, dataset_representation)
+        data_repository.add_dataset_representation(
+            dataset_infos.entity_code, dataset_representation
+        )
 
     return data_repository

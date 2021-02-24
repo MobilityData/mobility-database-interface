@@ -3,7 +3,7 @@ import sys
 
 import requests
 from guppy import hpy
-from datetime import date
+
 
 from repository.data_repository import DataRepository
 from request_manager.sparql_request_helper import sparql_request
@@ -12,9 +12,9 @@ from usecase.download_dataset_as_zip import download_dataset_as_zip
 from usecase.process_agencies_count_for_gtfs_metadata import (
     process_agencies_count_for_gtfs_metadata,
 )
-from usecase.extract_sources_url_name_and_md5_hashes_from_database import (
-    extract_gtfs_sources_url_name_and_md5_hashes_from_database,
-    extract_gbfs_sources_url_name_and_md5_hashes_from_database,
+from usecase.extract_datasets_infos_from_database import (
+    extract_gtfs_datasets_infos_from_database,
+    extract_gbfs_datasets_infos_from_database,
 )
 from usecase.load_dataset import load_dataset
 from usecase.process_all_timezones_for_gtfs_metadata import (
@@ -148,28 +148,18 @@ if __name__ == "__main__":
     # Process data
     if args["download"] is not None:
         # Download datasets zip files
-        (
-            urls,
-            names,
-            previous_md5_hashes,
-        ) = extract_gtfs_sources_url_name_and_md5_hashes_from_database(
+        datasets_infos = extract_gtfs_datasets_infos_from_database(
             STAGING_API_URL,
             STAGING_SPARQL_URL,
         )
 
         # Download datasets zip files
-        paths_to_datasets = download_dataset_as_zip(args["path_to_tmp_data"], urls)
+        paths_to_datasets = download_dataset_as_zip(
+            args["path_to_tmp_data"], datasets_infos
+        )
 
         # Process the MD5 hashes
-        paths_to_datasets_and_md5 = process_md5(paths_to_datasets, previous_md5_hashes)
-
-        # Get download date (current date)
-        download_date = date.today().strftime("%Y-%m-%d")
-
-        # Create a datasets infos dictionary with paths to datasets, MD5 hashes and datasets sources name
-        datasets_infos = create_datasets_infos_dictionary(
-            paths_to_datasets_and_md5, names, download_date
-        )
+        datasets_infos = process_md5(datasets_infos)
 
         # Load the datasets in memory in the data repository
         data_repository = load_dataset(

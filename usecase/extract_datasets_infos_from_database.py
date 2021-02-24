@@ -1,6 +1,7 @@
 import requests
 
 from request_manager.sparql_request_helper import sparql_request
+from representation.dataset_infos import DatasetInfos
 from utilities.constants import (
     GTFS_CATALOG_OF_SOURCES_CODE,
     GBFS_CATALOG_OF_SOURCES_CODE,
@@ -28,19 +29,19 @@ API_STABLE_URL_PROPERTY_KEY = "P55"
 API_MD5_HASH_KEY = "P61"
 
 
-def extract_gtfs_sources_url_name_and_md5_hashes_from_database(api_url, sparql_api):
-    return extract_sources_url_and_md5_hashes_from_database(
+def extract_gtfs_datasets_infos_from_database(api_url, sparql_api):
+    return extract_datasets_infos_from_database(
         api_url, sparql_api, GTFS_CATALOG_OF_SOURCES_CODE
     )
 
 
-def extract_gbfs_sources_url_name_and_md5_hashes_from_database(api_url, sparql_api):
-    return extract_sources_url_and_md5_hashes_from_database(
+def extract_gbfs_datasets_infos_from_database(api_url, sparql_api):
+    return extract_datasets_infos_from_database(
         api_url, sparql_api, GBFS_CATALOG_OF_SOURCES_CODE
     )
 
 
-def extract_sources_url_and_md5_hashes_from_database(api_url, sparql_api, catalog_code):
+def extract_datasets_infos_from_database(api_url, sparql_api, catalog_code):
     """Extract the stable URLs and MD5 hashes from previous dataset versions
     for each dataset of a data type in the database.
     :param api_url: API url, either PRODUCTION_API_URL or STAGING_API_URL.
@@ -50,9 +51,7 @@ def extract_sources_url_and_md5_hashes_from_database(api_url, sparql_api, catalo
     """
     validate_urls(api_url, sparql_api)
     entity_codes = []
-    urls = {}
-    names = {}
-    previous_md5_hashes = {}
+    datasets_infos = []
 
     # Retrieves the entity codes for which we want to download the dataset
     sparql_response = sparql_request(
@@ -76,21 +75,26 @@ def extract_sources_url_and_md5_hashes_from_database(api_url, sparql_api, catalo
 
     # Retrieves the sources' stable URL for the entity codes found
     for entity_code in entity_codes:
-        url, name = extract_source_url_and_name(api_url, entity_code)
 
+        dataset_infos = DatasetInfos()
+        dataset_infos.entity_code = entity_code
+
+        url, name = extract_source_url_and_name(api_url, entity_code)
         if not url or not name:
             continue
-        urls[entity_code] = url
-        names[entity_code] = name
+        dataset_infos.url = url
+        dataset_infos.source_name = name
 
-        previous_md5_hashes[entity_code] = extract_md5_hashes(
+        dataset_infos.previous_md5_hashes = extract_previous_md5_hashes(
             api_url, sparql_api, entity_code
         )
 
-    return urls, names, previous_md5_hashes
+        datasets_infos.append(dataset_infos)
+
+    return datasets_infos
 
 
-def extract_md5_hashes(api_url, sparql_api, entity_code):
+def extract_previous_md5_hashes(api_url, sparql_api, entity_code):
     dataset_version_codes = set()
     entity_previous_md5_hashes = set()
     entity_md5_hashes = set()

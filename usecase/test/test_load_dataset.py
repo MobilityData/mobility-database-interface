@@ -3,27 +3,34 @@ from unittest.mock import MagicMock
 from representation.gtfs_representation import GtfsRepresentation
 from repository.data_repository import DataRepository
 from usecase.load_dataset import load_dataset, GTFS_TYPE
+from representation.dataset_infos import DatasetInfos
 
 
 class TestLoadDataset(TestCase):
     def test_load_dataset_with_none_data_repository_should_raise_exception(self):
-        mock_datasets = MagicMock()
-        mock_datasets.__class__ = dict
+        mock_dataset_infos = MagicMock()
+        mock_dataset_infos.__class__ = DatasetInfos
+        mock_datasets_infos = [mock_dataset_infos]
         mock_datatype = MagicMock()
         mock_datatype.__class__ = str
         mock_datatype.__str__.return_value = GTFS_TYPE
         self.assertRaises(
-            TypeError, load_dataset, None, mock_datasets, str(mock_datatype)
+            TypeError, load_dataset, None, mock_datasets_infos, str(mock_datatype)
         )
 
     def test_load_dataset_with_invalid_data_repository_should_raise_exception(self):
-        mock_datasets = MagicMock()
-        mock_datasets.__class__ = dict
+        mock_dataset_infos = MagicMock()
+        mock_dataset_infos.__class__ = DatasetInfos
+        mock_datasets_infos = [mock_dataset_infos]
         mock_datatype = MagicMock()
         mock_datatype.__class__ = str
         mock_datatype.__str__.return_value = GTFS_TYPE
         self.assertRaises(
-            TypeError, load_dataset, mock_datasets, mock_datasets, str(mock_datatype)
+            TypeError,
+            load_dataset,
+            mock_datasets_infos,
+            mock_datasets_infos,
+            str(mock_datatype),
         )
 
     @mock.patch("repository.data_repository.DataRepository")
@@ -42,6 +49,9 @@ class TestLoadDataset(TestCase):
     def test_load_dataset_with_invalid_datasets_should_raise_exception(
         self, mock_data_repository
     ):
+        mock_dataset_infos = MagicMock()
+        mock_dataset_infos.__class__ = str
+        mock_datasets_infos = [mock_dataset_infos]
         mock_data_repository.__class__ = DataRepository
         mock_datatype = MagicMock()
         mock_datatype.__class__ = str
@@ -50,7 +60,16 @@ class TestLoadDataset(TestCase):
             TypeError,
             load_dataset,
             mock_data_repository,
+            mock_datasets_infos,
+            str(mock_datatype),
+        )
+
+        mock_datasets_infos = MagicMock()
+        self.assertRaises(
+            TypeError,
+            load_dataset,
             mock_data_repository,
+            str(mock_datasets_infos),
             str(mock_datatype),
         )
 
@@ -59,10 +78,11 @@ class TestLoadDataset(TestCase):
         self, mock_data_repository
     ):
         mock_data_repository.__class__ = DataRepository
-        mock_datasets = MagicMock()
-        mock_datasets.__class__ = dict
+        mock_dataset_infos = MagicMock()
+        mock_dataset_infos.__class__ = DatasetInfos
+        mock_datasets_infos = [mock_dataset_infos]
         self.assertRaises(
-            TypeError, load_dataset, mock_data_repository, mock_datasets, None
+            TypeError, load_dataset, mock_data_repository, mock_datasets_infos, None
         )
 
     @mock.patch("repository.data_repository.DataRepository")
@@ -70,10 +90,15 @@ class TestLoadDataset(TestCase):
         self, mock_data_repository
     ):
         mock_data_repository.__class__ = DataRepository
-        mock_datasets = MagicMock()
-        mock_datasets.__class__ = dict
+        mock_dataset_infos = MagicMock()
+        mock_dataset_infos.__class__ = DatasetInfos
+        mock_datasets_infos = [mock_dataset_infos]
         self.assertRaises(
-            TypeError, load_dataset, mock_data_repository, mock_datasets, mock_datasets
+            TypeError,
+            load_dataset,
+            mock_data_repository,
+            mock_datasets_infos,
+            mock_datasets_infos,
         )
 
     @mock.patch("repository.data_repository.DataRepository")
@@ -94,18 +119,11 @@ class TestLoadDataset(TestCase):
             add_dataset_representation_side_effect
         )
 
-        mock_datasets = MagicMock()
-        mock_datasets.__class__ = dict
-        mock_datasets.__getitem__.side_effect = test_datasets.__getitem__
-        mock_datasets.items.return_value = test_datasets.items()
-
         mock_datatype = MagicMock()
         mock_datatype.__class__ = str
         mock_datatype.__str__.return_value = GTFS_TYPE
 
-        under_test = load_dataset(
-            mock_data_repository, mock_datasets, str(mock_datatype)
-        )
+        under_test = load_dataset(mock_data_repository, [], str(mock_datatype))
 
         self.assertEqual(under_test.get_dataset_representations(), {})
         mock_data_repository.assert_not_called()
@@ -115,14 +133,11 @@ class TestLoadDataset(TestCase):
         self, mock_data_repository
     ):
         test_dataset_representations = {}
-        test_datasets = {
-            "Q80": {
-                "path": "./",
-                "md5": "test_md5",
-                "source_name": "test_name",
-                "download_date": "test_date",
-            }
-        }
+        test_zip_path = "./"
+        test_entity_code = "Q80"
+        test_md5_hash = "test_md5"
+        test_source_name = "test_name"
+        test_download_date = "test_date"
 
         def add_dataset_representation_side_effect(key, value):
             test_dataset_representations.__setitem__(key, value)
@@ -135,17 +150,21 @@ class TestLoadDataset(TestCase):
             add_dataset_representation_side_effect
         )
 
-        mock_datasets = MagicMock()
-        mock_datasets.__class__ = dict
-        mock_datasets.__getitem__.side_effect = test_datasets.__getitem__
-        mock_datasets.items.return_value = test_datasets.items()
+        mock_dataset_infos = MagicMock()
+        mock_dataset_infos.__class__ = DatasetInfos
+        type(mock_dataset_infos).zip_path = test_zip_path
+        type(mock_dataset_infos).entity_code = test_entity_code
+        type(mock_dataset_infos).md5_hash = test_md5_hash
+        type(mock_dataset_infos).source_name = test_source_name
+        type(mock_dataset_infos).download_date = test_download_date
+        mock_datasets_infos = [mock_dataset_infos]
 
         mock_datatype = MagicMock()
         mock_datatype.__class__ = str
         mock_datatype.__str__.return_value = GTFS_TYPE
 
         under_test = load_dataset(
-            mock_data_repository, mock_datasets, str(mock_datatype)
+            mock_data_repository, mock_datasets_infos, str(mock_datatype)
         )
 
         self.assertTrue("Q80" in under_test.get_dataset_representations().keys())
