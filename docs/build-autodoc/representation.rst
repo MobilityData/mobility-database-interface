@@ -4,6 +4,14 @@ representation package
 Submodules
 ----------
 
+representation.dataset\_infos module
+------------------------------------
+
+.. automodule:: representation.dataset_infos
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 representation.dataset\_representation\_factory module
 ------------------------------------------------------
 
