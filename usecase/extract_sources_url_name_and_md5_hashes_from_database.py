@@ -1,143 +1,118 @@
-from request_manager.api_request_manager import ApiRequestManager
-from request_manager.sparql_request_manager import SparqlRequestManager
-from utilities.constant import (
+import requests
+
+from request_manager.sparql_request_helper import sparql_request
+from utilities.constants import (
     GTFS_CATALOG_OF_SOURCES_CODE,
     GBFS_CATALOG_OF_SOURCES_CODE,
+    RESULTS,
+    BINDINGS,
+    VALUE,
+    DATASET_VERSION_ENTITY_CODE_FIRST_INDEX,
+    DATASET_VERSION_ENTITY_CODE_LAST_INDEX,
+    ACTION,
+    WB_GET_ENTITIES,
+    IDS,
+    LANGUAGES,
+    FORMAT,
+    ENTITIES,
+    CLAIMS,
+    MAINSNAK,
+    DATAVALUE,
+    LABELS,
+    ENGLISH,
 )
+from utilities.validators import validate_api_url, validate_sparql_url
 
 OPEN_MOBILITY_DATA_URL = "openmobilitydata.org"
-
-API_REQUEST_ACTION_KEY = "action"
-API_REQUEST_ACTION_VALUE = "wbgetentities"
-API_REQUEST_ID_KEY = "ids"
-API_REQUEST_LANGUAGE_KEY = "languages"
-API_REQUEST_LANGUAGE_VALUE = "en"
-API_REQUEST_FORMAT_KEY = "format"
-API_REQUEST_FORMAT_VALUE = "json"
-
-API_ENTITIES_KEY = "entities"
-API_CLAIMS_KEY = "claims"
 API_STABLE_URL_PROPERTY_KEY = "P55"
 API_MD5_HASH_KEY = "P61"
-API_MAINSNAK_KEY = "mainsnak"
-API_DATAVALUE_KEY = "datavalue"
-API_LABELS_KEY = "labels"
-API_LANGUAGE_KEY = "en"
-API_VALUE_KEY = "value"
-
-SPARQL_RESULTS_KEY = "results"
-SPARQL_RESULT_CATEGORY_KEY = "bindings"
-SPARQL_FIELD_KEY = "a"
-SPARQL_VALUE_KEY = "value"
-SPARQL_ENTITY_CODE_FIRST_INDEX = 37
-SPARQL_ENTITY_CODE_LAST_INDEX = 40
-
-SPARQL_CATALOG_REQUEST = "sparql_catalog_request"
-
-GTFS_SOURCES_URL_MAP = {
-    SPARQL_CATALOG_REQUEST: f"""
-        SELECT *
-        WHERE 
-        {{
-            ?a 
-            <http://wikibase.svc/prop/statement/P65>
-            <http://wikibase.svc/entity/{GTFS_CATALOG_OF_SOURCES_CODE}>
-        }}""",
-}
-
-GBFS_SOURCES_URL_MAP = {
-    SPARQL_CATALOG_REQUEST: f"""
-        SELECT *
-        WHERE 
-        {{
-            ?a 
-            <http://wikibase.svc/prop/statement/P65>
-            <http://wikibase.svc/entity/{GBFS_CATALOG_OF_SOURCES_CODE}>
-        }}""",
-}
-
-SPARQL_SOURCE_REQUEST = """
-    SELECT *
-    WHERE 
-    {{
-        ?a 
-        <http://wikibase.svc/prop/statement/P65>
-        <http://wikibase.svc/entity/{}>
-    }}"""
 
 
-def extract_gtfs_sources_url_name_and_md5_hashes_from_database(
-    api_request_manager, sparql_request_manager
-):
-    return extract_sources_url_name_and_md5_hashes_from_database(
-        api_request_manager, sparql_request_manager, GTFS_SOURCES_URL_MAP
+def extract_gtfs_sources_url_name_and_md5_hashes_from_database(api_url, sparql_api):
+    return extract_sources_url_and_md5_hashes_from_database(
+        api_url, sparql_api, GTFS_CATALOG_OF_SOURCES_CODE
     )
 
 
-def extract_gbfs_sources_url_name_and_md5_hashes_from_database(
-    api_request_manager, sparql_request_manager
-):
-    return extract_sources_url_name_and_md5_hashes_from_database(
-        api_request_manager, sparql_request_manager, GBFS_SOURCES_URL_MAP
+def extract_gbfs_sources_url_name_and_md5_hashes_from_database(api_url, sparql_api):
+    return extract_sources_url_and_md5_hashes_from_database(
+        api_url, sparql_api, GBFS_CATALOG_OF_SOURCES_CODE
     )
 
 
-def extract_sources_url_name_and_md5_hashes_from_database(
-    api_request_manager, sparql_request_manager, data_type_map
-):
+def extract_sources_url_and_md5_hashes_from_database(api_url, sparql_api, catalog_code):
     """Extract the stable URLs and MD5 hashes from previous dataset versions
     for each dataset of a data type in the database.
-    :param api_request_manager: API request manager used to process API requests.
-    :param sparql_request_manager: SPARQL request manager used to process SPARQL queries.
-    :param data_type_map: Either SOURCES_URL_MAP or MD5_HASHES_MAP.
+    :param api_url: API url, either PRODUCTION_API_URL or STAGING_API_URL.
+    :param sparql_api: SPARQL api, either PRODUCTION_SPARQL_URL or STAGING_SPARQL_URL.
+    :param catalog_code: Either GTFS_CATALOG_OF_SOURCES_CODE or GBFS_CATALOG_OF_SOURCES_CODE.
     :return: the URLs and MD5 hashes for each dataset of a data type in the database.
     """
-    if not isinstance(api_request_manager, ApiRequestManager):
-        raise TypeError("API request manager must be a valid ApiRequestManager.")
-    if not isinstance(sparql_request_manager, SparqlRequestManager):
-        raise TypeError("SPARQL request manager must be a valid SparqlRequestManager.")
+    validate_api_url(api_url)
+    validate_sparql_url(sparql_api)
     entity_codes = []
     urls = {}
     names = {}
     previous_md5_hashes = {}
 
     # Retrieves the entity codes for which we want to download the dataset
-    sparql_response = sparql_request_manager.execute_get(
-        data_type_map[SPARQL_CATALOG_REQUEST]
+    sparql_response = sparql_request(
+        sparql_api,
+        f"""
+            SELECT *
+            WHERE 
+            {{
+                ?a 
+                <http://wikibase.svc/prop/statement/P65>
+                <http://wikibase.svc/entity/{catalog_code}>
+            }}""",  # double curly bracket escapes a curly bracket
     )
 
-    for result in sparql_response[SPARQL_RESULTS_KEY][SPARQL_RESULT_CATEGORY_KEY]:
+    for result in sparql_response[RESULTS][BINDINGS]:
         entity_codes.append(
-            result[SPARQL_FIELD_KEY][SPARQL_VALUE_KEY][
-                SPARQL_ENTITY_CODE_FIRST_INDEX:SPARQL_ENTITY_CODE_LAST_INDEX
+            result["a"][VALUE][
+                DATASET_VERSION_ENTITY_CODE_FIRST_INDEX:DATASET_VERSION_ENTITY_CODE_LAST_INDEX
             ]
         )
 
     # Retrieves the sources' stable URL for the entity codes found
     for entity_code in entity_codes:
-        urls[entity_code], names[entity_code] = extract_source_url_and_name(
-            api_request_manager, entity_code
-        )
+        url, name = extract_source_url_and_name(api_url, entity_code)
+
+        if not url or not name:
+            continue
+        urls[entity_code] = url
+        names[entity_code] = name
+
         previous_md5_hashes[entity_code] = extract_md5_hashes(
-            api_request_manager, sparql_request_manager, entity_code
+            api_url, sparql_api, entity_code
         )
 
     return urls, names, previous_md5_hashes
 
 
-def extract_md5_hashes(api_request_manager, sparql_request_manager, entity_code):
+def extract_md5_hashes(api_url, sparql_api, entity_code):
     dataset_version_codes = set()
     entity_previous_md5_hashes = set()
+    entity_md5_hashes = set()
 
     # Retrieves the entity dataset version codes for which we want to extract the MD5 hashes.
-    sparql_response = sparql_request_manager.execute_get(
-        SPARQL_SOURCE_REQUEST.format(entity_code)
+    sparql_response = sparql_request(
+        sparql_api,
+        f"""
+                SELECT *
+                WHERE 
+                {{
+                    ?a 
+                    <http://wikibase.svc/prop/statement/P48>
+                    <http://wikibase.svc/entity/{entity_code}>
+                }}""",
     )
 
-    for result in sparql_response[SPARQL_RESULTS_KEY][SPARQL_RESULT_CATEGORY_KEY]:
+    for result in sparql_response[RESULTS][BINDINGS]:
         dataset_version_codes.add(
-            result[SPARQL_FIELD_KEY][SPARQL_VALUE_KEY][
-                SPARQL_ENTITY_CODE_FIRST_INDEX:SPARQL_ENTITY_CODE_LAST_INDEX
+            result["a"][VALUE][
+                DATASET_VERSION_ENTITY_CODE_FIRST_INDEX:DATASET_VERSION_ENTITY_CODE_LAST_INDEX
             ]
         )
 
@@ -150,50 +125,52 @@ def extract_md5_hashes(api_request_manager, sparql_request_manager, entity_code)
         GTFS_CATALOG_OF_SOURCES_CODE in dataset_version_codes
         or GBFS_CATALOG_OF_SOURCES_CODE in dataset_version_codes
     ):
-
         dataset_version_codes.discard(GTFS_CATALOG_OF_SOURCES_CODE)
         dataset_version_codes.discard(GBFS_CATALOG_OF_SOURCES_CODE)
 
     # Retrieves the MD5 hashes for the dataset version codes found.
     for version_code in dataset_version_codes:
-        api_response = execute_api_get_request(api_request_manager, version_code)
-
-        if API_ENTITIES_KEY in api_response:
-            for row in api_response[API_ENTITIES_KEY][version_code][API_CLAIMS_KEY][
-                API_MD5_HASH_KEY
-            ]:
-                md5 = row[API_MAINSNAK_KEY][API_DATAVALUE_KEY][API_VALUE_KEY]
-                entity_previous_md5_hashes.add(md5)
-
+        params = {
+            ACTION: WB_GET_ENTITIES,
+            IDS: f"{version_code}",
+            LANGUAGES: "en",
+            FORMAT: "json",
+        }
+        api_response = requests.get(api_url, params)
+        api_response.raise_for_status()
+        json_response = api_response.json()
+        if ENTITIES not in json_response:
+            continue
+        for row in json_response[ENTITIES][version_code][CLAIMS][API_MD5_HASH_KEY]:
+            md5 = row[MAINSNAK][DATAVALUE][VALUE]
+            entity_md5_hashes.add(md5)
+        # Add the MD5 hashes found for an entity to the MD5 hashes dictionary.
+        entity_previous_md5_hashes.update(entity_md5_hashes)
     return entity_previous_md5_hashes
 
 
-def extract_source_url_and_name(api_request_manager, entity_code):
-    api_response = execute_api_get_request(api_request_manager, entity_code)
+def extract_source_url_and_name(api_url, entity_code):
+    params = {
+        ACTION: WB_GET_ENTITIES,
+        IDS: f"{entity_code}",
+        LANGUAGES: "en",
+        FORMAT: "json",
+    }
+    api_response = requests.get(api_url, params)
+    api_response.raise_for_status()
+    json_response = api_response.json()
 
     url = None
     name = None
-    if API_ENTITIES_KEY in api_response:
-        for link in api_response[API_ENTITIES_KEY][entity_code][API_CLAIMS_KEY][
-            API_STABLE_URL_PROPERTY_KEY
-        ]:
-            if (
-                OPEN_MOBILITY_DATA_URL
-                not in link[API_MAINSNAK_KEY][API_DATAVALUE_KEY][API_VALUE_KEY]
-            ):
-                url = link[API_MAINSNAK_KEY][API_DATAVALUE_KEY][API_VALUE_KEY]
-        name = api_response[API_ENTITIES_KEY][entity_code][API_LABELS_KEY][
-            API_LANGUAGE_KEY
-        ][API_VALUE_KEY]
+    if not ENTITIES in json_response:
+        return None
+
+    for link in json_response[ENTITIES][entity_code][CLAIMS][
+        API_STABLE_URL_PROPERTY_KEY
+    ]:
+        if OPEN_MOBILITY_DATA_URL not in link[MAINSNAK][DATAVALUE][VALUE]:
+            url = link[MAINSNAK][DATAVALUE][VALUE]
+
+    name = json_response[ENTITIES][entity_code][LABELS][ENGLISH][VALUE]
 
     return url, name
-
-
-def execute_api_get_request(api_request_manager, entity_code):
-    params = {
-        API_REQUEST_ACTION_KEY: API_REQUEST_ACTION_VALUE,
-        API_REQUEST_ID_KEY: entity_code,
-        API_REQUEST_LANGUAGE_KEY: API_REQUEST_LANGUAGE_VALUE,
-        API_REQUEST_FORMAT_KEY: API_REQUEST_FORMAT_VALUE,
-    }
-    return api_request_manager.execute_get(params)

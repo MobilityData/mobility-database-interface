@@ -1,3 +1,7 @@
+SOURCE = "source"
+SHORTEN_MD5_HASH_LEN = 6
+
+
 class GtfsMetadata:
     def __init__(self, md5_hash, source_name, download_date):
         """Constructor for ``GtfsMetadata``.
@@ -39,23 +43,21 @@ class GtfsMetadata:
         :return: The dataset version name of the dataset version.
         """
         # Remove "source" from source name string
-        if source_name.find("source") != -1:
+        if source_name.find(SOURCE) != -1:
             # Find left index of "source", minus 1 for the preceding space
-            left_index = source_name.find("source") - 1
+            left_index = source_name.find(SOURCE) - 1
             # Compute right index from left index, plus 1 to balance the space previously considered
-            right_index = left_index + len("source") + 1
+            right_index = left_index + len(SOURCE) + 1
             dataset_name = source_name[:left_index] + source_name[right_index:]
         else:
             dataset_name = source_name
 
         # Select a substring from the MD5 hash create unique identifier for the dataset name
-        shorten_md5_hash = md5_hash[:6]
+        shorten_md5_hash = md5_hash[:SHORTEN_MD5_HASH_LEN]
 
         # Create the full dataset version name
-        dataset_version_name = "%s's %s dataset #%s" % (
-            download_date,
-            dataset_name,
-            shorten_md5_hash,
+        dataset_version_name = (
+            f"{download_date}'s {dataset_name} dataset #{shorten_md5_hash}"
         )
 
         return dataset_version_name

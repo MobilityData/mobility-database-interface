@@ -9,13 +9,13 @@ class GtfsRepresentation:
         :param dataset: The representation of the GTFS dataset content.
         :param metadata: The representation of the GTFS dataset metadata.
         """
-        if entity_code is None or not isinstance(entity_code, str):
-            raise TypeError("Entity code must be a valid entity code string.")
+        if not isinstance(entity_code, str) or not entity_code:
+            raise TypeError("Entity code must be a valid non-empty entity code string.")
         self.entity_code = entity_code
-        if dataset is None or not isinstance(dataset, Feed):
+        if not isinstance(dataset, Feed):
             raise TypeError("Dataset must be a valid GTFS Kit Feed.")
         self.dataset = dataset
-        if metadata is None or not isinstance(metadata, GtfsMetadata):
+        if not isinstance(metadata, GtfsMetadata):
             raise TypeError("Metadata must be a valid GtfsMetadata.")
         self.metadata = metadata
 

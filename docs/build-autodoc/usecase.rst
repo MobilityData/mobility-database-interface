@@ -76,6 +76,14 @@ usecase.process\_bounding\_octagon\_for\_gtfs\_metadata module
    :undoc-members:
    :show-inheritance:
 
+usecase.process\_geopraphical\_boundaries\_for\_gtfs\_metadata module
+---------------------------------------------------------------------
+
+.. automodule:: usecase.process_geopraphical_boundaries_for_gtfs_metadata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 usecase.process\_main\_language\_code\_for\_gtfs\_metadata module
 -----------------------------------------------------------------
 

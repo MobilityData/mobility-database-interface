@@ -83,7 +83,7 @@ def process_timestamp_for_gtfs_metadata(gtfs_representation, timestamp_map):
 
     # Build and set timestamp string in ISO 8601 YYYY-MM-DDThh:mm:ss±hh:mm format
     timestamp = (
-        service_date.strftime(TIMESTAMP_FORMAT) + "T" + stop_time + timezone_offset
+        f"{service_date.strftime(TIMESTAMP_FORMAT)}T{stop_time}{timezone_offset}"
     )
     setattr(metadata, timestamp_map[TIMESTAMP_ATTR], timestamp)
 

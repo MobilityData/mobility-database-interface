@@ -1,7 +1,5 @@
-from request_manager.api_request_manager import ApiRequestManager
-from utilities.validators import validate_gtfs_representation
+from utilities.validators import validate_gtfs_representation, validate_api_url
 import requests
-from utilities.constant import STAGING_API_URL
 
 
 def create_data(metadata):
@@ -71,17 +69,13 @@ def create_geographical_item(rank, value):
     raise NotImplementedError
 
 
-def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_request_manager):
+def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
     """Create a dataset entity for a new dataset version on the Database.
     :param gtfs_representation: The representation of the GTFS dataset to process.
-    :param api_request_manager: API request manager used to process API requests.
+    :param api_url: API url, either PRODUCTION_API_URL or STAGING_API_URL.
     :return: The representation of the GTFS dataset post-execution.
     """
-    if api_request_manager is None or not isinstance(
-        api_request_manager, ApiRequestManager
-    ):
-        raise TypeError("API request manager must be a valid ApiRequestManager.")
-
+    validate_api_url(api_url)
     validate_gtfs_representation(gtfs_representation)
     metadata = gtfs_representation.metadata
 
@@ -93,7 +87,9 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_request_man
         "format": "json",
     }
 
-    response_data = api_request_manager.execute_get(params=PARAMS_LOGIN_TOKEN)
+    api_response = requests.get(api_url, params=PARAMS_LOGIN_TOKEN)
+    api_response.raise_for_status()
+    response_data = api_response.json()
 
     LOGIN_TOKEN = response_data["query"]["tokens"]["logintoken"]
 
@@ -108,12 +104,16 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_request_man
         "format": "json",
     }
 
-    response = api_request_manager.execute_post(data=PARAMS_LOGIN)
+    api_response = requests.post(api_url, data=PARAMS_LOGIN_TOKEN)
+    api_response.raise_for_status()
+    # response = api_response.json()
 
     # Step 3: GET request to fetch CSRF token
     PARAMS_CSRF_TOKEN = {"action": "query", "meta": "tokens", "format": "json"}
 
-    response_data = api_request_manager.execute_get(params=PARAMS_CSRF_TOKEN)
+    api_response = requests.get(api_url, params=PARAMS_CSRF_TOKEN)
+    api_response.raise_for_status()
+    response_data = api_response.json()
 
     CSRF_TOKEN = response_data["query"]["tokens"]["csrftoken"]
 
@@ -125,6 +125,8 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_request_man
         "token": CSRF_TOKEN,
     }
 
-    response = api_request_manager.execute_post(data=PARAMS_ENTITY_CREATION)
+    api_response = requests.post(api_url, data=PARAMS_ENTITY_CREATION)
+    api_response.raise_for_status()
+    # response = api_response.json()
 
     return gtfs_representation
