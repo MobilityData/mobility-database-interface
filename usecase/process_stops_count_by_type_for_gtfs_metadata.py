@@ -5,6 +5,10 @@ STATION = 1
 ENTRANCE = 2
 LOCATION_TYPE = "location_type"
 
+STOP_KEY = "stop"
+STATION_KEY = "station"
+ENTRANCE_KEY = "entrance"
+
 
 def process_stops_count_by_type_for_gtfs_metadata(gtfs_representation):
     """Process and count by type all the stops in the `stops` file from the GTFS dataset of the representation.
@@ -13,7 +17,8 @@ def process_stops_count_by_type_for_gtfs_metadata(gtfs_representation):
     :param gtfs_representation: The representation of the GTFS dataset to process.
     """
     validate_gtfs_representation(gtfs_representation)
-    dataset = gtfs_representation.get_dataset()
+    dataset = gtfs_representation.dataset
+    metadata = gtfs_representation.metadata
 
     # Transform the blank location types to 0
     # According to the GTFS specification, blank location type is a Stop
@@ -35,10 +40,10 @@ def process_stops_count_by_type_for_gtfs_metadata(gtfs_representation):
 
     # Create the dictionary of stops count by type
     stops_count_by_type = {
-        "stop": stops_count,
-        "station": stations_count,
-        "entrance": entrances_count,
+        STOP_KEY: stops_count,
+        STATION_KEY: stations_count,
+        ENTRANCE_KEY: entrances_count,
     }
 
-    gtfs_representation.set_metadata_stops_count_by_type(stops_count_by_type)
+    metadata.stops_count_by_type = stops_count_by_type
     return gtfs_representation

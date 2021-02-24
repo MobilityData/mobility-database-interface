@@ -13,20 +13,20 @@ DATE = "date"
 DATASET_DATE_TYPE = "dataset_date_type"
 STOP_TIME_KEY = "stop_time_key"
 MIN_MAX_ATTR = "min_max_attr"
-TIMESTAMP_SETTER = "timestamp_setter"
+TIMESTAMP_ATTR = "timestamp_setter"
 
 START_TIMESTAMP_MAP = {
     DATASET_DATE_TYPE: "start_date",
     STOP_TIME_KEY: "arrival_time",
     MIN_MAX_ATTR: "min",
-    TIMESTAMP_SETTER: "set_metadata_start_timestamp",
+    TIMESTAMP_ATTR: "start_timestamp",
 }
 
 END_TIMESTAMP_MAP = {
     DATASET_DATE_TYPE: "end_date",
     STOP_TIME_KEY: "departure_time",
     MIN_MAX_ATTR: "max",
-    TIMESTAMP_SETTER: "set_metadata_end_timestamp",
+    TIMESTAMP_ATTR: "end_timestamp",
 }
 
 
@@ -48,7 +48,8 @@ def process_timestamp_for_gtfs_metadata(gtfs_representation, timestamp_map):
     :return: The representation of the GTFS dataset post-execution.
     """
     validate_gtfs_representation(gtfs_representation)
-    dataset = gtfs_representation.get_dataset()
+    dataset = gtfs_representation.dataset
+    metadata = gtfs_representation.metadata
 
     # Extract the start dates in the dataset representation
     # or
@@ -82,8 +83,8 @@ def process_timestamp_for_gtfs_metadata(gtfs_representation, timestamp_map):
 
     # Build and set timestamp string in ISO 8601 YYYY-MM-DDThh:mm:ss±hh:mm format
     timestamp = (
-        service_date.strftime(TIMESTAMP_FORMAT) + "T" + stop_time + timezone_offset
+        f"{service_date.strftime(TIMESTAMP_FORMAT)}T{stop_time}{timezone_offset}"
     )
-    getattr(gtfs_representation, timestamp_map[TIMESTAMP_SETTER])(timestamp)
+    setattr(metadata, timestamp_map[TIMESTAMP_ATTR], timestamp)
 
     return gtfs_representation

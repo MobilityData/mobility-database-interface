@@ -2,6 +2,7 @@ from utilities.validators import validate_gtfs_representation
 
 STOP_TIMEZONE_KEY = "stop_timezone"
 AGENCY_TIMEZONE_KEY = "agency_timezone"
+AGENCY_TIMEZONE_IDX = 0
 
 
 def process_all_timezones_for_gtfs_metadata(gtfs_representation):
@@ -11,7 +12,8 @@ def process_all_timezones_for_gtfs_metadata(gtfs_representation):
     :return: The representation of the GTFS dataset post-execution.
     """
     validate_gtfs_representation(gtfs_representation)
-    dataset = gtfs_representation.get_dataset()
+    dataset = gtfs_representation.dataset
+    metadata = gtfs_representation.metadata
 
     # Extract the all the timezones using the stop_timezone in the dataset stops
     all_timezones = set()
@@ -24,12 +26,12 @@ def process_all_timezones_for_gtfs_metadata(gtfs_representation):
     # to add the main timezone to the set
     # if the set of all timezones is empty after processing the dataset stops
     if len(all_timezones) == 0:
-        all_timezones.add(dataset.agency[AGENCY_TIMEZONE_KEY].iloc[0])
+        all_timezones.add(dataset.agency[AGENCY_TIMEZONE_KEY].iloc[AGENCY_TIMEZONE_IDX])
 
     # Convert the set of time to a list, and sort it alphabetically
     all_timezones = sorted(list(all_timezones))
 
     # Set all timezones in the GTFS representation
-    gtfs_representation.set_metadata_all_timezones(all_timezones)
+    metadata.all_timezones = all_timezones
 
     return gtfs_representation
