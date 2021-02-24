@@ -18,6 +18,8 @@ from utilities.constants import (
     CLAIMS,
     MAINSNAK,
     DATAVALUE,
+    LABELS,
+    ENGLISH,
 )
 from utilities.validators import validate_urls
 
@@ -26,13 +28,13 @@ API_STABLE_URL_PROPERTY_KEY = "P55"
 API_MD5_HASH_KEY = "P61"
 
 
-def extract_gtfs_sources_url_and_md5_hashes_from_database(api_url, sparql_api):
+def extract_gtfs_sources_url_name_and_md5_hashes_from_database(api_url, sparql_api):
     return extract_sources_url_and_md5_hashes_from_database(
         api_url, sparql_api, GTFS_CATALOG_OF_SOURCES_CODE
     )
 
 
-def extract_gbfs_sources_url_and_md5_hashes_from_database(api_url, sparql_api):
+def extract_gbfs_sources_url_name_and_md5_hashes_from_database(api_url, sparql_api):
     return extract_sources_url_and_md5_hashes_from_database(
         api_url, sparql_api, GBFS_CATALOG_OF_SOURCES_CODE
     )
@@ -41,27 +43,28 @@ def extract_gbfs_sources_url_and_md5_hashes_from_database(api_url, sparql_api):
 def extract_sources_url_and_md5_hashes_from_database(api_url, sparql_api, catalog_code):
     """Extract the stable URLs and MD5 hashes from previous dataset versions
     for each dataset of a data type in the database.
-    :param api_request_manager: API request manager used to process API requests.
-    :param sparql_request_manager: SPARQL request manager used to process SPARQL queries.
-    :param data_type_map: Either SOURCES_URL_MAP or MD5_HASHES_MAP.
+    :param api_url: API url, either PRODUCTION_API_URL or STAGING_API_URL.
+    :param sparql_api: SPARQL api, either PRODUCTION_SPARQL_URL or STAGING_SPARQL_URL.
+    :param catalog_code: Either GTFS_CATALOG_OF_SOURCES_CODE or GBFS_CATALOG_OF_SOURCES_CODE.
     :return: the URLs and MD5 hashes for each dataset of a data type in the database.
     """
     validate_urls(api_url, sparql_api)
     entity_codes = []
     urls = {}
+    names = {}
     previous_md5_hashes = {}
 
     # Retrieves the entity codes for which we want to download the dataset
     sparql_response = sparql_request(
         sparql_api,
         f"""
-                SELECT *
-                WHERE 
-                {{
-                    ?a 
-                    <http://wikibase.svc/prop/statement/P65>
-                    <http://wikibase.svc/entity/{catalog_code}>
-                }}""",  # double curly bracket escapes a curly bracket
+            SELECT *
+            WHERE 
+            {{
+                ?a 
+                <http://wikibase.svc/prop/statement/P65>
+                <http://wikibase.svc/entity/{catalog_code}>
+            }}""",  # double curly bracket escapes a curly bracket
     )
 
     for result in sparql_response[RESULTS][BINDINGS]:
@@ -70,17 +73,21 @@ def extract_sources_url_and_md5_hashes_from_database(api_url, sparql_api, catalo
                 DATASET_VERSION_ENTITY_CODE_FIRST_INDEX:DATASET_VERSION_ENTITY_CODE_LAST_INDEX
             ]
         )
+
     # Retrieves the sources' stable URL for the entity codes found
     for entity_code in entity_codes:
-        url = extract_source_url(api_url, entity_code)
-        if not url:
+        url, name = extract_source_url_and_name(api_url, entity_code)
+
+        if not url or not name:
             continue
         urls[entity_code] = url
+        names[entity_code] = name
+
         previous_md5_hashes[entity_code] = extract_md5_hashes(
             api_url, sparql_api, entity_code
         )
 
-    return urls, previous_md5_hashes
+    return urls, names, previous_md5_hashes
 
 
 def extract_md5_hashes(api_url, sparql_api, entity_code):
@@ -141,7 +148,7 @@ def extract_md5_hashes(api_url, sparql_api, entity_code):
     return entity_previous_md5_hashes
 
 
-def extract_source_url(api_url, entity_code):
+def extract_source_url_and_name(api_url, entity_code):
     params = {
         ACTION: WB_GET_ENTITIES,
         IDS: f"{entity_code}",
@@ -153,6 +160,7 @@ def extract_source_url(api_url, entity_code):
     json_response = api_response.json()
 
     url = None
+    name = None
     if not ENTITIES in json_response:
         return None
 
@@ -162,4 +170,6 @@ def extract_source_url(api_url, entity_code):
         if OPEN_MOBILITY_DATA_URL not in link[MAINSNAK][DATAVALUE][VALUE]:
             url = link[MAINSNAK][DATAVALUE][VALUE]
 
-    return url
+    name = json_response[ENTITIES][entity_code][LABELS][ENGLISH][VALUE]
+
+    return url, name

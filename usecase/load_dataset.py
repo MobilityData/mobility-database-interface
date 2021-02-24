@@ -3,6 +3,8 @@ from representation.dataset_representation_factory import build_representation
 
 PATH_TO_DATASET_KEY = "path"
 MD5_HASH_KEY = "md5"
+SOURCE_NAME_KEY = "source_name"
+DOWNLOAD_DATE_KEY = "download_date"
 GTFS_TYPE = "GTFS"
 GBFS_TYPE = "GBFS"
 
@@ -39,6 +41,8 @@ def load_dataset(data_repository, datasets_infos, dataset_type):
             entity_code,
             dataset_infos[PATH_TO_DATASET_KEY],
             dataset_infos[MD5_HASH_KEY],
+            dataset_infos[SOURCE_NAME_KEY],
+            dataset_infos[DOWNLOAD_DATE_KEY],
         )
         data_repository.add_dataset_representation(entity_code, dataset_representation)
 

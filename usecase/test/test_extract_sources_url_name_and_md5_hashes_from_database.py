@@ -1,11 +1,11 @@
 from unittest import TestCase, mock
 from unittest.mock import Mock
 
-from usecase.extract_sources_url_and_md5_hashes_from_database import (
-    extract_gtfs_sources_url_and_md5_hashes_from_database,
-    extract_gbfs_sources_url_and_md5_hashes_from_database,
+from usecase.extract_sources_url_name_and_md5_hashes_from_database import (
+    extract_gtfs_sources_url_name_and_md5_hashes_from_database,
+    extract_gbfs_sources_url_name_and_md5_hashes_from_database,
     extract_md5_hashes,
-    extract_source_url,
+    extract_source_url_and_name,
 )
 from utilities.constants import (
     STAGING_API_URL,
@@ -17,31 +17,35 @@ from utilities.constants import (
     VALUE,
     RESULTS,
     BINDINGS,
+    LABELS,
+    ENGLISH,
 )
 
 
 class TestExtractDatabaseMd5(TestCase):
     @mock.patch(
-        "usecase.extract_sources_url_and_md5_hashes_from_database.sparql_request"
+        "usecase.extract_sources_url_name_and_md5_hashes_from_database.sparql_request"
     )
-    @mock.patch("usecase.extract_sources_url_and_md5_hashes_from_database.requests.get")
+    @mock.patch(
+        "usecase.extract_sources_url_name_and_md5_hashes_from_database.requests.get"
+    )
     def test_extract_database_md5_with_existing_entity_codes_should_return_md5_dict(
-        self, mock_api_request, mock_sparkl_request
+        self, mock_api_request, mock_sparql_request
     ):
         test_entity = ["Q80"]
         test_md5 = {"md5_hash"}
 
-        mock_sparkl_request.return_value = {
-            "results": {
-                "bindings": [
+        mock_sparql_request.return_value = {
+            RESULTS: {
+                BINDINGS: [
                     {
                         "a": {
-                            "value": "http://wikibase.svc/entity/statement/Q81-11337a5a-4b00-dfde-a946-a2efb7b9e30a"
+                            VALUE: "http://wikibase.svc/entity/statement/Q81-11337a5a-4b00-dfde-a946-a2efb7b9e30a"
                         }
                     },
                     {
                         "a": {
-                            "value": "http://wikibase.svc/entity/statement/Q78-a14a67ef-4ee9-a15d-b9de-d6be2e03d43d"
+                            VALUE: "http://wikibase.svc/entity/statement/Q78-a14a67ef-4ee9-a15d-b9de-d6be2e03d43d"
                         }
                     },
                 ]
@@ -62,9 +66,11 @@ class TestExtractDatabaseMd5(TestCase):
         self.assertEqual(under_test, test_md5)
 
     @mock.patch(
-        "usecase.extract_sources_url_and_md5_hashes_from_database.sparql_request"
+        "usecase.extract_sources_url_name_and_md5_hashes_from_database.sparql_request"
     )
-    @mock.patch("usecase.extract_sources_url_and_md5_hashes_from_database.requests.get")
+    @mock.patch(
+        "usecase.extract_sources_url_name_and_md5_hashes_from_database.requests.get"
+    )
     def test_extract_database_md5_with_non_existing_entity_should_return_empty_md5_dict(
         self, mock_api_request, mock_sparql_request
     ):
@@ -86,9 +92,11 @@ class TestExtractDatabaseMd5(TestCase):
         self.assertEqual(under_test, test_md5)
 
 
-class TestExtractSourcesUrlTest(TestCase):
-    @mock.patch("usecase.extract_sources_url_and_md5_hashes_from_database.requests.get")
-    def test_extract_sources_url_with_default_parameters_should_return_urls_dictionary(
+class TestExtractSourcesUrlAndNameTest(TestCase):
+    @mock.patch(
+        "usecase.extract_sources_url_name_and_md5_hashes_from_database.requests.get"
+    )
+    def test_extract_sources_url_and_name_with_default_parameters_should_return_urls_and_names_dictionary(
         self,
         mock_api_request,
     ):
@@ -106,50 +114,57 @@ class TestExtractSourcesUrlTest(TestCase):
                                 }
                             }
                         ]
-                    }
+                    },
+                    LABELS: {ENGLISH: {VALUE: "test_name"}},
                 }
             }
         }
         mock_api_request.return_value.raise_for_status.return_value = None
 
-        under_test = extract_source_url(STAGING_API_URL, "Q82")
-        self.assertEqual(under_test, "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip")
+        under_test_url, under_test_name = extract_source_url_and_name(
+            STAGING_API_URL, "Q82"
+        )
+        self.assertEqual(
+            under_test_url, "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip"
+        )
+        self.assertEqual(under_test_name, "test_name")
 
 
 class TestExtractSourcesUrlAndMd5HashesFromDatabase(TestCase):
     @mock.patch(
-        "usecase.extract_sources_url_and_md5_hashes_from_database.sparql_request"
+        "usecase.extract_sources_url_name_and_md5_hashes_from_database.sparql_request"
     )
-    @mock.patch("usecase.extract_sources_url_and_md5_hashes_from_database.requests.get")
+    @mock.patch(
+        "usecase.extract_sources_url_name_and_md5_hashes_from_database.requests.get"
+    )
     def test_extract_gtfs_with_valid_parameters_should_return_urls_and_md5_hashes(
         self, mock_api_request, mock_sparql_request
     ):
         mock_api_request.return_value = Mock()
         mock_api_request.return_value.json.side_effect = [
             {
-                "entities": {
+                ENTITIES: {
                     "Q82": {
-                        "claims": {
+                        CLAIMS: {
                             "P55": [
                                 {
-                                    "mainsnak": {
-                                        "datavalue": {
-                                            "value": "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip"
+                                    MAINSNAK: {
+                                        DATAVALUE: {
+                                            VALUE: "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip"
                                         }
                                     }
                                 }
                             ]
-                        }
+                        },
+                        LABELS: {ENGLISH: {VALUE: "test_name"}},
                     }
                 }
             },
             {
-                "entities": {
+                ENTITIES: {
                     "Q81": {
-                        "claims": {
-                            "P61": [
-                                {"mainsnak": {"datavalue": {"value": "test_md5_hash"}}}
-                            ]
+                        CLAIMS: {
+                            "P61": [{MAINSNAK: {DATAVALUE: {VALUE: "test_md5_hash"}}}]
                         }
                     }
                 }
@@ -158,27 +173,27 @@ class TestExtractSourcesUrlAndMd5HashesFromDatabase(TestCase):
 
         mock_sparql_request.side_effect = [
             {
-                "results": {
-                    "bindings": [
+                RESULTS: {
+                    BINDINGS: [
                         {
                             "a": {
-                                "value": "http://wikibase.svc/entity/statement/Q82-d9dfdc30-47f0-f3d9-84a1-75b8d2fb0196"
+                                VALUE: "http://wikibase.svc/entity/statement/Q82-d9dfdc30-47f0-f3d9-84a1-75b8d2fb0196"
                             }
                         }
                     ]
                 }
             },
             {
-                "results": {
-                    "bindings": [
+                RESULTS: {
+                    BINDINGS: [
                         {
                             "a": {
-                                "value": "http://wikibase.svc/entity/statement/Q81-11337a5a-4b00-dfde-a946-a2efb7b9e30a"
+                                VALUE: "http://wikibase.svc/entity/statement/Q81-11337a5a-4b00-dfde-a946-a2efb7b9e30a"
                             }
                         },
                         {
                             "a": {
-                                "value": "http://wikibase.svc/entity/statement/Q78-a14a67ef-4ee9-a15d-b9de-d6be2e03d43d"
+                                VALUE: "http://wikibase.svc/entity/statement/Q78-a14a67ef-4ee9-a15d-b9de-d6be2e03d43d"
                             }
                         },
                     ]
@@ -188,47 +203,50 @@ class TestExtractSourcesUrlAndMd5HashesFromDatabase(TestCase):
 
         (
             under_test_urls,
+            under_test_names,
             under_test_md5,
-        ) = extract_gtfs_sources_url_and_md5_hashes_from_database(
+        ) = extract_gtfs_sources_url_name_and_md5_hashes_from_database(
             STAGING_API_URL, STAGING_SPARQL_URL
         )
         self.assertEqual(
             under_test_urls, {"Q82": "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip"}
         )
+        self.assertEqual(under_test_names, {"Q82": "test_name"})
         self.assertEqual(under_test_md5, {"Q82": {"test_md5_hash"}})
 
     @mock.patch(
-        "usecase.extract_sources_url_and_md5_hashes_from_database.sparql_request"
+        "usecase.extract_sources_url_name_and_md5_hashes_from_database.sparql_request"
     )
-    @mock.patch("usecase.extract_sources_url_and_md5_hashes_from_database.requests.get")
+    @mock.patch(
+        "usecase.extract_sources_url_name_and_md5_hashes_from_database.requests.get"
+    )
     def test_extract_gbfs_with_valid_parameters_should_return_urls_and_md5_hashes(
         self, mock_api_request, mock_sparql_request
     ):
         mock_api_request.return_value.json.side_effect = [
             {
-                "entities": {
+                ENTITIES: {
                     "Q82": {
-                        "claims": {
+                        CLAIMS: {
                             "P55": [
                                 {
-                                    "mainsnak": {
-                                        "datavalue": {
-                                            "value": "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip"
+                                    MAINSNAK: {
+                                        DATAVALUE: {
+                                            VALUE: "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip"
                                         }
                                     }
                                 }
                             ]
-                        }
+                        },
+                        LABELS: {ENGLISH: {VALUE: "test_name"}},
                     }
                 }
             },
             {
-                "entities": {
+                ENTITIES: {
                     "Q82": {
-                        "claims": {
-                            "P61": [
-                                {"mainsnak": {"datavalue": {"value": "test_md5_hash"}}}
-                            ]
+                        CLAIMS: {
+                            "P61": [{MAINSNAK: {DATAVALUE: {VALUE: "test_md5_hash"}}}]
                         }
                     }
                 }
@@ -236,11 +254,11 @@ class TestExtractSourcesUrlAndMd5HashesFromDatabase(TestCase):
         ]
 
         mock_sparql_request.return_value = {
-            "results": {
-                "bindings": [
+            RESULTS: {
+                BINDINGS: [
                     {
                         "a": {
-                            "value": "http://wikibase.svc/entity/statement/Q82-d9dfdc30-47f0-f3d9-84a1-75b8d2fb0196"
+                            VALUE: "http://wikibase.svc/entity/statement/Q82-d9dfdc30-47f0-f3d9-84a1-75b8d2fb0196"
                         }
                     }
                 ]
@@ -249,11 +267,13 @@ class TestExtractSourcesUrlAndMd5HashesFromDatabase(TestCase):
 
         (
             under_test_urls,
+            under_test_names,
             under_test_md5,
-        ) = extract_gbfs_sources_url_and_md5_hashes_from_database(
+        ) = extract_gbfs_sources_url_name_and_md5_hashes_from_database(
             STAGING_API_URL, STAGING_SPARQL_URL
         )
         self.assertEqual(
             under_test_urls, {"Q82": "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip"}
         )
+        self.assertEqual(under_test_names, {"Q82": "test_name"})
         self.assertEqual(under_test_md5, {"Q82": {"test_md5_hash"}})

@@ -115,7 +115,14 @@ class TestLoadDataset(TestCase):
         self, mock_data_repository
     ):
         test_dataset_representations = {}
-        test_datasets = {"Q80": {"path": "./", "md5": "test_md5"}}
+        test_datasets = {
+            "Q80": {
+                "path": "./",
+                "md5": "test_md5",
+                "source_name": "test_name",
+                "download_date": "test_date",
+            }
+        }
 
         def add_dataset_representation_side_effect(key, value):
             test_dataset_representations.__setitem__(key, value)

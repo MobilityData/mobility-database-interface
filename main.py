@@ -3,6 +3,8 @@ import sys
 
 import requests
 from guppy import hpy
+from datetime import date
+
 from repository.data_repository import DataRepository
 from request_manager.sparql_request_helper import sparql_request
 from usecase.compare_gtfs_stops import CompareGtfsStops
@@ -10,8 +12,9 @@ from usecase.download_dataset_as_zip import download_dataset_as_zip
 from usecase.process_agencies_count_for_gtfs_metadata import (
     process_agencies_count_for_gtfs_metadata,
 )
-from usecase.extract_sources_url_and_md5_hashes_from_database import (
-    extract_gtfs_sources_url_and_md5_hashes_from_database,
+from usecase.extract_sources_url_name_and_md5_hashes_from_database import (
+    extract_gtfs_sources_url_name_and_md5_hashes_from_database,
+    extract_gbfs_sources_url_name_and_md5_hashes_from_database,
 )
 from usecase.load_dataset import load_dataset
 from usecase.process_all_timezones_for_gtfs_metadata import (
@@ -48,6 +51,19 @@ from utilities.constants import STAGING_SPARQL_URL, STAGING_API_URL
 def compare_stops(dataset):
     compare_dataset_stops = CompareGtfsStops(dataset, dataset)
     compare_dataset_stops.execute()
+
+
+def create_datasets_infos_dictionary(
+    paths_to_datasets_and_md5, sources_name, download_date
+):
+    datasets_infos = {}
+    for entity_code in paths_to_datasets_and_md5.keys():
+        paths_to_datasets_and_md5[entity_code]["source_name"] = sources_name[
+            entity_code
+        ]
+        paths_to_datasets_and_md5[entity_code]["download_date"] = download_date
+        datasets_infos[entity_code] = paths_to_datasets_and_md5[entity_code]
+    return datasets_infos
 
 
 def print_items_by_query(query):
@@ -132,22 +148,30 @@ if __name__ == "__main__":
         # Download datasets zip files
         (
             urls,
+            names,
             previous_md5_hashes,
-        ) = extract_gtfs_sources_url_and_md5_hashes_from_database(
+        ) = extract_gtfs_sources_url_name_and_md5_hashes_from_database(
             STAGING_API_URL,
             STAGING_SPARQL_URL,
         )
 
+        # Download datasets zip files
         paths_to_datasets = download_dataset_as_zip(args["path_to_tmp_data"], urls)
 
         # Process the MD5 hashes
         paths_to_datasets_and_md5 = process_md5(paths_to_datasets, previous_md5_hashes)
 
+        # Get download date (current date)
+        download_date = date.today().strftime("%Y-%m-%d")
+
+        # Create a datasets infos dictionary with paths to datasets, MD5 hashes and datasets sources name
+        datasets_infos = create_datasets_infos_dictionary(
+            paths_to_datasets_and_md5, names, download_date
+        )
+
         # Load the datasets in memory in the data repository
         data_repository = load_dataset(
-            data_repository,
-            paths_to_datasets_and_md5,
-            args["data_type"],
+            data_repository, datasets_infos, args["data_type"]
         )
 
         # Process each dataset representation in the data_repository

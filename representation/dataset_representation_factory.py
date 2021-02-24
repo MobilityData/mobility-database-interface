@@ -7,7 +7,9 @@ GTFS_TYPE = "GTFS"
 GBFS_TYPE = "GBFS"
 
 
-def build_representation(dataset_type, entity_code, path_to_dataset, md5_hash):
+def build_representation(
+    dataset_type, entity_code, path_to_dataset, md5_hash, source_name, download_date
+):
     """Dataset representation builder function.
     The factory builds and return a dataset representation according to the dataset type.
     :param dataset_type: The type of the dataset, either GTFS or GBFS.
@@ -18,16 +20,18 @@ def build_representation(dataset_type, entity_code, path_to_dataset, md5_hash):
     representation = None
     if dataset_type == GTFS_TYPE:
         representation = build_gtfs_representation(
-            entity_code, path_to_dataset, md5_hash
+            entity_code, path_to_dataset, md5_hash, source_name, download_date
         )
     elif dataset_type == GBFS_TYPE:
         representation = build_gbfs_representation(
-            entity_code, path_to_dataset, md5_hash
+            entity_code, path_to_dataset, md5_hash, source_name, download_date
         )
     return representation
 
 
-def build_gtfs_representation(entity_code, path_to_dataset, md5_hash):
+def build_gtfs_representation(
+    entity_code, path_to_dataset, md5_hash, source_name, download_date
+):
     try:
         dataset = gtfs_kit.read_feed(path_to_dataset, dist_units="km")
     except TypeError as te:
@@ -40,10 +44,12 @@ def build_gtfs_representation(entity_code, path_to_dataset, md5_hash):
             f"Exception '{ms}' occurred while opening the GTFS dataset with the GTFS kit library."
             f"The dataset must be a valid GTFS zip file or URL.\n"
         )
-    metadata = GtfsMetadata(md5_hash)
+    metadata = GtfsMetadata(md5_hash, source_name, download_date)
     representation = GtfsRepresentation(entity_code, dataset, metadata)
     return representation
 
 
-def build_gbfs_representation(entity_code, path_to_dataset, md5_hash):
+def build_gbfs_representation(
+    entity_code, path_to_dataset, md5_hash, source_name, download_date
+):
     raise NotImplementedError
