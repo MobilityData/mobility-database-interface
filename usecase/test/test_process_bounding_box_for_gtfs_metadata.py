@@ -7,6 +7,7 @@ from representation.gtfs_representation import GtfsRepresentation
 from usecase.process_geopraphical_boundaries_for_gtfs_metadata import (
     process_bounding_box_for_gtfs_metadata,
 )
+from utilities.geographical_utils import LAT, LON
 
 
 class TestProcessBoundingBoxForGtfsMetadata(TestCase):
@@ -24,34 +25,29 @@ class TestProcessBoundingBoxForGtfsMetadata(TestCase):
             TypeError, process_bounding_box_for_gtfs_metadata, mock_gtfs_representation
         )
 
-    @mock.patch("representation.gtfs_representation.GtfsRepresentation")
-    @mock.patch("gtfs_kit.feed.Feed")
     @mock.patch("representation.gtfs_metadata.GtfsMetadata")
+    @mock.patch("gtfs_kit.feed.Feed")
+    @mock.patch("representation.gtfs_representation.GtfsRepresentation")
     def test_process_bounding_box_execution_should_set_bounding_box_metadata(
         self, mock_gtfs_representation, mock_dataset, mock_metadata
     ):
-        mock_stops = PropertyMock(
-            return_value=pd.DataFrame(
-                {"stop_lat": [45.508888], "stop_lon": [-73.561668]}
-            )
-        )
         mock_dataset.__class__ = Feed
-        type(mock_dataset).stops = mock_stops
+        mock_dataset.stops = pd.DataFrame(
+            {"stop_lat": [45.508888], "stop_lon": [-73.561668]}
+        )
 
         mock_metadata.__class__ = GtfsMetadata
         mock_gtfs_representation.__class__ = GtfsRepresentation
-        mock_gtfs_representation.get_dataset.return_value = mock_dataset
+        mock_gtfs_representation.dataset = mock_dataset
 
         under_test = process_bounding_box_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        mock_gtfs_representation.get_dataset.assert_called_once()
-        mock_stops.assert_called()
-        self.assertEqual(mock_stops.call_count, 1)
-        mock_gtfs_representation.set_metadata_bounding_box.assert_called_with(
+        self.assertEqual(
+            mock_gtfs_representation.metadata.bounding_box,
             {
-                "1": "45°30'31.997\"N, 73°33'42.005\"W",
-                "2": "45°30'31.997\"N, 73°33'42.005\"W",
-                "3": "45°30'31.997\"N, 73°33'42.005\"W",
-                "4": "45°30'31.997\"N, 73°33'42.005\"W",
-            }
+                "1": {LAT: [45.508888], LON: [-73.561668]},
+                "2": {LAT: [45.508888], LON: [-73.561668]},
+                "3": {LAT: [45.508888], LON: [-73.561668]},
+                "4": {LAT: [45.508888], LON: [-73.561668]},
+            },
         )

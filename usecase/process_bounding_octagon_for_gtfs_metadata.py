@@ -1,4 +1,7 @@
-from utilities.geographical_utils import process_bounding_octagon_corner_strings
+from utilities.geographical_utils import (
+    process_bounding_octagon_corner_strings,
+    process_bounding_octagon_corner_floats,
+)
 from utilities.validators import validate_gtfs_representation
 
 BOUNDING_OCTAGON_ATTR = "bounding_octagon"
@@ -22,7 +25,7 @@ def process_bounding_octagon_for_gtfs_metadata(gtfs_representation):
     # https://docs.python.org/3/tutorial/datastructures.html
     bounding_octagon = {
         f"{index+1}": corner
-        for index, corner in enumerate(process_bounding_octagon_corner_strings(dataset))
+        for index, corner in enumerate(process_bounding_octagon_corner_floats(dataset))
     }
 
     # Set the bounding octagon in the GTFS representation
