@@ -1,7 +1,6 @@
 class DatasetInfos:
     def __init__(self):
         """Constructor for ``DatasetInfos``."""
-        self.source_entity_code = ""
         self.source_name = ""
         self.entity_code = ""
         self.url = ""
