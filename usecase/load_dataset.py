@@ -28,14 +28,7 @@ def load_dataset(data_repository, datasets_infos, dataset_type):
         print(
             f"--------------- Loading dataset : {dataset_infos.zip_path} ---------------\n"
         )
-        dataset_representation = build_representation(
-            dataset_type,
-            dataset_infos.entity_code,
-            dataset_infos.zip_path,
-            dataset_infos.md5_hash,
-            dataset_infos.source_name,
-            dataset_infos.download_date,
-        )
+        dataset_representation = build_representation(dataset_type, dataset_infos)
         data_repository.add_dataset_representation(
             dataset_infos.entity_code, dataset_representation
         )

@@ -47,7 +47,7 @@ def extract_datasets_infos_from_database(api_url, sparql_api, catalog_code):
     :param api_url: API url, either PRODUCTION_API_URL or STAGING_API_URL.
     :param sparql_api: SPARQL api, either PRODUCTION_SPARQL_URL or STAGING_SPARQL_URL.
     :param catalog_code: Either GTFS_CATALOG_OF_SOURCES_CODE or GBFS_CATALOG_OF_SOURCES_CODE.
-    :return: the URLs and MD5 hashes for each dataset of a data type in the database.
+    :return: A list of DatasetInfos, each containing the URL and MD5 hashes of a dataset in the database.
     """
     validate_urls(api_url, sparql_api)
     entity_codes = []

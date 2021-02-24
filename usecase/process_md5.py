@@ -1,6 +1,5 @@
 from hashlib import md5
 from utilities.validators import validate_datasets_infos
-from representation.dataset_infos import DatasetInfos
 
 DATA_CHUNK_BYTE_SIZE = 4096
 

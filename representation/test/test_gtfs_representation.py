@@ -5,7 +5,7 @@ from representation.gtfs_metadata import GtfsMetadata
 from representation.gtfs_representation import GtfsRepresentation
 
 
-class GtfsRepresentationTest(TestCase):
+class TestGtfsRepresentation(TestCase):
     @mock.patch("gtfs_kit.feed.Feed")
     @mock.patch("representation.gtfs_metadata.GtfsMetadata")
     def test_gtfs_representation_with_none_entity_code_should_raise_exception(
