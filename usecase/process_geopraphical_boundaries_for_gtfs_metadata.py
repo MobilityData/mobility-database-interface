@@ -5,7 +5,7 @@ from utilities.geographical_utils import (
 from utilities.validators import validate_gtfs_representation
 
 GEO_BOUNDARIES_UTILS = "geo_boundaries_utils"
-GEO_BOUNDARIES_ATTR = "geo_boundaries_attribute"
+GEO_BOUNDARIES_ATTR = "geo_boundaries_attr"
 
 BOUNDING_BOX_MAP = {
     GEO_BOUNDARIES_UTILS: process_bounding_box_corner_strings,
