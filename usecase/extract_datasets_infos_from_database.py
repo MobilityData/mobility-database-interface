@@ -1,4 +1,5 @@
 import requests
+import re
 
 from request_manager.sparql_request_helper import sparql_request
 from representation.dataset_infos import DatasetInfos
@@ -8,8 +9,7 @@ from utilities.constants import (
     RESULTS,
     BINDINGS,
     VALUE,
-    DATASET_VERSION_ENTITY_CODE_FIRST_INDEX,
-    DATASET_VERSION_ENTITY_CODE_LAST_INDEX,
+    SPARQL_ENTITY_CODE_REGEX,
     ACTION,
     WB_GET_ENTITIES,
     IDS,
@@ -69,9 +69,7 @@ def extract_datasets_infos_from_database(api_url, sparql_api, catalog_code):
 
     for result in sparql_response[RESULTS][BINDINGS]:
         entity_codes.append(
-            result["a"][VALUE][
-                DATASET_VERSION_ENTITY_CODE_FIRST_INDEX:DATASET_VERSION_ENTITY_CODE_LAST_INDEX
-            ]
+            re.search(SPARQL_ENTITY_CODE_REGEX, result["a"][VALUE]).group(1)
         )
 
     # Retrieves the sources' stable URL for the entity codes found
@@ -115,9 +113,7 @@ def extract_previous_md5_hashes(api_url, sparql_api, entity_code):
 
     for result in sparql_response[RESULTS][BINDINGS]:
         dataset_version_codes.add(
-            result["a"][VALUE][
-                DATASET_VERSION_ENTITY_CODE_FIRST_INDEX:DATASET_VERSION_ENTITY_CODE_LAST_INDEX
-            ]
+            re.search(SPARQL_ENTITY_CODE_REGEX, result["a"][VALUE]).group(1)
         )
 
     # Verify if entity if part of a catalog of sources.
@@ -143,6 +139,7 @@ def extract_previous_md5_hashes(api_url, sparql_api, entity_code):
         api_response = requests.get(api_url, params)
         api_response.raise_for_status()
         json_response = api_response.json()
+
         if ENTITIES not in json_response:
             continue
         for row in json_response[ENTITIES][version_code][CLAIMS][API_MD5_HASH_KEY]:
@@ -150,6 +147,7 @@ def extract_previous_md5_hashes(api_url, sparql_api, entity_code):
             entity_md5_hashes.add(md5)
         # Add the MD5 hashes found for an entity to the MD5 hashes dictionary.
         entity_previous_md5_hashes.update(entity_md5_hashes)
+
     return entity_previous_md5_hashes
 
 

@@ -2,9 +2,8 @@
 GTFS_CATALOG_OF_SOURCES_CODE = "Q78"
 GBFS_CATALOG_OF_SOURCES_CODE = "Q86"
 
-# Define index values for dataset version entity code in response retrieved by SPARQL query
-DATASET_VERSION_ENTITY_CODE_FIRST_INDEX = 37
-DATASET_VERSION_ENTITY_CODE_LAST_INDEX = 40
+# Define regex pattern for dataset version entity code in response retrieved by SPARQL query
+SPARQL_ENTITY_CODE_REGEX = "/(Q.+?)-"
 
 # External constants
 STAGING_SPARQL_URL = (

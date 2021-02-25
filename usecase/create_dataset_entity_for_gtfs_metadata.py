@@ -19,7 +19,6 @@ def create_data(metadata):
                             "datavalue": {{
                                 "value": {{
                                     "entity-type": "item",
-                                    "numeric-id": 29,
                                     "id": "Q29"
                                 }},
                                 "type": "wikibase-entityid"
@@ -28,6 +27,24 @@ def create_data(metadata):
                         }},
                         "type": "statement",
                         "rank": "normal"
+                    }}
+                ],
+                "P48":[
+                    {{
+                        "mainsnak":{{
+                            "snaktype":"value",
+                            "property":"P48",
+                            "datavalue":{{
+                                "value":{{
+                                    "entity-type":"item",
+                                    "id":"{metadata.source_entity_code}"
+                                }},
+                                "type":"wikibase-entityid"
+                            }},
+                            "datatype":"wikibase-item"
+                        }},
+                        "type":"statement",
+                        "rank":"normal"
                     }}
                 ],
                 {create_regular_claim_string("P49", metadata.main_timezone, "preferred")},
@@ -41,7 +58,20 @@ def create_data(metadata):
         }}"""
 
 
+def create_wikibase_item_claim_string(property_id, numeric_id, entity_id, rank):
+    value = (
+        f"""{{"entity-type":"item", "numeric-id":{numeric_id}, "id":"{entity_id}"}}"""
+    )
+    return create_claim_string(
+        property_id, value, rank, "wikibase-entityid", "wikibase-item"
+    )
+
+
 def create_regular_claim_string(property_id, value, rank):
+    return create_claim_string(property_id, value, rank, "string", "string")
+
+
+def create_claim_string(property_id, value, rank, type, datatype):
     return f"""
         "{property_id}":[
             {{
@@ -50,9 +80,9 @@ def create_regular_claim_string(property_id, value, rank):
                     "property": "{property_id}",
                     "datavalue": {{
                         "value": "{value}",
-                        "type": "string"
+                        "type": "{type}"
                     }},
-                    "datatype": "string"
+                    "datatype": "{datatype}"
                 }},
                 "type": "statement",
                 "rank": "{rank}"

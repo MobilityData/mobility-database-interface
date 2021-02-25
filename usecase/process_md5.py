@@ -13,10 +13,11 @@ def process_md5(datasets_infos):
     """
     validate_datasets_infos(datasets_infos)
 
-    for dataset_infos in datasets_infos:
+    # Decrementing the index to ensure no out of bound exception after the datasets_infos.pop(index)
+    for index in range(len(datasets_infos) - 1, -1, -1):
         md5_hash = md5()
-        path_to_dataset = dataset_infos.zip_path
-        previous_md5_hashes = dataset_infos.previous_md5_hashes
+        path_to_dataset = datasets_infos[index].zip_path
+        previous_md5_hashes = datasets_infos[index].previous_md5_hashes
 
         print(f"--------------- Processing MD5 : {path_to_dataset} ---------------\n")
         try:
@@ -30,13 +31,13 @@ def process_md5(datasets_infos):
 
         md5_hash = md5_hash.hexdigest()
         if md5_hash not in previous_md5_hashes:
-            dataset_infos.md5_hash = md5_hash
+            datasets_infos[index].md5_hash = md5_hash
             print(
                 f"Success : new MD5 hash {md5_hash} for {path_to_dataset}, dataset kept for further processing\n"
             )
         else:
             try:
-                datasets_infos.remove(dataset_infos)
+                datasets_infos.pop(index)
                 print(
                     f"Success : MD5 hash {md5_hash} already exists for {path_to_dataset}, dataset discarded\n"
                 )
