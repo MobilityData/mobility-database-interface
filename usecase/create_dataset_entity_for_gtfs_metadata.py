@@ -11,42 +11,8 @@ def create_data(metadata):
                 }}
             }},
             "claims": {{
-                "P20": [
-                    {{
-                        "mainsnak": {{
-                            "snaktype": "value",
-                            "property": "P20",
-                            "datavalue": {{
-                                "value": {{
-                                    "entity-type": "item",
-                                    "id": "Q29"
-                                }},
-                                "type": "wikibase-entityid"
-                            }},
-                            "datatype": "wikibase-item"
-                        }},
-                        "type": "statement",
-                        "rank": "normal"
-                    }}
-                ],
-                "P48":[
-                    {{
-                        "mainsnak":{{
-                            "snaktype":"value",
-                            "property":"P48",
-                            "datavalue":{{
-                                "value":{{
-                                    "entity-type":"item",
-                                    "id":"{metadata.source_entity_code}"
-                                }},
-                                "type":"wikibase-entityid"
-                            }},
-                            "datatype":"wikibase-item"
-                        }},
-                        "type":"statement",
-                        "rank":"normal"
-                    }}
-                ],
+                {create_wikibase_item_claim_string("P20", "Q29", "normal")},
+                {create_wikibase_item_claim_string("P48", metadata.source_entity_code, "normal")},
                 {create_regular_claim_string("P49", metadata.main_timezone, "preferred")},
                 {create_regular_claim_string("P54", metadata.main_language_code, "preferred")},
                 {create_regular_claim_string("P52", metadata.start_service_date, "normal")},
@@ -58,16 +24,18 @@ def create_data(metadata):
         }}"""
 
 
-def create_wikibase_item_claim_string(property_id, numeric_id, entity_id, rank):
-    value = (
-        f"""{{"entity-type":"item", "numeric-id":{numeric_id}, "id":"{entity_id}"}}"""
-    )
+def create_wikibase_item_claim_string(property_id, entity_id, rank):
+    value = f"""{{
+                "entity-type":"item", 
+                "id":"{entity_id}"
+            }}"""
     return create_claim_string(
         property_id, value, rank, "wikibase-entityid", "wikibase-item"
     )
 
 
 def create_regular_claim_string(property_id, value, rank):
+    value = f'"{value}"'
     return create_claim_string(property_id, value, rank, "string", "string")
 
 
@@ -79,7 +47,7 @@ def create_claim_string(property_id, value, rank, type, datatype):
                     "snaktype": "value",
                     "property": "{property_id}",
                     "datavalue": {{
-                        "value": "{value}",
+                        "value": {value},
                         "type": "{type}"
                     }},
                     "datatype": "{datatype}"
@@ -136,7 +104,6 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
 
     api_response = requests.post(api_url, data=PARAMS_LOGIN_TOKEN)
     api_response.raise_for_status()
-    # response = api_response.json()
 
     # Step 3: GET request to fetch CSRF token
     PARAMS_CSRF_TOKEN = {"action": "query", "meta": "tokens", "format": "json"}
@@ -157,6 +124,5 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
 
     api_response = requests.post(api_url, data=PARAMS_ENTITY_CREATION)
     api_response.raise_for_status()
-    # response = api_response.json()
 
     return gtfs_representation
