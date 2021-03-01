@@ -21,12 +21,14 @@ from utilities.constants import (
     DATAVALUE,
     LABELS,
     ENGLISH,
+    ID,
 )
 from utilities.validators import validate_api_url, validate_sparql_url
 
 OPEN_MOBILITY_DATA_URL = "openmobilitydata.org"
 API_STABLE_URL_PROPERTY_KEY = "P55"
 API_MD5_HASH_KEY = "P61"
+API_PREVIOUS_VERSIONS_KEY = "P64"
 
 
 def extract_gtfs_datasets_infos_from_database(api_url, sparql_api):
@@ -78,11 +80,12 @@ def extract_datasets_infos_from_database(api_url, sparql_api, catalog_code):
         dataset_infos = DatasetInfos()
         dataset_infos.entity_code = entity_code
 
-        url, name = extract_source_url_and_name(api_url, entity_code)
+        url, name, previous_versions = extract_source_infos(api_url, entity_code)
         if not url or not name:
             continue
         dataset_infos.url = url
         dataset_infos.source_name = name
+        dataset_infos.previous_versions = previous_versions
 
         dataset_infos.previous_md5_hashes = extract_previous_md5_hashes(
             api_url, sparql_api, entity_code
@@ -128,6 +131,8 @@ def extract_previous_md5_hashes(api_url, sparql_api, entity_code):
         dataset_version_codes.discard(GTFS_CATALOG_OF_SOURCES_CODE)
         dataset_version_codes.discard(GBFS_CATALOG_OF_SOURCES_CODE)
 
+    print(dataset_version_codes)
+
     # Retrieves the MD5 hashes for the dataset version codes found.
     for version_code in dataset_version_codes:
         params = {
@@ -151,7 +156,7 @@ def extract_previous_md5_hashes(api_url, sparql_api, entity_code):
     return entity_previous_md5_hashes
 
 
-def extract_source_url_and_name(api_url, entity_code):
+def extract_source_infos(api_url, entity_code):
     params = {
         ACTION: WB_GET_ENTITIES,
         IDS: f"{entity_code}",
@@ -164,15 +169,25 @@ def extract_source_url_and_name(api_url, entity_code):
 
     url = None
     name = None
+    previous_versions = set()
     if not ENTITIES in json_response:
         return None
 
+    # Extract source stable URL
     for link in json_response[ENTITIES][entity_code][CLAIMS][
         API_STABLE_URL_PROPERTY_KEY
     ]:
         if OPEN_MOBILITY_DATA_URL not in link[MAINSNAK][DATAVALUE][VALUE]:
             url = link[MAINSNAK][DATAVALUE][VALUE]
 
+    # Extract source name
     name = json_response[ENTITIES][entity_code][LABELS][ENGLISH][VALUE]
 
-    return url, name
+    # Extract the codes of the source previous dataset versions
+    if API_PREVIOUS_VERSIONS_KEY in json_response[ENTITIES][entity_code][CLAIMS]:
+        for version in json_response[ENTITIES][entity_code][CLAIMS][
+            API_PREVIOUS_VERSIONS_KEY
+        ]:
+            previous_versions.add(version[MAINSNAK][DATAVALUE][VALUE][ID])
+
+    return url, name, previous_versions

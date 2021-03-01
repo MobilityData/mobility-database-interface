@@ -9,9 +9,7 @@ GBFS_TYPE = "GBFS"
 def load_dataset(data_repository, datasets_infos, dataset_type):
     """Load the datasets in memory in the data repository.
     :param data_repository: Data repository containing the dataset representations.
-    :param datasets_infos: The dictionary of datasets infos to load. The key must be the entity code
-    associated to the dataset in the database. The values must be composed of a path
-    to the dataset zip file and a its MD5 hash.
+    :param datasets_infos: A list of dataset infos, for the datasets to load.
     :param dataset_type: URLs of the datasets to download.
     :return: The data repository containing the loaded dataset representations.
     """

@@ -5,7 +5,7 @@ from usecase.extract_datasets_infos_from_database import (
     extract_gtfs_datasets_infos_from_database,
     extract_gbfs_datasets_infos_from_database,
     extract_previous_md5_hashes,
-    extract_source_url_and_name,
+    extract_source_infos,
 )
 from utilities.constants import (
     STAGING_API_URL,
@@ -19,6 +19,7 @@ from utilities.constants import (
     BINDINGS,
     LABELS,
     ENGLISH,
+    ID,
 )
 
 
@@ -84,9 +85,9 @@ class TestExtractDatabaseMd5(TestCase):
         self.assertEqual(under_test, test_md5)
 
 
-class TestExtractSourcesUrlAndNameTest(TestCase):
+class TestExtractInfosTest(TestCase):
     @mock.patch("usecase.extract_datasets_infos_from_database.requests.get")
-    def test_extract_sources_url_and_name_with_default_parameters_should_return_urls_and_names_dictionary(
+    def test_extract_source_infos_with_default_parameters_should_return_urls_and_names_dictionary(
         self,
         mock_api_request,
     ):
@@ -103,7 +104,8 @@ class TestExtractSourcesUrlAndNameTest(TestCase):
                                     }
                                 }
                             }
-                        ]
+                        ],
+                        "P64": [{MAINSNAK: {DATAVALUE: {VALUE: {ID: "test_version"}}}}],
                     },
                     LABELS: {ENGLISH: {VALUE: "test_name"}},
                 }
@@ -111,19 +113,22 @@ class TestExtractSourcesUrlAndNameTest(TestCase):
         }
         mock_api_request.return_value.raise_for_status.return_value = None
 
-        under_test_url, under_test_name = extract_source_url_and_name(
-            STAGING_API_URL, "Q82"
-        )
+        (
+            under_test_url,
+            under_test_name,
+            under_test_previous_versions,
+        ) = extract_source_infos(STAGING_API_URL, "Q82")
         self.assertEqual(
             under_test_url, "http://www.stl.laval.qc.ca/opendata/GTF_STL.zip"
         )
         self.assertEqual(under_test_name, "test_name")
+        self.assertEqual(under_test_previous_versions, {"test_version"})
 
 
 class TestExtractDatasetsInfosFromDatabase(TestCase):
     @mock.patch("usecase.extract_datasets_infos_from_database.sparql_request")
     @mock.patch("usecase.extract_datasets_infos_from_database.requests.get")
-    def test_extract_gtfs_with_valid_parameters_should_return_urls_and_md5_hashes(
+    def test_extract_gtfs_with_valid_parameters_should_return_dataset_infos(
         self, mock_api_request, mock_sparql_request
     ):
         mock_api_request.return_value = Mock()
@@ -140,7 +145,10 @@ class TestExtractDatasetsInfosFromDatabase(TestCase):
                                         }
                                     }
                                 }
-                            ]
+                            ],
+                            "P64": [
+                                {MAINSNAK: {DATAVALUE: {VALUE: {ID: "test_version"}}}}
+                            ],
                         },
                         LABELS: {ENGLISH: {VALUE: "test_name"}},
                     }
@@ -199,10 +207,11 @@ class TestExtractDatasetsInfosFromDatabase(TestCase):
         )
         self.assertEqual(under_test_dataset_info.source_name, "test_name")
         self.assertEqual(under_test_dataset_info.previous_md5_hashes, {"test_md5_hash"})
+        self.assertEqual(under_test_dataset_info.previous_versions, {"test_version"})
 
     @mock.patch("usecase.extract_datasets_infos_from_database.sparql_request")
     @mock.patch("usecase.extract_datasets_infos_from_database.requests.get")
-    def test_extract_gbfs_with_valid_parameters_should_return_urls_and_md5_hashes(
+    def test_extract_gbfs_with_valid_parameters_should_return_dataset_infos(
         self, mock_api_request, mock_sparql_request
     ):
         mock_api_request.return_value.json.side_effect = [
@@ -218,7 +227,10 @@ class TestExtractDatasetsInfosFromDatabase(TestCase):
                                         }
                                     }
                                 }
-                            ]
+                            ],
+                            "P64": [
+                                {MAINSNAK: {DATAVALUE: {VALUE: {ID: "test_version"}}}}
+                            ],
                         },
                         LABELS: {ENGLISH: {VALUE: "test_name"}},
                     }
@@ -259,3 +271,4 @@ class TestExtractDatasetsInfosFromDatabase(TestCase):
         )
         self.assertEqual(under_test_dataset_info.source_name, "test_name")
         self.assertEqual(under_test_dataset_info.previous_md5_hashes, {"test_md5_hash"})
+        self.assertEqual(under_test_dataset_info.previous_versions, {"test_version"})

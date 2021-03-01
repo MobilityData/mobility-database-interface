@@ -7,7 +7,7 @@ DATA_CHUNK_BYTE_SIZE = 4096
 def process_md5(datasets_infos):
     """Computes the MD5 hash of the datasets. Removes the datasets for which the MD5 hash is already in the database.
     N.B.: a dataset for which the MD5 hash is not in the database represents a new dataset version.
-    :param datasets_infos: The datasets infos containing to path to the dataset needing a MD5 hash verification,
+    :param datasets_infos: A list of dataset infos containing to path to the dataset needing a MD5 hash verification,
     and the previous MD5 hashes.
     :return: The datasets infos of the datasets for which the MD5 hashes are not in the database.
     """

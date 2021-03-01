@@ -1,5 +1,6 @@
 import argparse
 import sys
+import time
 
 import requests
 from guppy import hpy
@@ -47,6 +48,9 @@ from usecase.process_timestamp_for_gtfs_metadata import (
 )
 from usecase.create_dataset_entity_for_gtfs_metadata import (
     create_dataset_entity_for_gtfs_metadata,
+)
+from usecase.update_source_entities_for_gtfs_metadata import (
+    update_source_entities_for_gtfs_metadata,
 )
 from utilities.constants import STAGING_SPARQL_URL, STAGING_API_URL
 
@@ -215,11 +219,17 @@ if __name__ == "__main__":
             # Print results
             data_repository.print_dataset_representation(dataset_key)
 
+        # Wait 10 seconds for SPARQL to update before continuing
+        time.sleep(10)
+        update_source_entities_for_gtfs_metadata(
+            datasets_infos, STAGING_API_URL, STAGING_SPARQL_URL
+        )
+
     elif args["load"] is not None:
         # Load dataset in memory
         # TODO dataset = load_data(args['load'])
         pass
 
-    # Print memory usage 
+    # Print memory usage
     print("\n--------------- Memory Usage ---------------\n")
     print(hpy().heap())

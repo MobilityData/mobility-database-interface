@@ -7,4 +7,5 @@ class DatasetInfos:
         self.zip_path = ""
         self.download_date = ""
         self.md5_hash = ""
-        self.previous_md5_hashes = {}
+        self.previous_md5_hashes = set()
+        self.previous_versions = set()
