@@ -10,30 +10,17 @@ from utilities.constants import (
     VALUE,
     SPARQL_ENTITY_CODE_REGEX,
 )
+from utilities.request_utils import (
+    create_wikibase_item_claim_string,
+    generate_api_csrf_token,
+)
 from utilities.validators import validate_datasets_infos, validate_api_url
 
 
 def create_data(version_code):
     return f"""{{
-            "claims": {{
-                "P64":[
-                    {{
-                        "mainsnak":{{
-                            "snaktype":"value",
-                            "property":"P64",
-                            "datavalue":{{
-                                "value":{{
-                                    "entity-type":"item",
-                                    "id":"{version_code}"
-                                }},
-                                "type":"wikibase-entityid"
-                            }},
-                            "datatype":"wikibase-item"
-                        }},
-                        "type":"statement",
-                        "rank":"normal"
-                    }}
-                ]
+            "claims":{{
+                {create_wikibase_item_claim_string("P64", version_code, "normal")}
             }}
         }}"""
 
@@ -82,43 +69,7 @@ def update_source_entities_for_gtfs_metadata(datasets_infos, api_url, sparql_api
             dataset_infos.previous_versions
         )
 
-        # Step 1: GET request to fetch login token
-        PARAMS_LOGIN_TOKEN = {
-            "action": "query",
-            "meta": "tokens",
-            "type": "login",
-            "format": "json",
-        }
-
-        api_response = requests.get(api_url, params=PARAMS_LOGIN_TOKEN)
-        api_response.raise_for_status()
-        response_data = api_response.json()
-
-        LOGIN_TOKEN = response_data["query"]["tokens"]["logintoken"]
-
-        # Step 2: POST request to log in. Use of main account for login is not
-        # supported. Obtain credentials via Special:BotPasswords
-        # (https://www.mediawiki.org/wiki/Special:BotPasswords) for lgname & lgpassword
-        PARAMS_LOGIN = {
-            "action": "login",
-            "lgname": "MaximeArmstrong",
-            "lgpassword": "j9-sb4E7AKFTu8iVp93erLuYqqNeKv3ZyvN7cNKG",
-            "lgtoken": LOGIN_TOKEN,
-            "format": "json",
-        }
-
-        api_response = requests.post(api_url, data=PARAMS_LOGIN_TOKEN)
-        api_response.raise_for_status()
-        # response = api_response.json()
-
-        # Step 3: GET request to fetch CSRF token
-        PARAMS_CSRF_TOKEN = {"action": "query", "meta": "tokens", "format": "json"}
-
-        api_response = requests.get(api_url, params=PARAMS_CSRF_TOKEN)
-        api_response.raise_for_status()
-        response_data = api_response.json()
-
-        CSRF_TOKEN = response_data["query"]["tokens"]["csrftoken"]
+        CSRF_TOKEN = generate_api_csrf_token(api_url)
 
         for version_code in dataset_version_codes:
             # Step 4: POST request to edit a page

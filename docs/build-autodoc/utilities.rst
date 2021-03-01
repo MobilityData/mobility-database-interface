@@ -20,6 +20,14 @@ utilities.geographical\_utils module
    :undoc-members:
    :show-inheritance:
 
+utilities.request\_utils module
+-------------------------------
+
+.. automodule:: utilities.request_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 utilities.temporal\_utils module
 --------------------------------
 
