@@ -1,28 +1,23 @@
-from representation.gtfs_representation import GtfsRepresentation
+from utilities.validators import validate_gtfs_representation
+
+AGENCY_TIMEZONE_KEY = "agency_timezone"
+AGENCY_TIMEZONE_IDX = 0
 
 
-class ProcessMainTimezoneForGtfsMetadata:
-    def __init__(self, gtfs_representation):
-        """Constructor for ``ProcessMainTimezoneForGtfsMetadata``.
-        :param gtfs_representation: The representation of the GTFS dataset to process.
-        """
-        try:
-            if gtfs_representation is None or not isinstance(gtfs_representation, GtfsRepresentation):
-                raise TypeError("GTFS data representation must be a valid GtfsRepresentation.")
-            self.gtfs_representation = gtfs_representation
-        except Exception as e:
-            raise e
+def process_main_timezone_for_gtfs_metadata(gtfs_representation):
+    """Process the main timezone using the`agency` file from the GTFS dataset of the representation.
+    Add the main timezone to the representation metadata once processed.
+    :param gtfs_representation: The representation of the GTFS dataset to process.
+    :return: The representation of the GTFS dataset post-execution.
+    """
+    validate_gtfs_representation(gtfs_representation)
+    dataset = gtfs_representation.dataset
+    metadata = gtfs_representation.metadata
 
-    def execute(self):
-        """Execute the ``ProcessMainTimezoneForGtfsMetadata`` use case.
-        Process the main timezone using the`agency` file from the GTFS dataset of the representation.
-        Add the main timezone to the representation metadata once processed.
-        :return: The representation of the GTFS dataset post-execution.
-        """
-        dataset = self.gtfs_representation.get_dataset()
+    # Extract the main timezone from the first row in the dataset agency
+    main_timezone = dataset.agency[AGENCY_TIMEZONE_KEY].iloc[AGENCY_TIMEZONE_IDX]
 
-        # Extract the main timezone from the first row in the dataset agency
-        main_timezone = dataset.agency['agency_timezone'].iloc[0]
+    # Set the main timezone in the GTFS representation
+    metadata.main_timezone = main_timezone
 
-        self.gtfs_representation.set_metadata_main_timezone(main_timezone)
-        return self.gtfs_representation
+    return gtfs_representation
