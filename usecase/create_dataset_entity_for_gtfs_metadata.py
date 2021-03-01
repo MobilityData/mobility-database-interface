@@ -4,6 +4,14 @@ from utilities.request_utils import (
     create_regular_claim_string,
     generate_api_csrf_token,
 )
+from utilities.constants import (
+    ACTION,
+    WB_EDIT_ENTITY,
+    NEW,
+    ITEM,
+    DATA,
+    TOKEN,
+)
 from utilities.validators import validate_gtfs_representation, validate_api_url
 
 
@@ -39,18 +47,17 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
     validate_gtfs_representation(gtfs_representation)
     metadata = gtfs_representation.metadata
 
-    CSRF_TOKEN = generate_api_csrf_token(api_url)
+    csrf_token = generate_api_csrf_token(api_url)
 
     # Step 4: POST request to edit a page
-    # print(create_data(metadata))
-    PARAMS_ENTITY_CREATION = {
-        "action": "wbeditentity",
-        "new": "item",
-        "data": f"{create_data(metadata)}",
-        "token": CSRF_TOKEN,
+    params_entity_creation = {
+        ACTION: WB_EDIT_ENTITY,
+        NEW: ITEM,
+        DATA: f"{create_data(metadata)}",
+        TOKEN: csrf_token,
     }
 
-    api_response = requests.post(api_url, data=PARAMS_ENTITY_CREATION)
+    api_response = requests.post(api_url, data=params_entity_creation)
     api_response.raise_for_status()
 
     return gtfs_representation

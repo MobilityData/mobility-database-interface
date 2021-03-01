@@ -23,6 +23,7 @@ from utilities.constants import (
     ENGLISH,
     ID,
 )
+from utilities.request_utils import extract_dataset_version_codes
 from utilities.validators import validate_api_url, validate_sparql_url
 
 OPEN_MOBILITY_DATA_URL = "openmobilitydata.org"
@@ -97,41 +98,11 @@ def extract_datasets_infos_from_database(api_url, sparql_api, catalog_code):
 
 
 def extract_previous_md5_hashes(api_url, sparql_api, entity_code):
-    dataset_version_codes = set()
     entity_previous_md5_hashes = set()
     entity_md5_hashes = set()
 
     # Retrieves the entity dataset version codes for which we want to extract the MD5 hashes.
-    sparql_response = sparql_request(
-        sparql_api,
-        f"""
-                SELECT *
-                WHERE 
-                {{
-                    ?a 
-                    <http://wikibase.svc/prop/statement/P48>
-                    <http://wikibase.svc/entity/{entity_code}>
-                }}""",
-    )
-
-    for result in sparql_response[RESULTS][BINDINGS]:
-        dataset_version_codes.add(
-            re.search(SPARQL_ENTITY_CODE_REGEX, result["a"][VALUE]).group(1)
-        )
-
-    # Verify if entity if part of a catalog of sources.
-    # If yes, removes the catalog of sources entity code, which appears in the results of a source entity,
-    # and initialize entity element in the MD5 hashes dictionary. This operation makes sure that an entity
-    # with no MD5 hash in the database, but in a catalog of sources, gets initialized with an empty set
-    # in the MD5 hashes dictionary (required for further MD5 processing).
-    if (
-        GTFS_CATALOG_OF_SOURCES_CODE in dataset_version_codes
-        or GBFS_CATALOG_OF_SOURCES_CODE in dataset_version_codes
-    ):
-        dataset_version_codes.discard(GTFS_CATALOG_OF_SOURCES_CODE)
-        dataset_version_codes.discard(GBFS_CATALOG_OF_SOURCES_CODE)
-
-    print(dataset_version_codes)
+    dataset_version_codes = extract_dataset_version_codes(entity_code, sparql_api)
 
     # Retrieves the MD5 hashes for the dataset version codes found.
     for version_code in dataset_version_codes:

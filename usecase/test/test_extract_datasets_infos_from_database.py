@@ -26,9 +26,14 @@ from utilities.constants import (
 class TestExtractDatabaseMd5(TestCase):
     @mock.patch("usecase.extract_datasets_infos_from_database.sparql_request")
     @mock.patch("usecase.extract_datasets_infos_from_database.requests.get")
+    @mock.patch(
+        "usecase.extract_datasets_infos_from_database.extract_dataset_version_codes"
+    )
     def test_extract_database_md5_with_existing_entity_codes_should_return_md5_dict(
-        self, mock_api_request, mock_sparql_request
+        self, mock_version_extractor, mock_api_request, mock_sparql_request
     ):
+        mock_version_extractor.return_value = {"Q81"}
+
         test_entity = ["Q80"]
         test_md5 = {"md5_hash"}
 
@@ -87,7 +92,7 @@ class TestExtractDatabaseMd5(TestCase):
 
 class TestExtractInfosTest(TestCase):
     @mock.patch("usecase.extract_datasets_infos_from_database.requests.get")
-    def test_extract_source_infos_with_default_parameters_should_return_urls_and_names_dictionary(
+    def test_extract_source_infos_with_default_parameters_should_return_dataset_infos(
         self,
         mock_api_request,
     ):
@@ -128,9 +133,14 @@ class TestExtractInfosTest(TestCase):
 class TestExtractDatasetsInfosFromDatabase(TestCase):
     @mock.patch("usecase.extract_datasets_infos_from_database.sparql_request")
     @mock.patch("usecase.extract_datasets_infos_from_database.requests.get")
+    @mock.patch(
+        "usecase.extract_datasets_infos_from_database.extract_dataset_version_codes"
+    )
     def test_extract_gtfs_with_valid_parameters_should_return_dataset_infos(
-        self, mock_api_request, mock_sparql_request
+        self, mock_version_extractor, mock_api_request, mock_sparql_request
     ):
+        mock_version_extractor.return_value = {"Q81"}
+
         mock_api_request.return_value = Mock()
         mock_api_request.return_value.json.side_effect = [
             {
@@ -211,9 +221,15 @@ class TestExtractDatasetsInfosFromDatabase(TestCase):
 
     @mock.patch("usecase.extract_datasets_infos_from_database.sparql_request")
     @mock.patch("usecase.extract_datasets_infos_from_database.requests.get")
+    @mock.patch(
+        "usecase.extract_datasets_infos_from_database.extract_dataset_version_codes"
+    )
     def test_extract_gbfs_with_valid_parameters_should_return_dataset_infos(
-        self, mock_api_request, mock_sparql_request
+        self, mock_version_extractor, mock_api_request, mock_sparql_request
     ):
+
+        mock_version_extractor.return_value = {"Q184"}
+
         mock_api_request.return_value.json.side_effect = [
             {
                 ENTITIES: {
@@ -238,7 +254,7 @@ class TestExtractDatasetsInfosFromDatabase(TestCase):
             },
             {
                 ENTITIES: {
-                    "Q82": {
+                    "Q184": {
                         CLAIMS: {
                             "P61": [{MAINSNAK: {DATAVALUE: {VALUE: "test_md5_hash"}}}]
                         }
