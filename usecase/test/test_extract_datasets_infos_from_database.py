@@ -275,7 +275,7 @@ class TestExtractDatasetsInfosFromDatabase(TestCase):
             }
         }
 
-        under_test = extract_gtfs_datasets_infos_from_database(
+        under_test = extract_gbfs_datasets_infos_from_database(
             STAGING_API_URL, STAGING_SPARQL_URL
         )
         self.assertEqual(len(under_test), 1)
