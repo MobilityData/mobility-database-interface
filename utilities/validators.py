@@ -18,9 +18,7 @@ def validate_sparql_url(sparql_url):
 
 def validate_api_url(api_url):
     if api_url not in [PRODUCTION_API_URL, STAGING_API_URL]:
-        raise TypeError(
-            f"sparql_api should be {PRODUCTION_SPARQL_URL} or {STAGING_SPARQL_URL}"
-        )
+        raise TypeError(f"api_url should be {PRODUCTION_API_URL} or {STAGING_API_URL}")
     return True
 
 
