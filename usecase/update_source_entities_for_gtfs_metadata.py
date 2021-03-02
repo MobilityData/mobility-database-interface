@@ -51,7 +51,7 @@ def update_source_entities_for_gtfs_metadata(datasets_infos, api_url, sparql_api
         csrf_token = generate_api_csrf_token(api_url)
 
         for version_code in dataset_version_codes:
-            # Step 4: POST request to edit a page
+            # POST request to edit a page
             params_entity_creation = {
                 ACTION: WB_EDIT_ENTITY,
                 ID: f"{dataset_infos.entity_code}",

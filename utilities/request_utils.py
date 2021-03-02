@@ -119,7 +119,7 @@ def extract_dataset_version_codes(entity_code, sparql_api):
 
 
 def generate_api_csrf_token(api_url):
-    # Get login token
+    # GET request for login token
     params_login_token = {
         ACTION: QUERY,
         META: TOKENS,
@@ -131,7 +131,7 @@ def generate_api_csrf_token(api_url):
     response_data = api_response.json()
     login_token = response_data[QUERY][TOKENS][LOGIN_TOKEN]
 
-    # Login to database
+    # POST request to login to database
     params_login = {
         ACTION: LOGIN,
         LGNAME: STAGING_USERNAME,
@@ -142,7 +142,7 @@ def generate_api_csrf_token(api_url):
     api_response = requests.post(api_url, data=params_login)
     api_response.raise_for_status()
 
-    # Get csrf token
+    # GET request for csrf token
     params_csrf_token = {ACTION: QUERY, META: TOKENS, FORMAT: JSON}
     api_response = requests.get(api_url, params=params_csrf_token)
     api_response.raise_for_status()
