@@ -9,39 +9,70 @@ from utilities.constants import (
     BINDINGS,
     VALUE,
     SPARQL_ENTITY_CODE_REGEX,
+    ID,
+    ENTITY_TYPE,
+    ITEM,
+    WIKIBASE_ENTITYID,
+    WIKIBASE_ITEM,
+    STRING,
+    MAINSNAK,
+    TYPE,
+    DATATYPE,
+    DATAVALUE,
+    RANK,
+    STATEMENT,
+    SNAKTYPE,
+    PROPERTY,
+    ACTION,
+    META,
+    FORMAT,
+    JSON,
+    LOGIN,
+    TOKENS,
+    QUERY,
+    LOGIN_TOKEN,
+    CSRF_TOKEN,
+    LGTOKEN,
+    LGPASSWORD,
+    LGNAME,
+    STAGING_USERNAME,
+    STAGING_PASSWORD,
+    SPARQL_A,
+    SVC_SOURCE_PROPERTY_URL,
+    SVC_ENTITY_URL_PREFIX,
 )
 
 
 def create_wikibase_item_claim_string(property_id, entity_id, rank):
     value = f"""{{
-                "entity-type":"item", 
-                "id":"{entity_id}"
+                "{ENTITY_TYPE}":"{ITEM}", 
+                "{ID}":"{entity_id}"
             }}"""
     return create_claim_string(
-        property_id, value, rank, "wikibase-entityid", "wikibase-item"
+        property_id, value, rank, WIKIBASE_ENTITYID, WIKIBASE_ITEM
     )
 
 
 def create_regular_claim_string(property_id, value, rank):
     value = f'"{value}"'
-    return create_claim_string(property_id, value, rank, "string", "string")
+    return create_claim_string(property_id, value, rank, STRING, STRING)
 
 
 def create_claim_string(property_id, value, rank, type, datatype):
     return f"""
         "{property_id}":[
             {{
-                "mainsnak": {{
-                    "snaktype": "value",
-                    "property": "{property_id}",
-                    "datavalue": {{
-                        "value": {value},
-                        "type": "{type}"
+                "{MAINSNAK}": {{
+                    "{SNAKTYPE}": "{VALUE}",
+                    "{PROPERTY}": "{property_id}",
+                    "{DATAVALUE}": {{
+                        "{VALUE}": {value},
+                        "{TYPE}": "{type}"
                     }},
-                    "datatype": "{datatype}"
+                    "{DATATYPE}": "{datatype}"
                 }},
-                "type": "statement",
-                "rank": "{rank}"
+                "{TYPE}": "{STATEMENT}",
+                "{RANK}": "{rank}"
             }}
         ]
         """
@@ -64,15 +95,15 @@ def extract_dataset_version_codes(entity_code, sparql_api):
             SELECT *
             WHERE 
             {{
-                ?a 
-                <http://wikibase.svc/prop/statement/P48>
-                <http://wikibase.svc/entity/{entity_code}>
+                ?{SPARQL_A} 
+                <{SVC_SOURCE_PROPERTY_URL}>
+                <{SVC_ENTITY_URL_PREFIX}{entity_code}>
             }}""",
     )
 
     for result in sparql_response[RESULTS][BINDINGS]:
         dataset_version_codes.add(
-            re.search(SPARQL_ENTITY_CODE_REGEX, result["a"][VALUE]).group(1)
+            re.search(SPARQL_ENTITY_CODE_REGEX, result[SPARQL_A][VALUE]).group(1)
         )
 
     # Verify if entity if part of a catalog of sources.
@@ -90,32 +121,32 @@ def extract_dataset_version_codes(entity_code, sparql_api):
 def generate_api_csrf_token(api_url):
     # Get login token
     params_login_token = {
-        "action": "query",
-        "meta": "tokens",
-        "type": "login",
-        "format": "json",
+        ACTION: QUERY,
+        META: TOKENS,
+        TYPE: LOGIN,
+        FORMAT: JSON,
     }
     api_response = requests.get(api_url, params=params_login_token)
     api_response.raise_for_status()
     response_data = api_response.json()
-    login_token = response_data["query"]["tokens"]["logintoken"]
+    login_token = response_data[QUERY][TOKENS][LOGIN_TOKEN]
 
     # Login to database
     params_login = {
-        "action": "login",
-        "lgname": "MaximeArmstrong",
-        "lgpassword": "j9-sb4E7AKFTu8iVp93erLuYqqNeKv3ZyvN7cNKG",
-        "lgtoken": login_token,
-        "format": "json",
+        ACTION: LOGIN,
+        LGNAME: STAGING_USERNAME,
+        LGPASSWORD: STAGING_PASSWORD,
+        LGTOKEN: login_token,
+        FORMAT: JSON,
     }
     api_response = requests.post(api_url, data=params_login)
     api_response.raise_for_status()
 
     # Get csrf token
-    params_csrf_token = {"action": "query", "meta": "tokens", "format": "json"}
+    params_csrf_token = {ACTION: QUERY, META: TOKENS, FORMAT: JSON}
     api_response = requests.get(api_url, params=params_csrf_token)
     api_response.raise_for_status()
     response_data = api_response.json()
-    csrf_token = response_data["query"]["tokens"]["csrftoken"]
+    csrf_token = response_data[QUERY][TOKENS][CSRF_TOKEN]
 
     return csrf_token
