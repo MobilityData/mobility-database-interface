@@ -88,40 +88,34 @@ def extract_dataset_version_codes(entity_code, sparql_api):
 
 
 def generate_api_csrf_token(api_url):
-    # Step 1: GET request to fetch login token
-    PARAMS_LOGIN_TOKEN = {
+    # Get login token
+    params_login_token = {
         "action": "query",
         "meta": "tokens",
         "type": "login",
         "format": "json",
     }
-
-    api_response = requests.get(api_url, params=PARAMS_LOGIN_TOKEN)
+    api_response = requests.get(api_url, params=params_login_token)
     api_response.raise_for_status()
     response_data = api_response.json()
+    login_token = response_data["query"]["tokens"]["logintoken"]
 
-    LOGIN_TOKEN = response_data["query"]["tokens"]["logintoken"]
-
-    # Step 2: POST request to log in. Use of main account for login is not
-    # supported. Obtain credentials via Special:BotPasswords
-    # (https://www.mediawiki.org/wiki/Special:BotPasswords) for lgname & lgpassword
-    PARAMS_LOGIN = {
+    # Login to database
+    params_login = {
         "action": "login",
         "lgname": "MaximeArmstrong",
         "lgpassword": "j9-sb4E7AKFTu8iVp93erLuYqqNeKv3ZyvN7cNKG",
-        "lgtoken": LOGIN_TOKEN,
+        "lgtoken": login_token,
         "format": "json",
     }
-
-    api_response = requests.post(api_url, data=PARAMS_LOGIN)
+    api_response = requests.post(api_url, data=params_login)
     api_response.raise_for_status()
 
-    # Step 3: GET request to fetch CSRF token
-    PARAMS_CSRF_TOKEN = {"action": "query", "meta": "tokens", "format": "json"}
-
-    api_response = requests.get(api_url, params=PARAMS_CSRF_TOKEN)
+    # Get csrf token
+    params_csrf_token = {"action": "query", "meta": "tokens", "format": "json"}
+    api_response = requests.get(api_url, params=params_csrf_token)
     api_response.raise_for_status()
     response_data = api_response.json()
+    csrf_token = response_data["query"]["tokens"]["csrftoken"]
 
-    CSRF_TOKEN = response_data["query"]["tokens"]["csrftoken"]
-    return CSRF_TOKEN
+    return csrf_token
