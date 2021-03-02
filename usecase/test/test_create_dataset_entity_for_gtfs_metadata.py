@@ -1,5 +1,5 @@
 from unittest import TestCase, mock
-from unittest.mock import Mock, MagicMock
+from unittest.mock import MagicMock
 
 from representation.gtfs_representation import GtfsRepresentation
 from representation.gtfs_metadata import GtfsMetadata
@@ -10,7 +10,7 @@ from usecase.create_dataset_entity_for_gtfs_metadata import (
 from utilities.constants import STAGING_API_URL
 
 
-class TestDataCreation(TestCase):
+class TestDataCreationForDatasetEntityCreation(TestCase):
     def test_create_data_with_valid_metadata_should_return_data(self):
         mock_metadata = MagicMock()
 

@@ -12,7 +12,11 @@ from utilities.request_utils import (
     extract_dataset_version_codes,
     generate_api_csrf_token,
 )
-from utilities.validators import validate_datasets_infos, validate_api_url
+from utilities.validators import (
+    validate_datasets_infos,
+    validate_api_url,
+    validate_sparql_url,
+)
 
 
 def create_data(version_code):
@@ -28,9 +32,10 @@ def update_source_entities_for_gtfs_metadata(datasets_infos, api_url, sparql_api
     :param datasets_infos: A list of dataset infos, for the datasets to load.
     :param api_url: API url, either PRODUCTION_API_URL or STAGING_API_URL.
     :param sparql_api: SPARQL api, either PRODUCTION_SPARQL_URL or STAGING_SPARQL_URL.
-    :return: The representation of the GTFS dataset post-execution.
+    :return: The datasets infos post-execution.
     """
     validate_api_url(api_url)
+    validate_sparql_url(sparql_api)
     validate_datasets_infos(datasets_infos)
 
     for dataset_infos in datasets_infos:
@@ -56,3 +61,5 @@ def update_source_entities_for_gtfs_metadata(datasets_infos, api_url, sparql_api
 
             api_response = requests.post(api_url, data=params_entity_creation)
             api_response.raise_for_status()
+
+    return datasets_infos
