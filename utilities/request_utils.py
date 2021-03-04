@@ -1,7 +1,5 @@
-import requests
 import re
 
-from request_manager.sparql_request_helper import sparql_request
 from utilities.constants import (
     GTFS_CATALOG_OF_SOURCES_CODE,
     GBFS_CATALOG_OF_SOURCES_CODE,
@@ -9,97 +7,94 @@ from utilities.constants import (
     BINDINGS,
     VALUE,
     SPARQL_ENTITY_CODE_REGEX,
-    ID,
-    ENTITY_TYPE,
-    ITEM,
-    WIKIBASE_ENTITYID,
-    WIKIBASE_ITEM,
-    STRING,
-    MAINSNAK,
-    TYPE,
+    ENGLISH,
     DATATYPE,
-    DATAVALUE,
     RANK,
-    STATEMENT,
-    SNAKTYPE,
-    PROPERTY,
-    ACTION,
-    META,
-    FORMAT,
-    JSON,
-    LOGIN,
-    TOKENS,
-    QUERY,
-    LOGIN_TOKEN,
-    CSRF_TOKEN,
-    LGTOKEN,
-    LGPASSWORD,
-    LGNAME,
-    STAGING_USERNAME,
-    STAGING_PASSWORD,
+    PROP_ID,
+    IF_EXISTS,
     SPARQL_A,
     SVC_SOURCE_PROPERTY_URL,
     SVC_ENTITY_URL_PREFIX,
+    SVC_CATALOG_PROPERTY_URL,
 )
 
+from wikibaseintegrator import wbi_core, wbi_login
+from wikibaseintegrator.wbi_config import config as wbi_config
+from utilities.constants import STAGING_API_URL, STAGING_SPARQL_BIGDATA_URL, SVC_URL
 
-def create_wikibase_item_claim_string(property_id, entity_id, rank):
-    value = f"""{{
-                "{ENTITY_TYPE}":"{ITEM}", 
-                "{ID}":"{entity_id}"
-            }}"""
-    return create_claim_string(
-        property_id, value, rank, WIKIBASE_ENTITYID, WIKIBASE_ITEM
-    )
+wbi_config["MEDIAWIKI_API_URL"] = STAGING_API_URL
+wbi_config["SPARQL_ENDPOINT_URL"] = STAGING_SPARQL_BIGDATA_URL
+wbi_config["WIKIBASE_URL"] = SVC_URL
 
 
-def create_regular_claim_string(property_id, value, rank):
-    value = f'"{value}"'
-    return create_claim_string(property_id, value, rank, STRING, STRING)
+def create_login_instance(username, password):
+    return wbi_login.Login(user=username, pwd=password, use_clientlogin=True)
 
 
-def create_claim_string(property_id, value, rank, type, datatype):
-    return f"""
-        "{property_id}":[
+def create_entity(properties, label, item_id):
+    data = []
+    for prop in properties:
+        data_entry = prop[DATATYPE](
+            value=prop[VALUE],
+            prop_nr=prop[PROP_ID],
+            rank=prop[RANK],
+            if_exists=prop[IF_EXISTS],
+        )
+        data.append(data_entry)
+
+    entity = wbi_core.ItemEngine(data=data, item_id=item_id)
+    if label:
+        entity.set_label(label, ENGLISH)
+    return entity
+
+
+def import_entity(username, password, properties, label="", item_id=""):
+    login_instance = create_login_instance(username, password)
+    entity = create_entity(properties, label, item_id)
+    entity_id = entity.write(login_instance)
+    return entity_id
+
+
+def export_entity_as_json(entity_code):
+    return wbi_core.ItemEngine(item_id=entity_code).get_json_representation()
+
+
+def extract_source_entity_codes(catalog_code):
+    entity_codes = []
+
+    # Retrieves the entity codes for which we want to download the dataset
+    sparql_query = f"""
+            SELECT *
+            WHERE 
             {{
-                "{MAINSNAK}": {{
-                    "{SNAKTYPE}": "{VALUE}",
-                    "{PROPERTY}": "{property_id}",
-                    "{DATAVALUE}": {{
-                        "{VALUE}": {value},
-                        "{TYPE}": "{type}"
-                    }},
-                    "{DATATYPE}": "{datatype}"
-                }},
-                "{TYPE}": "{STATEMENT}",
-                "{RANK}": "{rank}"
-            }}
-        ]
-        """
+                ?{SPARQL_A} 
+                <{SVC_CATALOG_PROPERTY_URL}>
+                <{SVC_ENTITY_URL_PREFIX}{catalog_code}>
+            }}"""
+
+    sparql_response = wbi_core.FunctionsEngine.execute_sparql_query(sparql_query)
+
+    for result in sparql_response[RESULTS][BINDINGS]:
+        entity_codes.append(
+            re.search(SPARQL_ENTITY_CODE_REGEX, result[SPARQL_A][VALUE]).group(1)
+        )
+
+    return entity_codes
 
 
-def create_geographical_claim_string(property_id, value, rank):
-    raise NotImplementedError
-
-
-def create_geographical_item(rank, value):
-    raise NotImplementedError
-
-
-def extract_dataset_version_codes(entity_code, sparql_api):
+def extract_dataset_version_codes(entity_code):
     dataset_version_codes = set()
 
-    sparql_response = sparql_request(
-        sparql_api,
-        f"""
+    sparql_query = f"""
             SELECT *
             WHERE 
             {{
                 ?{SPARQL_A} 
                 <{SVC_SOURCE_PROPERTY_URL}>
                 <{SVC_ENTITY_URL_PREFIX}{entity_code}>
-            }}""",
-    )
+            }}"""
+
+    sparql_response = wbi_core.FunctionsEngine.execute_sparql_query(sparql_query)
 
     for result in sparql_response[RESULTS][BINDINGS]:
         dataset_version_codes.add(
@@ -116,37 +111,3 @@ def extract_dataset_version_codes(entity_code, sparql_api):
         dataset_version_codes.discard(GBFS_CATALOG_OF_SOURCES_CODE)
 
     return dataset_version_codes
-
-
-def generate_api_csrf_token(api_url):
-    # GET request for login token
-    params_login_token = {
-        ACTION: QUERY,
-        META: TOKENS,
-        TYPE: LOGIN,
-        FORMAT: JSON,
-    }
-    api_response = requests.get(api_url, params=params_login_token)
-    api_response.raise_for_status()
-    response_data = api_response.json()
-    login_token = response_data[QUERY][TOKENS][LOGIN_TOKEN]
-
-    # POST request to login to database
-    params_login = {
-        ACTION: LOGIN,
-        LGNAME: STAGING_USERNAME,
-        LGPASSWORD: STAGING_PASSWORD,
-        LGTOKEN: login_token,
-        FORMAT: JSON,
-    }
-    api_response = requests.post(api_url, data=params_login)
-    api_response.raise_for_status()
-
-    # GET request for csrf token
-    params_csrf_token = {ACTION: QUERY, META: TOKENS, FORMAT: JSON}
-    api_response = requests.get(api_url, params=params_csrf_token)
-    api_response.raise_for_status()
-    response_data = api_response.json()
-    csrf_token = response_data[QUERY][TOKENS][CSRF_TOKEN]
-
-    return csrf_token

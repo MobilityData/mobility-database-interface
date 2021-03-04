@@ -124,14 +124,6 @@ usecase.process\_timestamp\_for\_gtfs\_metadata module
    :undoc-members:
    :show-inheritance:
 
-usecase.update\_source\_entities\_for\_gtfs\_metadata module
-------------------------------------------------------------
-
-.. automodule:: usecase.update_source_entities_for_gtfs_metadata
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 Module contents
 ---------------
 
