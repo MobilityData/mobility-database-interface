@@ -2,6 +2,7 @@
 *.iml
 .idea
 env/
+.env
 
 # Python
 __pycache__/

@@ -2,6 +2,7 @@ from datetime import date
 import os
 import requests
 from requests import HTTPError
+from requests.exceptions import SSLError
 from utilities.validators import validate_datasets_infos
 
 
@@ -9,11 +10,12 @@ def download_dataset_as_zip(path_to_data, datasets_infos):
     """Download datasets as zip for the given urls.
     :param path_to_data: The path to the folder where to store the dataset zip files.
     :param datasets_infos: The datasets infos from which to take the urls.
-    :return: The datasets infos updated with the paths to the downloaded dataset zip files.
+    :return: A list of DatasetInfos for which the datasets zip file have been downloaded.
     """
     if not os.path.isdir(path_to_data):
         raise TypeError("Data path must be a valid path.")
     validate_datasets_infos(datasets_infos)
+    updated_datasets_infos = []
 
     for dataset_infos in datasets_infos:
         url = dataset_infos.url
@@ -28,6 +30,9 @@ def download_dataset_as_zip(path_to_data, datasets_infos):
         except HTTPError as http_error:
             print(f'Exception "{http_error}" occurred when downloading URL\n')
             continue
+        except SSLError as ssl_error:
+            print(f'Exception "{ssl_error}" occurred when downloading URL\n')
+            continue
 
         zip_file = zip_file_req.content
         with open(zip_path, "wb") as file:
@@ -36,4 +41,6 @@ def download_dataset_as_zip(path_to_data, datasets_infos):
         dataset_infos.zip_path = zip_path
         dataset_infos.download_date = date.today().strftime("%Y-%m-%d")
         print(f"Success : {entity_code}_{zip_name} downloaded in {path_to_data}\n")
-    return datasets_infos
+        updated_datasets_infos.append(dataset_infos)
+
+    return updated_datasets_infos

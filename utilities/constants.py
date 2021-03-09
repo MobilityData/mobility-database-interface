@@ -14,6 +14,7 @@ START_TIMESTAMP_PROP = "P66"
 END_TIMESTAMP_PROP = "P67"
 MD5_HASH_PROP = "P61"
 DATASET_VERSION_PROP = "P64"
+STABLE_URL_PROP = "P55"
 
 # Define regex pattern for dataset version entity code in response retrieved by SPARQL query
 SPARQL_ENTITY_CODE_REGEX = "/(Q.+?)-"
@@ -29,9 +30,6 @@ STAGING_SPARQL_BIGDATA_URL = "http://staging.mobilitydatabase.org:8989/bigdata/s
 PRODUCTION_SPARQL_BIGDATA_URL = "http://mobilitydatabase.org:8989/bigdata/sparql"
 STAGING_API_URL = "http://staging.mobilitydatabase.org/w/api.php"
 PRODUCTION_API_URL = "http://mobilitydatabase.org/w/api.php"
-
-STAGING_USERNAME = "MaximeArmstrong"
-STAGING_PASSWORD = "j9-sb4E7AKFTu8iVp93erLuYqqNeKv3ZyvN7cNKG"
 
 ID = "id"
 CLAIMS = "claims"

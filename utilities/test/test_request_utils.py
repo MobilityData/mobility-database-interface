@@ -4,7 +4,6 @@ from utilities.request_utils import (
     extract_dataset_version_codes,
 )
 from utilities.constants import (
-    STAGING_SPARQL_URL,
     VALUE,
     RESULTS,
     BINDINGS,

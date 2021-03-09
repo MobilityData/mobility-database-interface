@@ -8,6 +8,8 @@ from utilities.constants import (
     DATAVALUE,
     LABELS,
     ENGLISH,
+    MD5_HASH_PROP,
+    STABLE_URL_PROP,
 )
 from utilities.request_utils import (
     extract_dataset_version_codes,
@@ -17,9 +19,6 @@ from utilities.request_utils import (
 from utilities.validators import validate_api_url, validate_sparql_url
 
 OPEN_MOBILITY_DATA_URL = "openmobilitydata.org"
-API_STABLE_URL_PROPERTY_KEY = "P55"
-API_MD5_HASH_KEY = "P61"
-API_PREVIOUS_VERSIONS_KEY = "P64"
 
 
 def extract_gtfs_datasets_infos_from_database(api_url, sparql_api):
@@ -78,10 +77,8 @@ def extract_previous_md5_hashes(entity_code):
         # Export entity related to the version code from database
         json_response = export_entity_as_json(version_code)
 
-        if API_MD5_HASH_KEY not in json_response[CLAIMS]:
-            continue
-        for row in json_response[CLAIMS][API_MD5_HASH_KEY]:
-            md5 = row[MAINSNAK][DATAVALUE][VALUE]
+        for row in json_response.get(CLAIMS, {}).get(MD5_HASH_PROP, []):
+            md5 = row.get(MAINSNAK, {}).get(DATAVALUE, {}).get(VALUE)
             entity_md5_hashes.add(md5)
         # Add the MD5 hashes found for an entity to the MD5 hashes dictionary.
         entity_previous_md5_hashes.update(entity_md5_hashes)
@@ -94,15 +91,12 @@ def extract_source_infos(entity_code):
     json_response = export_entity_as_json(entity_code)
 
     url = None
-    if CLAIMS in json_response and API_STABLE_URL_PROPERTY_KEY in json_response[CLAIMS]:
-        # Extract source stable URL
-        for link in json_response[CLAIMS][API_STABLE_URL_PROPERTY_KEY]:
-            if OPEN_MOBILITY_DATA_URL not in link[MAINSNAK][DATAVALUE][VALUE]:
-                url = link[MAINSNAK][DATAVALUE][VALUE]
+    # Extract source stable URL
+    for link in json_response.get(CLAIMS, {}).get(STABLE_URL_PROP, []):
+        tmp_url = link.get(MAINSNAK, {}).get(DATAVALUE, {}).get(VALUE)
+        if OPEN_MOBILITY_DATA_URL not in tmp_url:
+            url = tmp_url
 
-    name = None
-    if LABELS in json_response:
-        # Extract source name
-        name = json_response[LABELS][ENGLISH][VALUE]
+    name = json_response.get(LABELS, {}).get(ENGLISH, {}).get(VALUE)
 
     return url, name

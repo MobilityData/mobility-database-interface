@@ -1,8 +1,9 @@
+import os
+from dotenv import load_dotenv
+
 from wikibaseintegrator import wbi_core
 from utilities.request_utils import import_entity
 from utilities.constants import (
-    STAGING_USERNAME,
-    STAGING_PASSWORD,
     DATATYPE,
     PROP_ID,
     VALUE,
@@ -24,15 +25,12 @@ from utilities.constants import (
 )
 from utilities.validators import validate_gtfs_representation, validate_api_url
 
+load_dotenv()
+STAGING_USERNAME = os.getenv("STAGING_USERNAME")
+STAGING_PASSWORD = os.getenv("STAGING_PASSWORD")
 
-def create_prop_dict(datatype, prop_id, value, rank, if_exists="REPLACE"):
-    return {
-        DATATYPE: datatype,
-        PROP_ID: prop_id,
-        VALUE: value,
-        RANK: rank,
-        IF_EXISTS: if_exists,
-    }
+REPLACE = "REPLACE"
+APPEND = "APPEND"
 
 
 def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
@@ -45,34 +43,70 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
     validate_gtfs_representation(gtfs_representation)
     metadata = gtfs_representation.metadata
 
-    label = metadata.dataset_version_name
-    instance_prop = create_prop_dict(
-        wbi_core.ItemID, INSTANCE_PROP, GTFS_SCHEDULE_DATA_FORMAT, NORMAL
-    )
-    source_entity_prop = create_prop_dict(
-        wbi_core.ItemID, SOURCE_ENTITY_PROP, metadata.source_entity_code, NORMAL
-    )
-    main_timezone_prop = create_prop_dict(
-        wbi_core.String, MAIN_TIMEZONE_PROP, metadata.main_timezone, PREFERRED
-    )
-    main_language_code_prop = create_prop_dict(
-        wbi_core.String, MAIN_LANGUAGE_CODE_PROP, metadata.main_language_code, PREFERRED
-    )
-    start_service_date_prop = create_prop_dict(
-        wbi_core.String, START_SERVICE_DATE_PROP, metadata.start_service_date, NORMAL
-    )
-    end_service_date_prop = create_prop_dict(
-        wbi_core.String, END_SERVICE_DATE_PROP, metadata.end_service_date, NORMAL
-    )
-    start_timestamp_prop = create_prop_dict(
-        wbi_core.String, START_TIMESTAMP_PROP, metadata.start_timestamp, NORMAL
-    )
-    end_timestamp_prop = create_prop_dict(
-        wbi_core.String, END_TIMESTAMP_PROP, metadata.end_timestamp, NORMAL
-    )
-    md5_hash_prop = create_prop_dict(
-        wbi_core.String, MD5_HASH_PROP, metadata.md5_hash, NORMAL
-    )
+    version_name_label = metadata.dataset_version_name
+    instance_prop = {
+        DATATYPE: wbi_core.ItemID,
+        PROP_ID: INSTANCE_PROP,
+        VALUE: GTFS_SCHEDULE_DATA_FORMAT,
+        RANK: NORMAL,
+        IF_EXISTS: REPLACE,
+    }
+    source_entity_prop = {
+        DATATYPE: wbi_core.ItemID,
+        PROP_ID: SOURCE_ENTITY_PROP,
+        VALUE: metadata.source_entity_code,
+        RANK: NORMAL,
+        IF_EXISTS: REPLACE,
+    }
+    main_timezone_prop = {
+        DATATYPE: wbi_core.String,
+        PROP_ID: MAIN_TIMEZONE_PROP,
+        VALUE: metadata.main_timezone,
+        RANK: PREFERRED,
+        IF_EXISTS: REPLACE,
+    }
+    main_language_code_prop = {
+        DATATYPE: wbi_core.String,
+        PROP_ID: MAIN_LANGUAGE_CODE_PROP,
+        VALUE: metadata.main_language_code,
+        RANK: PREFERRED,
+        IF_EXISTS: REPLACE,
+    }
+    start_service_date_prop = {
+        DATATYPE: wbi_core.String,
+        PROP_ID: START_SERVICE_DATE_PROP,
+        VALUE: metadata.start_service_date,
+        RANK: NORMAL,
+        IF_EXISTS: REPLACE,
+    }
+    end_service_date_prop = {
+        DATATYPE: wbi_core.String,
+        PROP_ID: END_SERVICE_DATE_PROP,
+        VALUE: metadata.end_service_date,
+        RANK: NORMAL,
+        IF_EXISTS: REPLACE,
+    }
+    start_timestamp_prop = {
+        DATATYPE: wbi_core.String,
+        PROP_ID: START_TIMESTAMP_PROP,
+        VALUE: metadata.start_timestamp,
+        RANK: NORMAL,
+        IF_EXISTS: REPLACE,
+    }
+    end_timestamp_prop = {
+        DATATYPE: wbi_core.String,
+        PROP_ID: END_TIMESTAMP_PROP,
+        VALUE: metadata.end_timestamp,
+        RANK: NORMAL,
+        IF_EXISTS: REPLACE,
+    }
+    md5_hash_prop = {
+        DATATYPE: wbi_core.String,
+        PROP_ID: MD5_HASH_PROP,
+        VALUE: metadata.md5_hash,
+        RANK: NORMAL,
+        IF_EXISTS: REPLACE,
+    }
 
     dataset_props = [
         instance_prop,
@@ -86,18 +120,18 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
         md5_hash_prop,
     ]
     metadata.dataset_version_entity_code = import_entity(
-        STAGING_USERNAME, STAGING_PASSWORD, dataset_props, label
+        STAGING_USERNAME, STAGING_PASSWORD, dataset_props, version_name_label
     )
 
-    version_prop = create_prop_dict(
-        wbi_core.ItemID,
-        DATASET_VERSION_PROP,
-        metadata.dataset_version_entity_code,
-        NORMAL,
-        if_exists="APPEND",
-    )
+    version_prop = {
+        DATATYPE: wbi_core.ItemID,
+        PROP_ID: DATASET_VERSION_PROP,
+        VALUE: metadata.dataset_version_entity_code,
+        RANK: NORMAL,
+        IF_EXISTS: APPEND,
+    }
     source_props = [version_prop]
-    import_entity(
+    metadata.source_entity_code = import_entity(
         STAGING_USERNAME,
         STAGING_PASSWORD,
         source_props,

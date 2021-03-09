@@ -154,7 +154,7 @@ if __name__ == "__main__":
         )
 
         # Download datasets zip files
-        paths_to_datasets = download_dataset_as_zip(
+        datasets_infos = download_dataset_as_zip(
             args["path_to_tmp_data"], datasets_infos
         )
 
