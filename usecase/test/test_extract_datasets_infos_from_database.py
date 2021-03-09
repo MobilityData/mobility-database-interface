@@ -19,19 +19,19 @@ from utilities.constants import (
 
 
 class TestExtractDatabaseMd5(TestCase):
-    @mock.patch("usecase.extract_datasets_infos_from_database.export_entity_as_json")
+    @mock.patch("usecase.extract_datasets_infos_from_database.wbi_core.ItemEngine")
     @mock.patch(
         "usecase.extract_datasets_infos_from_database.extract_dataset_version_codes"
     )
     def test_extract_database_md5_with_existing_entity_codes_should_return_md5_dict(
-        self, mock_versions_extractor, mock_entity_exporter
+        self, mock_versions_extractor, mock_item_engine
     ):
         mock_versions_extractor.return_value = {"Q81"}
 
         test_entity = ["Q80"]
         test_md5 = {"md5_hash"}
 
-        mock_entity_exporter.return_value = {
+        mock_item_engine.return_value.get_json_representation.return_value = {
             CLAIMS: {"P61": [{MAINSNAK: {DATAVALUE: {VALUE: "md5_hash"}}}]}
         }
 
@@ -54,11 +54,11 @@ class TestExtractDatabaseMd5(TestCase):
 
 
 class TestExtractInfosTest(TestCase):
-    @mock.patch("usecase.extract_datasets_infos_from_database.export_entity_as_json")
+    @mock.patch("usecase.extract_datasets_infos_from_database.wbi_core.ItemEngine")
     def test_extract_source_infos_with_default_parameters_should_return_dataset_infos(
-        self, mock_entity_exporter
+        self, mock_item_engine
     ):
-        mock_entity_exporter.return_value = {
+        mock_item_engine.return_value.get_json_representation.return_value = {
             CLAIMS: {
                 "P55": [
                     {

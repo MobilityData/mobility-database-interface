@@ -14,7 +14,7 @@ from utilities.constants import (
 from utilities.request_utils import (
     extract_dataset_version_codes,
     extract_source_entity_codes,
-    export_entity_as_json,
+    wbi_core,
 )
 from utilities.validators import validate_api_url, validate_sparql_url
 
@@ -75,7 +75,9 @@ def extract_previous_md5_hashes(entity_code):
     # Retrieves the MD5 hashes for the dataset version codes found.
     for version_code in dataset_version_codes:
         # Export entity related to the version code from database
-        json_response = export_entity_as_json(version_code)
+        json_response = wbi_core.ItemEngine(
+            item_id=version_code
+        ).get_json_representation()
 
         for row in json_response.get(CLAIMS, {}).get(MD5_HASH_PROP, []):
             md5 = row.get(MAINSNAK, {}).get(DATAVALUE, {}).get(VALUE)
@@ -88,7 +90,7 @@ def extract_previous_md5_hashes(entity_code):
 
 def extract_source_infos(entity_code):
     # Export entity related to the entity code from database
-    json_response = export_entity_as_json(entity_code)
+    json_response = wbi_core.ItemEngine(item_id=entity_code).get_json_representation()
 
     url = None
     # Extract source stable URL

@@ -27,11 +27,9 @@ wbi_config["SPARQL_ENDPOINT_URL"] = STAGING_SPARQL_BIGDATA_URL
 wbi_config["WIKIBASE_URL"] = SVC_URL
 
 
-def create_login_instance(username, password):
-    return wbi_login.Login(user=username, pwd=password, use_clientlogin=True)
+def import_entity(username, password, properties, label="", item_id=""):
+    login_instance = wbi_login.Login(user=username, pwd=password, use_clientlogin=True)
 
-
-def create_entity(properties, label, item_id):
     data = []
     for prop in properties:
         data_entry = prop[DATATYPE](
@@ -45,18 +43,9 @@ def create_entity(properties, label, item_id):
     entity = wbi_core.ItemEngine(data=data, item_id=item_id)
     if label:
         entity.set_label(label, ENGLISH)
-    return entity
 
-
-def import_entity(username, password, properties, label="", item_id=""):
-    login_instance = create_login_instance(username, password)
-    entity = create_entity(properties, label, item_id)
     entity_id = entity.write(login_instance)
     return entity_id
-
-
-def export_entity_as_json(entity_code):
-    return wbi_core.ItemEngine(item_id=entity_code).get_json_representation()
 
 
 def extract_source_entity_codes(catalog_code):
