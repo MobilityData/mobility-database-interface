@@ -38,6 +38,24 @@ class TestExtractDatabaseMd5(TestCase):
         under_test = extract_previous_md5_hashes(test_entity)
         self.assertEqual(under_test, test_md5)
 
+    @mock.patch("usecase.extract_datasets_infos_from_database.wbi_core.ItemEngine")
+    @mock.patch(
+        "usecase.extract_datasets_infos_from_database.extract_dataset_version_codes"
+    )
+    def test_extract_database_md5_with_None_md5(
+        self, mock_versions_extractor, mock_item_engine
+    ):
+        mock_versions_extractor.return_value = {"Q81"}
+
+        test_entity = ["Q80"]
+
+        mock_item_engine.return_value.get_json_representation.return_value = {
+            CLAIMS: {"P61": [{MAINSNAK: {DATAVALUE: {VALUE: None}}}]}
+        }
+
+        under_test = extract_previous_md5_hashes(test_entity)
+        self.assertEqual(under_test, set())
+
     @mock.patch(
         "usecase.extract_datasets_infos_from_database.extract_dataset_version_codes"
     )
