@@ -81,6 +81,8 @@ def extract_previous_md5_hashes(entity_code):
 
         for row in json_response.get(CLAIMS, {}).get(MD5_HASH_PROP, []):
             md5 = row.get(MAINSNAK, {}).get(DATAVALUE, {}).get(VALUE)
+            if md5 is None:
+                continue
             entity_md5_hashes.add(md5)
         # Add the MD5 hashes found for an entity to the MD5 hashes dictionary.
         entity_previous_md5_hashes.update(entity_md5_hashes)
