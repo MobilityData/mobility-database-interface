@@ -1,6 +1,6 @@
 from utilities.geographical_utils import (
-    process_bounding_box_corner_strings,
-    process_bounding_octagon_corner_strings,
+    process_bounding_box_corner_floats,
+    process_bounding_octagon_corner_floats,
 )
 from utilities.validators import validate_gtfs_representation
 
@@ -8,12 +8,12 @@ GEO_BOUNDARIES_UTILS = "geo_boundaries_utils"
 GEO_BOUNDARIES_ATTR = "geo_boundaries_attr"
 
 BOUNDING_BOX_MAP = {
-    GEO_BOUNDARIES_UTILS: process_bounding_box_corner_strings,
+    GEO_BOUNDARIES_UTILS: process_bounding_box_corner_floats,
     GEO_BOUNDARIES_ATTR: "bounding_box",
 }
 
 BOUNDING_OCTAGON_MAP = {
-    GEO_BOUNDARIES_UTILS: process_bounding_octagon_corner_strings,
+    GEO_BOUNDARIES_UTILS: process_bounding_octagon_corner_floats,
     GEO_BOUNDARIES_ATTR: "bounding_octagon",
 }
 

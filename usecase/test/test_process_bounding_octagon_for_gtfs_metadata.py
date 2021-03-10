@@ -7,6 +7,7 @@ from representation.gtfs_representation import GtfsRepresentation
 from usecase.process_geopraphical_boundaries_for_gtfs_metadata import (
     process_bounding_octagon_for_gtfs_metadata,
 )
+from utilities.geographical_utils import LAT, LON
 
 
 class TestProcessBoundingOctagonForGtfsMetadata(TestCase):
@@ -57,13 +58,13 @@ class TestProcessBoundingOctagonForGtfsMetadata(TestCase):
         self.assertEqual(
             mock_metadata.bounding_octagon,
             {
-                "1": "1°0'0.000\"S, 3°0'0.000\"E",
-                "2": "3°0'0.000\"S, 1°0'0.000\"E",
-                "3": "3°0'0.000\"S, 1°0'0.000\"W",
-                "4": "1°0'0.000\"S, 3°0'0.000\"W",
-                "5": "1°0'0.000\"N, 3°0'0.000\"W",
-                "6": "3°0'0.000\"N, 1°0'0.000\"W",
-                "7": "3°0'0.000\"N, 1°0'0.000\"E",
-                "8": "1°0'0.000\"N, 3°0'0.000\"E",
+                "1": {LAT: -1, LON: 3},
+                "2": {LAT: -3, LON: 1},
+                "3": {LAT: -3, LON: -1},
+                "4": {LAT: -1, LON: -3},
+                "5": {LAT: 1, LON: -3},
+                "6": {LAT: 3, LON: -1},
+                "7": {LAT: 3, LON: 1},
+                "8": {LAT: 1, LON: 3},
             },
         )
