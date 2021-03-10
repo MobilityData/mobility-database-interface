@@ -13,6 +13,7 @@ class GtfsMetadata:
             raise TypeError("Dataset infos must be a valid DatasetInfos.")
 
         self.source_entity_code = dataset_infos.entity_code
+        self.dataset_version_entity_code = ""
         self.md5_hash = dataset_infos.md5_hash
         self.dataset_version_name = self.create_dataset_version_name(
             dataset_infos.source_name,

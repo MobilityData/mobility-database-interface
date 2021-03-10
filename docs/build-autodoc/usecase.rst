@@ -12,6 +12,14 @@ usecase.compare\_gtfs\_stops module
    :undoc-members:
    :show-inheritance:
 
+usecase.create\_dataset\_entity\_for\_gtfs\_metadata module
+-----------------------------------------------------------
+
+.. automodule:: usecase.create_dataset_entity_for_gtfs_metadata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 usecase.download\_dataset\_as\_zip module
 -----------------------------------------
 

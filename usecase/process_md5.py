@@ -7,12 +7,14 @@ DATA_CHUNK_BYTE_SIZE = 4096
 def process_md5(datasets_infos):
     """Computes the MD5 hash of the datasets. Removes the datasets for which the MD5 hash is already in the database.
     N.B.: a dataset for which the MD5 hash is not in the database represents a new dataset version.
-    :param datasets_infos: The datasets infos containing to path to the dataset needing a MD5 hash verification,
+    :param datasets_infos: A list of DatasetInfos containing to path to the dataset needing a MD5 hash verification,
     and the previous MD5 hashes.
-    :return: The datasets infos of the datasets for which the MD5 hashes are not in the database.
+    :return: A list of DatasetInfos for which the MD5 hashes are not in the database.
     """
     validate_datasets_infos(datasets_infos)
+    updated_datasets_infos = []
 
+    # Decrementing the index to ensure no out of bound exception after the datasets_infos.pop(index)
     for dataset_infos in datasets_infos:
         md5_hash = md5()
         path_to_dataset = dataset_infos.zip_path
@@ -31,16 +33,13 @@ def process_md5(datasets_infos):
         md5_hash = md5_hash.hexdigest()
         if md5_hash not in previous_md5_hashes:
             dataset_infos.md5_hash = md5_hash
+            updated_datasets_infos.append(dataset_infos)
             print(
                 f"Success : new MD5 hash {md5_hash} for {path_to_dataset}, dataset kept for further processing\n"
             )
         else:
-            try:
-                datasets_infos.remove(dataset_infos)
-                print(
-                    f"Success : MD5 hash {md5_hash} already exists for {path_to_dataset}, dataset discarded\n"
-                )
-            except ValueError:
-                pass
+            print(
+                f"MD5 hash {md5_hash} already exists for {path_to_dataset}, dataset discarded\n"
+            )
 
-    return datasets_infos
+    return updated_datasets_infos

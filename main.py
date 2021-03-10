@@ -1,6 +1,5 @@
 import argparse
 import sys
-
 import requests
 from guppy import hpy
 
@@ -44,6 +43,9 @@ from usecase.process_stops_count_by_type_for_gtfs_metadata import (
 from usecase.process_timestamp_for_gtfs_metadata import (
     process_start_timestamp_for_gtfs_metadata,
     process_end_timestamp_for_gtfs_metadata,
+)
+from usecase.create_dataset_entity_for_gtfs_metadata import (
+    create_dataset_entity_for_gtfs_metadata,
 )
 from utilities.constants import STAGING_SPARQL_URL, STAGING_API_URL
 
@@ -152,7 +154,7 @@ if __name__ == "__main__":
         )
 
         # Download datasets zip files
-        paths_to_datasets = download_dataset_as_zip(
+        datasets_infos = download_dataset_as_zip(
             args["path_to_tmp_data"], datasets_infos
         )
 
@@ -204,6 +206,9 @@ if __name__ == "__main__":
             )
             dataset_representation = process_stops_count_by_type_for_gtfs_metadata(
                 dataset_representation
+            )
+            dataset_representation = create_dataset_entity_for_gtfs_metadata(
+                dataset_representation, STAGING_API_URL
             )
 
             # Print results
