@@ -1,13 +1,13 @@
+from utilities.constants import (
+    STOP_KEY,
+    STATION_KEY,
+    ENTRANCE_KEY,
+    STOP,
+    STATION,
+    ENTRANCE,
+    LOCATION_TYPE,
+)
 from utilities.validators import validate_gtfs_representation
-
-STOP = 0
-STATION = 1
-ENTRANCE = 2
-LOCATION_TYPE = "location_type"
-
-STOP_KEY = "stop"
-STATION_KEY = "station"
-ENTRANCE_KEY = "entrance"
 
 
 def process_stops_count_by_type_for_gtfs_metadata(gtfs_representation):
