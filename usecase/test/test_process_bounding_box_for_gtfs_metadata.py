@@ -51,9 +51,9 @@ class TestProcessBoundingBoxForGtfsMetadata(TestCase):
         self.assertEqual(
             mock_metadata.bounding_box,
             {
-                "1": {LAT: [45.508888], LON: [-73.561668]},
-                "2": {LAT: [45.508888], LON: [-73.561668]},
-                "3": {LAT: [45.508888], LON: [-73.561668]},
-                "4": {LAT: [45.508888], LON: [-73.561668]},
+                "1": {LAT: 45.508888, LON: -73.561668},
+                "2": {LAT: 45.508888, LON: -73.561668},
+                "3": {LAT: 45.508888, LON: -73.561668},
+                "4": {LAT: 45.508888, LON: -73.561668},
             },
         )
