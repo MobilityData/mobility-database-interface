@@ -6,7 +6,7 @@ from gtfs_kit.feed import Feed
 from utilities.temporal_utils import *
 
 
-class TemporalUtilsTest(TestCase):
+class TestTemporalUtils(TestCase):
     @mock.patch("gtfs_kit.feed.Feed")
     def test_get_gtfs_date_by_type_with_dataset_with_none_calendars_should_return_empty_dataframe(
         self, mock_dataset
@@ -473,10 +473,10 @@ class TemporalUtilsTest(TestCase):
         mock_dataset.__class__ = Feed
         type(mock_dataset).agency = mock_agency
 
-        test_utc_offset = "-05:00"
+        test_utc_offset = ["-05:00", "-04:00"]
 
         under_test = get_gtfs_timezone_utc_offset(mock_dataset)
-        self.assertEqual(under_test, test_utc_offset)
+        self.assertTrue(under_test in test_utc_offset)
 
     @mock.patch("gtfs_kit.feed.Feed")
     def test_get_gtfs_timezone_utc_offset_with_another_agency_timezone_should_return_timezone_utc_offset(

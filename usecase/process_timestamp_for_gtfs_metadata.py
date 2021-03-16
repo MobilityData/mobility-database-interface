@@ -57,6 +57,7 @@ def process_timestamp_for_gtfs_metadata(gtfs_representation, timestamp_map):
     dataset_dates = get_gtfs_dates_by_type(
         dataset, date_type=timestamp_map[DATASET_DATE_TYPE]
     )
+
     dates = pd.to_datetime(dataset_dates[DATE], format=PD_DATE_FORMAT)
 
     # Get first start service date with min()
