@@ -12,16 +12,16 @@ TROLLEY_BUS = 11
 MONORAIL = 12
 ROUTE_TYPE = "route_type"
 
-TRAM_KEY = "tram"
-SUBWAY_KEY = "subway"
-RAIL_KEY = "rail"
-BUS_KEY = "bus"
-FERRY_KEY = "ferry"
-CABLE_TRAM_KEY = "cable_tram"
-AERIAL_LIFT_KEY = "aerial_lift"
-FUNICULAR_KEY = "funicular"
-TROLLEY_BUS_KEY = "trolley_bus"
-MONORAIL_KEY = "monorail"
+TRAM_KEY = "Tram"
+SUBWAY_KEY = "Subway"
+RAIL_KEY = "Rail"
+BUS_KEY = "Bus"
+FERRY_KEY = "Ferry"
+CABLE_TRAM_KEY = "Cable tram"
+AERIAL_LIFT_KEY = "Aerial lift"
+FUNICULAR_KEY = "Funicular"
+TROLLEY_BUS_KEY = "Trolleybus"
+MONORAIL_KEY = "Monorail"
 
 
 def process_routes_count_by_type_for_gtfs_metadata(gtfs_representation):

@@ -1,18 +1,11 @@
 import re
 from LatLon23 import Latitude, Longitude
-
-STOP_LAT = "stop_lat"
-STOP_LON = "stop_lon"
-LAT = "latitude"
-LON = "longitude"
+from utilities.constants import STOP_LAT, STOP_LON, LAT, LON, IS_ADDITION, IS_MAXIMUM
 
 LAT_LON_23_DEGREES = "d"
 LAT_LON_23_MINUTES = "m"
 LAT_LON_23_SECONDS = "S"
 LAT_LON_23_HEMISPHERE = "H"
-
-IS_ADDITION = "is_addition"
-IS_MAXIMUM = "is_maximum"
 
 OCTAGON_LOWER_RIGHT_CORNER_MAP = {
     IS_ADDITION: False,

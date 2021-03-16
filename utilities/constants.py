@@ -15,6 +15,15 @@ END_TIMESTAMP_PROP = "P67"
 MD5_HASH_PROP = "P61"
 DATASET_VERSION_PROP = "P64"
 STABLE_URL_PROP = "P55"
+ORDER_PROP = "P38"
+BOUNDING_BOX_PROP = "P63"
+BOUNDING_OCTAGON_PROP = "P68"
+NUM_OF_STOPS_PROP = "P69"
+NUM_OF_STATIONS_PROP = "P70"
+NUM_OF_ENTRANCES_PROP = "P71"
+NUM_OF_AGENCIES_PROP = "P72"
+NUM_OF_ROUTES_PROP = "P73"
+ROUTE_TYPE_PROP = "P74"
 
 # Define regex pattern for dataset version entity code in response retrieved by SPARQL query
 SPARQL_ENTITY_CODE_REGEX = "/(Q.+?)-"
@@ -46,6 +55,23 @@ PROP_ID = "prop_id"
 IF_EXISTS = "if_exists"
 NORMAL = "normal"
 PREFERRED = "preferred"
+GLOBE_PRECISION = 1.0e-6
+GLOBE_URL = "http://www.wikidata.org/entity/Q2"
+LAT = "latitude"
+LON = "longitude"
+
+STOP_LAT = "stop_lat"
+STOP_LON = "stop_lon"
+IS_ADDITION = "is_addition"
+IS_MAXIMUM = "is_maximum"
+
+STOP_KEY = "stop"
+STATION_KEY = "station"
+ENTRANCE_KEY = "entrance"
+STOP = 0
+STATION = 1
+ENTRANCE = 2
+LOCATION_TYPE = "location_type"
 
 SPARQL_A = "a"
 SVC_SOURCE_PROPERTY_URL = "http://wikibase.svc/prop/statement/P48"

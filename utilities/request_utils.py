@@ -27,18 +27,8 @@ wbi_config["SPARQL_ENDPOINT_URL"] = STAGING_SPARQL_BIGDATA_URL
 wbi_config["WIKIBASE_URL"] = SVC_URL
 
 
-def import_entity(username, password, properties, label="", item_id=""):
+def import_entity(username, password, data, label="", item_id=""):
     login_instance = wbi_login.Login(user=username, pwd=password, use_clientlogin=True)
-
-    data = []
-    for prop in properties:
-        data_entry = prop[DATATYPE](
-            value=prop[VALUE],
-            prop_nr=prop[PROP_ID],
-            rank=prop[RANK],
-            if_exists=prop[IF_EXISTS],
-        )
-        data.append(data_entry)
 
     entity = wbi_core.ItemEngine(data=data, item_id=item_id)
     if label:
