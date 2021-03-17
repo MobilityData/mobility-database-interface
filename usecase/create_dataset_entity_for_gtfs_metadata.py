@@ -1,6 +1,3 @@
-import os
-from dotenv import load_dotenv
-
 from wikibaseintegrator import wbi_core
 from utilities.request_utils import import_entity
 from utilities.constants import (
@@ -32,12 +29,10 @@ from utilities.constants import (
     STOP_KEY,
     STATION_KEY,
     ENTRANCE_KEY,
+    USERNAME,
+    PASSWORD,
 )
 from utilities.validators import validate_gtfs_representation, validate_api_url
-
-load_dotenv()
-STAGING_USERNAME = os.getenv("STAGING_USERNAME")
-STAGING_PASSWORD = os.getenv("STAGING_PASSWORD")
 
 REPLACE = "REPLACE"
 APPEND = "APPEND"
@@ -181,7 +176,7 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
     version_name_label = metadata.dataset_version_name
 
     metadata.dataset_version_entity_code = import_entity(
-        STAGING_USERNAME, STAGING_PASSWORD, dataset_data, version_name_label
+        USERNAME, PASSWORD, dataset_data, version_name_label
     )
 
     version_prop = wbi_core.ItemID(
@@ -191,8 +186,8 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
     )
     source_data = [version_prop]
     metadata.source_entity_code = import_entity(
-        STAGING_USERNAME,
-        STAGING_PASSWORD,
+        USERNAME,
+        PASSWORD,
         source_data,
         item_id=metadata.source_entity_code,
     )

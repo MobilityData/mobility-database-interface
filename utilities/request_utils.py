@@ -8,22 +8,21 @@ from utilities.constants import (
     VALUE,
     SPARQL_ENTITY_CODE_REGEX,
     ENGLISH,
-    DATATYPE,
-    RANK,
-    PROP_ID,
-    IF_EXISTS,
     SPARQL_A,
-    SVC_SOURCE_PROPERTY_URL,
-    SVC_ENTITY_URL_PREFIX,
-    SVC_CATALOG_PROPERTY_URL,
+    SVC_ENTITY_URL_PATH,
+    SVC_PROP_URL_PATH,
+    CATALOG_PROP,
+    SOURCE_ENTITY_PROP,
+    API_URL,
+    SPARQL_BIGDATA_URL,
+    SVC_URL,
 )
 
 from wikibaseintegrator import wbi_core, wbi_login
 from wikibaseintegrator.wbi_config import config as wbi_config
-from utilities.constants import STAGING_API_URL, STAGING_SPARQL_BIGDATA_URL, SVC_URL
 
-wbi_config["MEDIAWIKI_API_URL"] = STAGING_API_URL
-wbi_config["SPARQL_ENDPOINT_URL"] = STAGING_SPARQL_BIGDATA_URL
+wbi_config["MEDIAWIKI_API_URL"] = API_URL
+wbi_config["SPARQL_ENDPOINT_URL"] = SPARQL_BIGDATA_URL
 wbi_config["WIKIBASE_URL"] = SVC_URL
 
 
@@ -47,8 +46,8 @@ def extract_source_entity_codes(catalog_code):
             WHERE 
             {{
                 ?{SPARQL_A} 
-                <{SVC_CATALOG_PROPERTY_URL}>
-                <{SVC_ENTITY_URL_PREFIX}{catalog_code}>
+                <{SVC_URL}{SVC_PROP_URL_PATH}{CATALOG_PROP}>
+                <{SVC_URL}{SVC_ENTITY_URL_PATH}{catalog_code}>
             }}"""
 
     sparql_response = wbi_core.FunctionsEngine.execute_sparql_query(sparql_query)
@@ -69,8 +68,8 @@ def extract_dataset_version_codes(entity_code):
             WHERE 
             {{
                 ?{SPARQL_A} 
-                <{SVC_SOURCE_PROPERTY_URL}>
-                <{SVC_ENTITY_URL_PREFIX}{entity_code}>
+                <{SVC_URL}{SVC_PROP_URL_PATH}{SOURCE_ENTITY_PROP}>
+                <{SVC_URL}{SVC_ENTITY_URL_PATH}{entity_code}>
             }}"""
 
     sparql_response = wbi_core.FunctionsEngine.execute_sparql_query(sparql_query)

@@ -51,6 +51,8 @@ class TestImportEntityRequestUtils(TestCase):
 
 
 class TestSparqlRequestUtils(TestCase):
+    @mock.patch("utilities.request_utils.GTFS_CATALOG_OF_SOURCES_CODE", "QGTFS_test")
+    @mock.patch("utilities.request_utils.GBFS_CATALOG_OF_SOURCES_CODE", "QGBFS_test")
     @mock.patch("utilities.request_utils.wbi_core.FunctionsEngine.execute_sparql_query")
     def test_extract_dataset_version_codes(self, mock_sparql_request):
         mock_sparql_request.return_value = {
@@ -63,7 +65,7 @@ class TestSparqlRequestUtils(TestCase):
                     },
                     {
                         "a": {
-                            VALUE: "http://wikibase.svc/entity/statement/Q78-a14a67ef-4ee9-a15d-b9de-d6be2e03d43d"
+                            VALUE: "http://wikibase.svc/entity/statement/QGTFS_test-a14a67ef-4ee9-a15d-b9de-d6be2e03d43"
                         }
                     },
                 ]
