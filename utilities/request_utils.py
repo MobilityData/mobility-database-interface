@@ -1,8 +1,6 @@
 import re
 
-from utilities.constants import (
-    GTFS_CATALOG_OF_SOURCES_CODE,
-    GBFS_CATALOG_OF_SOURCES_CODE,
+from utilities.project_constants import (
     RESULTS,
     BINDINGS,
     VALUE,
@@ -11,11 +9,15 @@ from utilities.constants import (
     SPARQL_A,
     SVC_ENTITY_URL_PATH,
     SVC_PROP_URL_PATH,
+    SVC_URL,
+)
+from utilities.env_constants import (
+    GTFS_CATALOG_OF_SOURCES_CODE,
+    GBFS_CATALOG_OF_SOURCES_CODE,
     CATALOG_PROP,
     SOURCE_ENTITY_PROP,
     API_URL,
     SPARQL_BIGDATA_URL,
-    SVC_URL,
 )
 
 from wikibaseintegrator import wbi_core, wbi_login

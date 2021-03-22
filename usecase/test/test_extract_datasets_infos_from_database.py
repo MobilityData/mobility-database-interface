@@ -6,7 +6,7 @@ from usecase.extract_datasets_infos_from_database import (
     extract_previous_md5_hashes,
     extract_source_infos,
 )
-from utilities.constants import (
+from utilities.project_constants import (
     STAGING_API_URL,
     STAGING_SPARQL_URL,
     CLAIMS,

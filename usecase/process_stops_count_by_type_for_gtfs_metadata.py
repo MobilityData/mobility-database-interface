@@ -1,4 +1,4 @@
-from utilities.constants import (
+from utilities.project_constants import (
     STOP_KEY,
     STATION_KEY,
     ENTRANCE_KEY,

@@ -1,6 +1,6 @@
 from unittest import TestCase, mock
 from request_manager.sparql_request_helper import sparql_request
-from utilities.constants import STAGING_SPARQL_URL
+from utilities.project_constants import STAGING_SPARQL_URL
 
 
 class TestSparqlRequestManager(TestCase):

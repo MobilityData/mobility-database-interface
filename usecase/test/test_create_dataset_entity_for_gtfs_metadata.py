@@ -6,7 +6,7 @@ from representation.gtfs_metadata import GtfsMetadata
 from usecase.create_dataset_entity_for_gtfs_metadata import (
     create_dataset_entity_for_gtfs_metadata,
 )
-from utilities.constants import STAGING_API_URL
+from utilities.project_constants import STAGING_API_URL
 
 
 class TestCreateDatasetEntity(TestCase):

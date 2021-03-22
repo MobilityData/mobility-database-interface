@@ -4,10 +4,10 @@ utilities package
 Submodules
 ----------
 
-utilities.constants module
---------------------------
+utilities.env\_constants module
+-------------------------------
 
-.. automodule:: utilities.constants
+.. automodule:: utilities.env_constants
    :members:
    :undoc-members:
    :show-inheritance:
@@ -16,6 +16,14 @@ utilities.geographical\_utils module
 ------------------------------------
 
 .. automodule:: utilities.geographical_utils
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+utilities.project\_constants module
+-----------------------------------
+
+.. automodule:: utilities.project_constants
    :members:
    :undoc-members:
    :show-inheritance:

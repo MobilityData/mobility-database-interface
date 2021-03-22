@@ -6,20 +6,20 @@ from guppy import hpy
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="MobilityDatabase Interface Script")
     parser.add_argument(
-        "--data_type",
+        "--data-type",
         action="store",
         choices=["GTFS", "GBFS"],
         default="GTFS",
         help='Type of the datasets to process. Possible values : "GTFS", "GBFS".',
     )
     parser.add_argument(
-        "--path_to_tmp_data",
+        "--path-to-tmp-data",
         action="store",
         default="./data/tmp/",
         help="Path to the folder where to temporary store downloaded datasets for processing.",
     )
     parser.add_argument(
-        "--path_to_env_var",
+        "--path-to-env-var",
         action="store",
         default="./.env.staging",
         help="Path to the environment variables.",
@@ -70,7 +70,7 @@ if __name__ == "__main__":
     from usecase.create_dataset_entity_for_gtfs_metadata import (
         create_dataset_entity_for_gtfs_metadata,
     )
-    from utilities.constants import SPARQL_URL, API_URL
+    from utilities.env_constants import SPARQL_URL, API_URL
 
     # Initialize DataRepository
     data_repository = DataRepository()

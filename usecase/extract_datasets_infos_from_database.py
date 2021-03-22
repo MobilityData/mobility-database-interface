@@ -1,13 +1,15 @@
 from representation.dataset_infos import DatasetInfos
-from utilities.constants import (
-    GTFS_CATALOG_OF_SOURCES_CODE,
-    GBFS_CATALOG_OF_SOURCES_CODE,
+from utilities.project_constants import (
     VALUE,
     CLAIMS,
     MAINSNAK,
     DATAVALUE,
     LABELS,
     ENGLISH,
+)
+from utilities.env_constants import (
+    GTFS_CATALOG_OF_SOURCES_CODE,
+    GBFS_CATALOG_OF_SOURCES_CODE,
     MD5_HASH_PROP,
     STABLE_URL_PROP,
 )

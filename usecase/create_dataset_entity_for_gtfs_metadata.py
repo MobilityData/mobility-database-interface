@@ -1,7 +1,16 @@
 from wikibaseintegrator import wbi_core
 from utilities.request_utils import import_entity
-from utilities.constants import (
+from utilities.project_constants import (
     PREFERRED,
+    LAT,
+    LON,
+    GLOBE_PRECISION,
+    GLOBE_URL,
+    STOP_KEY,
+    STATION_KEY,
+    ENTRANCE_KEY,
+)
+from utilities.env_constants import (
     INSTANCE_PROP,
     SOURCE_ENTITY_PROP,
     MAIN_TIMEZONE_PROP,
@@ -22,13 +31,6 @@ from utilities.constants import (
     NUM_OF_ROUTES_PROP,
     ROUTE_TYPE_PROP,
     GTFS_SCHEDULE_DATA_FORMAT,
-    LAT,
-    LON,
-    GLOBE_PRECISION,
-    GLOBE_URL,
-    STOP_KEY,
-    STATION_KEY,
-    ENTRANCE_KEY,
     USERNAME,
     PASSWORD,
 )

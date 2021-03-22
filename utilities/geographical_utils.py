@@ -1,6 +1,13 @@
 import re
 from LatLon23 import Latitude, Longitude
-from utilities.constants import STOP_LAT, STOP_LON, LAT, LON, IS_ADDITION, IS_MAXIMUM
+from utilities.project_constants import (
+    STOP_LAT,
+    STOP_LON,
+    LAT,
+    LON,
+    IS_ADDITION,
+    IS_MAXIMUM,
+)
 
 LAT_LON_23_DEGREES = "d"
 LAT_LON_23_MINUTES = "m"

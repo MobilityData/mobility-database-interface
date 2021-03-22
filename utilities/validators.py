@@ -1,4 +1,4 @@
-from utilities.constants import (
+from utilities.project_constants import (
     PRODUCTION_SPARQL_URL,
     STAGING_SPARQL_URL,
     PRODUCTION_API_URL,
