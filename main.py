@@ -201,9 +201,9 @@ if __name__ == "__main__":
             dataset_representation = process_stops_count_by_type_for_gtfs_metadata(
                 dataset_representation
             )
-            # dataset_representation = create_dataset_entity_for_gtfs_metadata(
-            #    dataset_representation, STAGING_API_URL
-            # )
+            dataset_representation = create_dataset_entity_for_gtfs_metadata(
+                dataset_representation, STAGING_API_URL
+            )
 
             # Print results
             data_repository.print_dataset_representation(dataset_key)

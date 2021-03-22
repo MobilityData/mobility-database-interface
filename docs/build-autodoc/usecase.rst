@@ -68,14 +68,6 @@ usecase.process\_main\_language\_code\_for\_gtfs\_metadata module
    :undoc-members:
    :show-inheritance:
 
-usecase.process\_main\_timezone\_for\_gtfs\_metadata module
------------------------------------------------------------
-
-.. automodule:: usecase.process_main_timezone_for_gtfs_metadata
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 usecase.process\_md5 module
 ---------------------------
 
