@@ -4,10 +4,11 @@ from dotenv import load_dotenv
 from wikibaseintegrator import wbi_core
 from utilities.request_utils import import_entity
 from utilities.constants import (
+    NORMAL,
     PREFERRED,
     INSTANCE_PROP,
     SOURCE_ENTITY_PROP,
-    MAIN_TIMEZONE_PROP,
+    TIMEZONE_PROP,
     MAIN_LANGUAGE_CODE_PROP,
     START_SERVICE_DATE_PROP,
     END_SERVICE_DATE_PROP,
@@ -83,9 +84,15 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
     # Main timezone property
     dataset_data.append(
         wbi_core.String(
-            value=metadata.main_timezone, prop_nr=MAIN_TIMEZONE_PROP, rank=PREFERRED
+            value=metadata.main_timezone, prop_nr=TIMEZONE_PROP, rank=PREFERRED
         )
     )
+
+    # Other timezones property
+    for timezone in metadata.other_timezones:
+        dataset_data.append(
+            wbi_core.String(value=timezone, prop_nr=TIMEZONE_PROP, rank=NORMAL)
+        )
 
     # Main language code property
     dataset_data.append(
