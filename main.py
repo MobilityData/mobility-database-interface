@@ -16,8 +16,8 @@ from usecase.extract_datasets_infos_from_database import (
     extract_gbfs_datasets_infos_from_database,
 )
 from usecase.load_dataset import load_dataset
-from usecase.process_all_timezones_for_gtfs_metadata import (
-    process_all_timezones_for_gtfs_metadata,
+from usecase.process_timezones_for_gtfs_metadata import (
+    process_timezones_for_gtfs_metadata,
 )
 from usecase.process_geopraphical_boundaries_for_gtfs_metadata import (
     process_bounding_box_for_gtfs_metadata,
@@ -25,9 +25,6 @@ from usecase.process_geopraphical_boundaries_for_gtfs_metadata import (
 )
 from usecase.process_main_language_code_for_gtfs_metadata import (
     process_main_language_code_for_gtfs_metadata,
-)
-from usecase.process_main_timezone_for_gtfs_metadata import (
-    process_main_timezone_for_gtfs_metadata,
 )
 from usecase.process_md5 import process_md5
 from usecase.process_routes_count_by_type_for_gtfs_metadata import (
@@ -186,10 +183,7 @@ if __name__ == "__main__":
             dataset_representation = process_main_language_code_for_gtfs_metadata(
                 dataset_representation
             )
-            dataset_representation = process_main_timezone_for_gtfs_metadata(
-                dataset_representation
-            )
-            dataset_representation = process_all_timezones_for_gtfs_metadata(
+            dataset_representation = process_timezones_for_gtfs_metadata(
                 dataset_representation
             )
             dataset_representation = process_bounding_box_for_gtfs_metadata(
@@ -207,9 +201,9 @@ if __name__ == "__main__":
             dataset_representation = process_stops_count_by_type_for_gtfs_metadata(
                 dataset_representation
             )
-            dataset_representation = create_dataset_entity_for_gtfs_metadata(
-                dataset_representation, STAGING_API_URL
-            )
+            # dataset_representation = create_dataset_entity_for_gtfs_metadata(
+            #    dataset_representation, STAGING_API_URL
+            # )
 
             # Print results
             data_repository.print_dataset_representation(dataset_key)

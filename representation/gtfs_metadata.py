@@ -21,7 +21,7 @@ class GtfsMetadata:
             dataset_infos.md5_hash,
         )
         self.main_timezone = ""
-        self.all_timezones = []
+        self.other_timezones = []
         self.country_code = ""
         self.sub_country_code = ""
         self.main_language_code = ""
@@ -68,7 +68,7 @@ class GtfsMetadata:
         return (
             f"Dataset version name: {self.dataset_version_name}\n"
             f"Main timezone: {self.main_timezone}\n"
-            f"All timezones: {', '.join(self.all_timezones)}\n"
+            f"Other timezones: {', '.join(self.other_timezones)}\n"
             f"Country code: {self.country_code}\n"
             f"Sub country code: {self.sub_country_code}\n"
             f"Main language code: {self.main_language_code}\n"

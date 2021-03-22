@@ -3,6 +3,8 @@
 .idea
 env/
 .env
+.env.staging
+.env.production
 
 # Python
 __pycache__/

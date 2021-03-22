@@ -4,8 +4,8 @@ from unittest.mock import MagicMock, PropertyMock
 from gtfs_kit.feed import Feed
 from representation.gtfs_metadata import GtfsMetadata
 from representation.gtfs_representation import GtfsRepresentation
-from usecase.process_all_timezones_for_gtfs_metadata import (
-    process_all_timezones_for_gtfs_metadata,
+from usecase.process_timezones_for_gtfs_metadata import (
+    process_timezones_for_gtfs_metadata,
     AGENCY_TIMEZONE_KEY,
     STOP_TIMEZONE_KEY,
 )
@@ -14,11 +14,11 @@ MONTREAL_TIMEZONE = "America/Montreal"
 TORONTO_TIMEZONE = "America/Toronto"
 
 
-class TestProcessMainTimezoneForGtfsMetadata(TestCase):
-    def test_process_all_timezones_with_none_gtfs_representation_should_raise_exception(
+class TestProcessTimezonesForGtfsMetadata(TestCase):
+    def test_process_timezones_with_none_gtfs_representation_should_raise_exception(
         self,
     ):
-        self.assertRaises(TypeError, process_all_timezones_for_gtfs_metadata, None)
+        self.assertRaises(TypeError, process_timezones_for_gtfs_metadata, None)
 
     def test_process_all_timezones_with_invalid_gtfs_representation_should_raise_exception(
         self,
@@ -26,13 +26,13 @@ class TestProcessMainTimezoneForGtfsMetadata(TestCase):
         mock_gtfs_representation = MagicMock()
         mock_gtfs_representation.__class__ = str
         self.assertRaises(
-            TypeError, process_all_timezones_for_gtfs_metadata, mock_gtfs_representation
+            TypeError, process_timezones_for_gtfs_metadata, mock_gtfs_representation
         )
 
     @mock.patch("representation.gtfs_representation.GtfsRepresentation")
     @mock.patch("gtfs_kit.feed.Feed")
     @mock.patch("representation.gtfs_metadata.GtfsMetadata")
-    def test_process_all_timezones_with_no_stop_timezone_should_add_main_timezone_to_list(
+    def test_process_timezones_with_no_stop_timezones(
         self, mock_gtfs_representation, mock_dataset, mock_metadata
     ):
         mock_stops = PropertyMock(return_value=pd.DataFrame())
@@ -48,18 +48,19 @@ class TestProcessMainTimezoneForGtfsMetadata(TestCase):
         type(mock_gtfs_representation).dataset = mock_dataset
         type(mock_gtfs_representation).metadata = mock_metadata
 
-        under_test = process_all_timezones_for_gtfs_metadata(mock_gtfs_representation)
+        under_test = process_timezones_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_stops.assert_called()
         self.assertEqual(mock_stops.call_count, 1)
         mock_agency.assert_called()
         self.assertEqual(mock_agency.call_count, 1)
-        self.assertEqual(mock_metadata.all_timezones, [MONTREAL_TIMEZONE])
+        self.assertEqual(mock_metadata.main_timezone, MONTREAL_TIMEZONE)
+        self.assertEqual(mock_metadata.other_timezones, [])
 
     @mock.patch("representation.gtfs_representation.GtfsRepresentation")
     @mock.patch("gtfs_kit.feed.Feed")
     @mock.patch("representation.gtfs_metadata.GtfsMetadata")
-    def test_process_all_timezones_with_empty_stop_timezone_should_add_main_timezone_to_list(
+    def test_process_timezones_with_empty_stop_timezones(
         self, mock_gtfs_representation, mock_dataset, mock_metadata
     ):
         mock_stops = PropertyMock(return_value=pd.DataFrame({STOP_TIMEZONE_KEY: []}))
@@ -75,18 +76,19 @@ class TestProcessMainTimezoneForGtfsMetadata(TestCase):
         type(mock_gtfs_representation).dataset = mock_dataset
         type(mock_gtfs_representation).metadata = mock_metadata
 
-        under_test = process_all_timezones_for_gtfs_metadata(mock_gtfs_representation)
+        under_test = process_timezones_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_stops.assert_called()
         self.assertEqual(mock_stops.call_count, 2)
         mock_agency.assert_called()
         self.assertEqual(mock_agency.call_count, 1)
-        self.assertEqual(mock_metadata.all_timezones, [MONTREAL_TIMEZONE])
+        self.assertEqual(mock_metadata.main_timezone, MONTREAL_TIMEZONE)
+        self.assertEqual(mock_metadata.other_timezones, [])
 
     @mock.patch("representation.gtfs_representation.GtfsRepresentation")
     @mock.patch("gtfs_kit.feed.Feed")
     @mock.patch("representation.gtfs_metadata.GtfsMetadata")
-    def test_process_all_timezones_with_stop_timezones_should_add_these_to_list(
+    def test_process_timezones_with_stop_timezones(
         self, mock_gtfs_representation, mock_dataset, mock_metadata
     ):
         mock_stops = PropertyMock(
@@ -106,11 +108,11 @@ class TestProcessMainTimezoneForGtfsMetadata(TestCase):
         type(mock_gtfs_representation).dataset = mock_dataset
         type(mock_gtfs_representation).metadata = mock_metadata
 
-        under_test = process_all_timezones_for_gtfs_metadata(mock_gtfs_representation)
+        under_test = process_timezones_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_stops.assert_called()
         self.assertEqual(mock_stops.call_count, 2)
-        mock_agency.assert_not_called()
-        self.assertEqual(
-            mock_metadata.all_timezones, [MONTREAL_TIMEZONE, TORONTO_TIMEZONE]
-        )
+        mock_agency.assert_called()
+        self.assertEqual(mock_agency.call_count, 1)
+        self.assertEqual(mock_metadata.main_timezone, MONTREAL_TIMEZONE)
+        self.assertEqual(mock_metadata.other_timezones, [TORONTO_TIMEZONE])
