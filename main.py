@@ -81,8 +81,8 @@ if __name__ == "__main__":
     os.environ["PASSWORD"] = credentials.get("PASSWORD")
 
     # Get environment variables
-    SPARQL_URL = os.environ.get("SPARQL_URL")
-    API_URL = os.environ.get("API_URL")
+    sparql_url = os.environ.get("SPARQL_URL")
+    api_url = os.environ.get("API_URL")
 
     # Initialize DataRepository
     data_repository = DataRepository()
@@ -90,8 +90,8 @@ if __name__ == "__main__":
     # Process data
     # Download datasets zip files
     datasets_infos = extract_gtfs_datasets_infos_from_database(
-        API_URL,
-        SPARQL_URL,
+        api_url,
+        sparql_url,
     )
 
     # Download datasets zip files
@@ -142,7 +142,7 @@ if __name__ == "__main__":
             dataset_representation
         )
         dataset_representation = create_dataset_entity_for_gtfs_metadata(
-            dataset_representation, API_URL
+            dataset_representation, api_url
         )
 
         # Print results
