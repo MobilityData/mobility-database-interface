@@ -3,7 +3,6 @@
 .idea
 env/
 .env
-staging_credentials.json
 
 # Python
 __pycache__/
