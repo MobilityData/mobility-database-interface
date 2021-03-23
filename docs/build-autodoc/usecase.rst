@@ -52,14 +52,6 @@ usecase.process\_agencies\_count\_for\_gtfs\_metadata module
    :undoc-members:
    :show-inheritance:
 
-usecase.process\_all\_timezones\_for\_gtfs\_metadata module
------------------------------------------------------------
-
-.. automodule:: usecase.process_all_timezones_for_gtfs_metadata
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 usecase.process\_geopraphical\_boundaries\_for\_gtfs\_metadata module
 ---------------------------------------------------------------------
 
@@ -72,14 +64,6 @@ usecase.process\_main\_language\_code\_for\_gtfs\_metadata module
 -----------------------------------------------------------------
 
 .. automodule:: usecase.process_main_language_code_for_gtfs_metadata
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-usecase.process\_main\_timezone\_for\_gtfs\_metadata module
------------------------------------------------------------
-
-.. automodule:: usecase.process_main_timezone_for_gtfs_metadata
    :members:
    :undoc-members:
    :show-inheritance:
@@ -120,6 +104,14 @@ usecase.process\_timestamp\_for\_gtfs\_metadata module
 ------------------------------------------------------
 
 .. automodule:: usecase.process_timestamp_for_gtfs_metadata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+usecase.process\_timezones\_for\_gtfs\_metadata module
+------------------------------------------------------
+
+.. automodule:: usecase.process_timezones_for_gtfs_metadata
    :members:
    :undoc-members:
    :show-inheritance:

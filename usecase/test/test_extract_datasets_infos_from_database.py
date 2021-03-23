@@ -1,4 +1,5 @@
 from unittest import TestCase, mock
+import os
 
 from usecase.extract_datasets_infos_from_database import (
     extract_gtfs_datasets_infos_from_database,
@@ -19,16 +20,15 @@ from utilities.project_constants import (
 
 
 class TestExtractDatabaseMd5(TestCase):
-    @mock.patch(
-        "usecase.extract_datasets_infos_from_database.MD5_HASH_PROP", "test_md5_prop"
-    )
+    @mock.patch("usecase.extract_datasets_infos_from_database.os.environ.get")
     @mock.patch("usecase.extract_datasets_infos_from_database.wbi_core.ItemEngine")
     @mock.patch(
         "usecase.extract_datasets_infos_from_database.extract_dataset_version_codes"
     )
     def test_extract_database_md5_with_existing_entity_codes_should_return_md5_dict(
-        self, mock_versions_extractor, mock_item_engine
+        self, mock_versions_extractor, mock_item_engine, mock_env_md5
     ):
+        mock_env_md5.return_value = "test_md5_prop"
         mock_versions_extractor.return_value = {"Q81"}
 
         test_entity = ["Q80"]
@@ -41,16 +41,15 @@ class TestExtractDatabaseMd5(TestCase):
         under_test = extract_previous_md5_hashes(test_entity)
         self.assertEqual(under_test, test_md5)
 
-    @mock.patch(
-        "usecase.extract_datasets_infos_from_database.MD5_HASH_PROP", "test_md5_prop"
-    )
+    @mock.patch("usecase.extract_datasets_infos_from_database.os.environ.get")
     @mock.patch("usecase.extract_datasets_infos_from_database.wbi_core.ItemEngine")
     @mock.patch(
         "usecase.extract_datasets_infos_from_database.extract_dataset_version_codes"
     )
     def test_extract_database_md5_with_None_md5(
-        self, mock_versions_extractor, mock_item_engine
+        self, mock_versions_extractor, mock_item_engine, mock_env_md5
     ):
+        mock_env_md5.return_value = "test_md5_prop"
         mock_versions_extractor.return_value = {"Q81"}
 
         test_entity = ["Q80"]
@@ -78,13 +77,12 @@ class TestExtractDatabaseMd5(TestCase):
 
 
 class TestExtractInfosTest(TestCase):
-    @mock.patch(
-        "usecase.extract_datasets_infos_from_database.STABLE_URL_PROP", "test_url_prop"
-    )
+    @mock.patch("usecase.extract_datasets_infos_from_database.os.environ.get")
     @mock.patch("usecase.extract_datasets_infos_from_database.wbi_core.ItemEngine")
     def test_extract_source_infos_with_default_parameters_should_return_dataset_infos(
-        self, mock_item_engine
+        self, mock_item_engine, mock_env_url
     ):
+        mock_env_url.return_value = "test_url_prop"
         mock_item_engine.return_value.get_json_representation.return_value = {
             CLAIMS: {
                 "test_url_prop": [

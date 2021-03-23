@@ -4,6 +4,45 @@ import json
 from guppy import hpy
 import os
 
+# Import project files
+from repository.data_repository import DataRepository
+from usecase.download_dataset_as_zip import download_dataset_as_zip
+from usecase.process_agencies_count_for_gtfs_metadata import (
+    process_agencies_count_for_gtfs_metadata,
+)
+from usecase.extract_datasets_infos_from_database import (
+    extract_gtfs_datasets_infos_from_database,
+)
+from usecase.load_dataset import load_dataset
+from usecase.process_timezones_for_gtfs_metadata import (
+    process_timezones_for_gtfs_metadata,
+)
+from usecase.process_geopraphical_boundaries_for_gtfs_metadata import (
+    process_bounding_box_for_gtfs_metadata,
+    process_bounding_octagon_for_gtfs_metadata,
+)
+from usecase.process_main_language_code_for_gtfs_metadata import (
+    process_main_language_code_for_gtfs_metadata,
+)
+from usecase.process_md5 import process_md5
+from usecase.process_routes_count_by_type_for_gtfs_metadata import (
+    process_routes_count_by_type_for_gtfs_metadata,
+)
+from usecase.process_service_date_for_gtfs_metadata import (
+    process_start_service_date_for_gtfs_metadata,
+    process_end_service_date_for_gtfs_metadata,
+)
+from usecase.process_stops_count_by_type_for_gtfs_metadata import (
+    process_stops_count_by_type_for_gtfs_metadata,
+)
+from usecase.process_timestamp_for_gtfs_metadata import (
+    process_start_timestamp_for_gtfs_metadata,
+    process_end_timestamp_for_gtfs_metadata,
+)
+from usecase.create_dataset_entity_for_gtfs_metadata import (
+    create_dataset_entity_for_gtfs_metadata,
+)
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="MobilityDatabase Interface Script")
@@ -35,55 +74,15 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # Load environment from dotenv file and credentials json file
-    # env_constants.py will be using this environment when imported
     load_dotenv(args.path_to_env_var)
     with open(args.path_to_credentials) as f:
         credentials = json.load(f)
     os.environ["USERNAME"] = credentials.get("USERNAME")
     os.environ["PASSWORD"] = credentials.get("PASSWORD")
 
-    # Import project files
-    from repository.data_repository import DataRepository
-    from usecase.download_dataset_as_zip import download_dataset_as_zip
-    from usecase.process_agencies_count_for_gtfs_metadata import (
-        process_agencies_count_for_gtfs_metadata,
-    )
-    from usecase.extract_datasets_infos_from_database import (
-        extract_gtfs_datasets_infos_from_database,
-    )
-    from usecase.load_dataset import load_dataset
-    from usecase.process_all_timezones_for_gtfs_metadata import (
-        process_all_timezones_for_gtfs_metadata,
-    )
-    from usecase.process_geopraphical_boundaries_for_gtfs_metadata import (
-        process_bounding_box_for_gtfs_metadata,
-        process_bounding_octagon_for_gtfs_metadata,
-    )
-    from usecase.process_main_language_code_for_gtfs_metadata import (
-        process_main_language_code_for_gtfs_metadata,
-    )
-    from usecase.process_main_timezone_for_gtfs_metadata import (
-        process_main_timezone_for_gtfs_metadata,
-    )
-    from usecase.process_md5 import process_md5
-    from usecase.process_routes_count_by_type_for_gtfs_metadata import (
-        process_routes_count_by_type_for_gtfs_metadata,
-    )
-    from usecase.process_service_date_for_gtfs_metadata import (
-        process_start_service_date_for_gtfs_metadata,
-        process_end_service_date_for_gtfs_metadata,
-    )
-    from usecase.process_stops_count_by_type_for_gtfs_metadata import (
-        process_stops_count_by_type_for_gtfs_metadata,
-    )
-    from usecase.process_timestamp_for_gtfs_metadata import (
-        process_start_timestamp_for_gtfs_metadata,
-        process_end_timestamp_for_gtfs_metadata,
-    )
-    from usecase.create_dataset_entity_for_gtfs_metadata import (
-        create_dataset_entity_for_gtfs_metadata,
-    )
-    from utilities.env_constants import SPARQL_URL, API_URL
+    # Get environment variables
+    SPARQL_URL = os.environ.get("SPARQL_URL")
+    API_URL = os.environ.get("API_URL")
 
     # Initialize DataRepository
     data_repository = DataRepository()
@@ -124,10 +123,7 @@ if __name__ == "__main__":
         dataset_representation = process_main_language_code_for_gtfs_metadata(
             dataset_representation
         )
-        dataset_representation = process_main_timezone_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_all_timezones_for_gtfs_metadata(
+        dataset_representation = process_timezones_for_gtfs_metadata(
             dataset_representation
         )
         dataset_representation = process_bounding_box_for_gtfs_metadata(

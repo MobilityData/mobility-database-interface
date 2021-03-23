@@ -18,6 +18,8 @@ GLOBE_PRECISION = 1.0e-6
 GLOBE_URL = "http://www.wikidata.org/entity/Q2"
 LAT = "latitude"
 LON = "longitude"
+REPLACE = "REPLACE"
+APPEND = "APPEND"
 
 STOP_LAT = "stop_lat"
 STOP_LON = "stop_lon"

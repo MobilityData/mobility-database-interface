@@ -51,10 +51,10 @@ class TestImportEntityRequestUtils(TestCase):
 
 
 class TestSparqlRequestUtils(TestCase):
-    @mock.patch("utilities.request_utils.GTFS_CATALOG_OF_SOURCES_CODE", "QGTFS_test")
-    @mock.patch("utilities.request_utils.GBFS_CATALOG_OF_SOURCES_CODE", "QGBFS_test")
+    @mock.patch("utilities.request_utils.os.environ.get")
     @mock.patch("utilities.request_utils.wbi_core.FunctionsEngine.execute_sparql_query")
-    def test_extract_dataset_version_codes(self, mock_sparql_request):
+    def test_extract_dataset_version_codes(self, mock_sparql_request, mock_env):
+        mock_env.side_effect = ["QGTFS_test", "QGBFS_test", "test_source_entity_prop"]
         mock_sparql_request.return_value = {
             RESULTS: {
                 BINDINGS: [
