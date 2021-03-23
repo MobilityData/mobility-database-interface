@@ -15,12 +15,12 @@ TORONTO_TIMEZONE = "America/Toronto"
 
 
 class TestProcessTimezonesForGtfsMetadata(TestCase):
-    def test_process_timezones_with_none_gtfs_representation_should_raise_exception(
+    def test_process_timezones_with_none_gtfs_representation(
         self,
     ):
         self.assertRaises(TypeError, process_timezones_for_gtfs_metadata, None)
 
-    def test_process_all_timezones_with_invalid_gtfs_representation_should_raise_exception(
+    def test_process_timezones_with_invalid_gtfs_representation(
         self,
     ):
         mock_gtfs_representation = MagicMock()

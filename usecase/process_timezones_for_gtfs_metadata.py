@@ -18,16 +18,15 @@ def process_timezones_for_gtfs_metadata(gtfs_representation):
     # Extract main timezone
     main_timezone = dataset.agency[AGENCY_TIMEZONE_KEY].iloc[AGENCY_TIMEZONE_IDX]
 
-    # Extract the all the timezones using the stop_timezone in the dataset stops
+    # Extract the timezones using the stop_timezone in the dataset stops
     stop_timezones = set()
     if STOP_TIMEZONE_KEY in dataset.stops.columns:
         for index, row in dataset.stops.iterrows():
             if row[STOP_TIMEZONE_KEY] is not None:
                 stop_timezones.add(row[STOP_TIMEZONE_KEY])
 
-    # Extract the timezone from the first row in the dataset agency
-    # to add the main timezone to the set
-    # if the set of all timezones is empty after processing the dataset stops
+    # Remove the main_timezone from the set of the stop_timezones
+    # to create the other_timezones
     other_timezones = []
     if len(stop_timezones) != 0:
         other_timezones = stop_timezones
@@ -35,7 +34,7 @@ def process_timezones_for_gtfs_metadata(gtfs_representation):
         # Convert the set of time to a list, and sort it alphabetically
         other_timezones = sorted(list(other_timezones))
 
-    # Set all timezones in the GTFS representation
+    # Set the timezones in the GTFS representation
     metadata.main_timezone = main_timezone
     metadata.other_timezones = other_timezones
 
