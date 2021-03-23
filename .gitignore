@@ -2,9 +2,7 @@
 *.iml
 .idea
 env/
-.env
-.env.staging
-.env.production
+staging_credentials.json
 
 # Python
 __pycache__/

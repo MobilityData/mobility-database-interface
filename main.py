@@ -1,6 +1,8 @@
 import argparse
 from dotenv import load_dotenv
+import json
 from guppy import hpy
+import os
 
 
 if __name__ == "__main__":
@@ -24,10 +26,21 @@ if __name__ == "__main__":
         default="./.env.staging",
         help="Path to the environment variables.",
     )
+    parser.add_argument(
+        "--path-to-credentials",
+        action="store",
+        default="./staging_credentials.json",
+        help="Path to the credentials.",
+    )
     args = parser.parse_args()
 
-    # Load environment
+    # Load environment from dotenv file and credentials json file
+    # env_constants.py will be using this environment when imported
     load_dotenv(args.path_to_env_var)
+    with open(args.path_to_credentials) as f:
+        credentials = json.load(f)
+    os.environ["USERNAME"] = credentials.get("USERNAME")
+    os.environ["PASSWORD"] = credentials.get("PASSWORD")
 
     # Import project files
     from repository.data_repository import DataRepository
