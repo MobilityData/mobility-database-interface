@@ -1,27 +1,27 @@
 from utilities.validators import validate_gtfs_representation
-
-TRAM = 0
-SUBWAY = 1
-RAIL = 2
-BUS = 3
-FERRY = 4
-CABLE_TRAM = 5
-AERIAL_LIFT = 6
-FUNICULAR = 7
-TROLLEY_BUS = 11
-MONORAIL = 12
-ROUTE_TYPE = "route_type"
-
-TRAM_KEY = "Tram"
-SUBWAY_KEY = "Subway"
-RAIL_KEY = "Rail"
-BUS_KEY = "Bus"
-FERRY_KEY = "Ferry"
-CABLE_TRAM_KEY = "Cable tram"
-AERIAL_LIFT_KEY = "Aerial lift"
-FUNICULAR_KEY = "Funicular"
-TROLLEY_BUS_KEY = "Trolleybus"
-MONORAIL_KEY = "Monorail"
+from utilities.constants import (
+    TRAM_CODE,
+    SUBWAY_CODE,
+    RAIL_CODE,
+    BUS_CODE,
+    FERRY_CODE,
+    CABLE_TRAM_CODE,
+    AERIAL_LIFT_CODE,
+    FUNICULAR_CODE,
+    TROLLEY_BUS_CODE,
+    MONORAIL_CODE,
+    TRAM,
+    SUBWAY,
+    RAIL,
+    BUS,
+    FERRY,
+    CABLE_TRAM,
+    AERIAL_LIFT,
+    FUNICULAR,
+    TROLLEY_BUS,
+    MONORAIL,
+    ROUTE_TYPE,
+)
 
 
 def process_routes_count_by_type_for_gtfs_metadata(gtfs_representation):
@@ -66,16 +66,16 @@ def process_routes_count_by_type_for_gtfs_metadata(gtfs_representation):
 
     # Create the dictionary of routes count by type
     routes_count_by_type = {
-        TRAM_KEY: trams_count,
-        SUBWAY_KEY: subways_count,
-        RAIL_KEY: rails_count,
-        BUS_KEY: buses_count,
-        FERRY_KEY: ferries_count,
-        CABLE_TRAM_KEY: cable_trams_count,
-        AERIAL_LIFT_KEY: aerial_lifts_count,
-        FUNICULAR_KEY: funiculars_count,
-        TROLLEY_BUS_KEY: trolley_buses_count,
-        MONORAIL_KEY: monorails_count,
+        TRAM_CODE: trams_count,
+        SUBWAY_CODE: subways_count,
+        RAIL_CODE: rails_count,
+        BUS_CODE: buses_count,
+        FERRY_CODE: ferries_count,
+        CABLE_TRAM_CODE: cable_trams_count,
+        AERIAL_LIFT_CODE: aerial_lifts_count,
+        FUNICULAR_CODE: funiculars_count,
+        TROLLEY_BUS_CODE: trolley_buses_count,
+        MONORAIL_CODE: monorails_count,
     }
 
     metadata.routes_count_by_type = routes_count_by_type

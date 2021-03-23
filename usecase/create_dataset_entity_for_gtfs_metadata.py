@@ -164,18 +164,22 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
         )
     )
 
-    # Number of stops property
-    for route_key, route_value in metadata.routes_count_by_type.items():
-        route_qualifier = [
-            wbi_core.String(value=route_key, prop_nr=ROUTE_TYPE_PROP, is_qualifier=True)
-        ]
-        dataset_data.append(
-            wbi_core.Quantity(
-                quantity=route_value,
-                prop_nr=NUM_OF_ROUTES_PROP,
-                qualifiers=route_qualifier,
+    # Number of routes property
+    for route_key, route_quantity_value in metadata.routes_count_by_type.items():
+        # Add only if the route type exists in the dataset (1 or more)
+        if route_quantity_value != 0:
+            route_qualifier = [
+                wbi_core.ItemID(
+                    value=route_key, prop_nr=ROUTE_TYPE_PROP, is_qualifier=True
+                )
+            ]
+            dataset_data.append(
+                wbi_core.Quantity(
+                    quantity=route_quantity_value,
+                    prop_nr=NUM_OF_ROUTES_PROP,
+                    qualifiers=route_qualifier,
+                )
             )
-        )
 
     # Dataset version entity label
     version_name_label = metadata.dataset_version_name
