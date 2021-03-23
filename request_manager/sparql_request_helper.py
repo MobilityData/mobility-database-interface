@@ -2,7 +2,7 @@ import sys
 
 from SPARQLWrapper import SPARQLWrapper, JSON
 
-from utilities.project_constants import STAGING_SPARQL_URL, PRODUCTION_SPARQL_URL
+from utilities.constants import STAGING_SPARQL_URL, PRODUCTION_SPARQL_URL
 
 SPARQL_USER_AGENT = f"WDQS-example Python/{sys.version_info[0]}.{sys.version_info[1]}"
 

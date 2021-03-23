@@ -1,6 +1,6 @@
 import os
 from representation.dataset_infos import DatasetInfos
-from utilities.project_constants import (
+from utilities.constants import (
     VALUE,
     CLAIMS,
     MAINSNAK,

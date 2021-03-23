@@ -1,7 +1,7 @@
 import os
 from wikibaseintegrator import wbi_core
 from utilities.request_utils import import_entity
-from utilities.project_constants import (
+from utilities.constants import (
     NORMAL,
     PREFERRED,
     LAT,

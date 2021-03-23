@@ -5,7 +5,7 @@ from utilities.request_utils import (
     extract_dataset_version_codes,
     extract_source_entity_codes,
 )
-from utilities.project_constants import (
+from utilities.constants import (
     VALUE,
     RESULTS,
     BINDINGS,

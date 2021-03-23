@@ -1,7 +1,7 @@
 import re
 import os
 
-from utilities.project_constants import (
+from utilities.constants import (
     RESULTS,
     BINDINGS,
     VALUE,

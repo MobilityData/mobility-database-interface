@@ -1,6 +1,6 @@
 import re
 from LatLon23 import Latitude, Longitude
-from utilities.project_constants import (
+from utilities.constants import (
     STOP_LAT,
     STOP_LON,
     LAT,

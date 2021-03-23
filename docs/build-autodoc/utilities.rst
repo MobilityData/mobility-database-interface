@@ -4,18 +4,18 @@ utilities package
 Submodules
 ----------
 
-utilities.geographical\_utils module
-------------------------------------
+utilities.constants module
+--------------------------
 
-.. automodule:: utilities.geographical_utils
+.. automodule:: utilities.constants
    :members:
    :undoc-members:
    :show-inheritance:
 
-utilities.project\_constants module
------------------------------------
+utilities.geographical\_utils module
+------------------------------------
 
-.. automodule:: utilities.project_constants
+.. automodule:: utilities.geographical_utils
    :members:
    :undoc-members:
    :show-inheritance:
