@@ -1,11 +1,18 @@
 import os
-from dotenv import load_dotenv
-
 from wikibaseintegrator import wbi_core
 from utilities.request_utils import import_entity
 from utilities.constants import (
     NORMAL,
     PREFERRED,
+    LAT,
+    LON,
+    GLOBE_PRECISION,
+    GLOBE_URL,
+    STOP_KEY,
+    STATION_KEY,
+    ENTRANCE_KEY,
+    APPEND,
+    GTFS_SCHEDULE_DATA_FORMAT,
     INSTANCE_PROP,
     SOURCE_ENTITY_PROP,
     TIMEZONE_PROP,
@@ -25,28 +32,17 @@ from utilities.constants import (
     NUM_OF_AGENCIES_PROP,
     NUM_OF_ROUTES_PROP,
     ROUTE_TYPE_PROP,
-    GTFS_SCHEDULE_DATA_FORMAT,
-    LAT,
-    LON,
-    GLOBE_PRECISION,
-    GLOBE_URL,
-    STOP_KEY,
-    STATION_KEY,
-    ENTRANCE_KEY,
+    USERNAME,
+    PASSWORD,
 )
 from utilities.validators import validate_gtfs_representation, validate_api_url
-
-load_dotenv()
-STAGING_USERNAME = os.getenv("STAGING_USERNAME")
-STAGING_PASSWORD = os.getenv("STAGING_PASSWORD")
-
-REPLACE = "REPLACE"
-APPEND = "APPEND"
 
 
 def create_geographical_property(order_key, corner_value, property_type):
     order_qualifier = [
-        wbi_core.Quantity(quantity=order_key, prop_nr=ORDER_PROP, is_qualifier=True)
+        wbi_core.Quantity(
+            quantity=order_key, prop_nr=os.environ[ORDER_PROP], is_qualifier=True
+        )
     ]
 
     return wbi_core.GlobeCoordinate(
@@ -73,32 +69,41 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
 
     # Instance property
     dataset_data.append(
-        wbi_core.ItemID(value=GTFS_SCHEDULE_DATA_FORMAT, prop_nr=INSTANCE_PROP)
+        wbi_core.ItemID(
+            value=os.environ[GTFS_SCHEDULE_DATA_FORMAT],
+            prop_nr=os.environ[INSTANCE_PROP],
+        )
     )
 
     # Source entity property
     dataset_data.append(
-        wbi_core.ItemID(value=metadata.source_entity_code, prop_nr=SOURCE_ENTITY_PROP)
+        wbi_core.ItemID(
+            value=metadata.source_entity_code, prop_nr=os.environ[SOURCE_ENTITY_PROP]
+        )
     )
 
     # Main timezone property
     dataset_data.append(
         wbi_core.String(
-            value=metadata.main_timezone, prop_nr=TIMEZONE_PROP, rank=PREFERRED
+            value=metadata.main_timezone,
+            prop_nr=os.environ[TIMEZONE_PROP],
+            rank=PREFERRED,
         )
     )
 
     # Other timezones property
     for timezone in metadata.other_timezones:
         dataset_data.append(
-            wbi_core.String(value=timezone, prop_nr=TIMEZONE_PROP, rank=NORMAL)
+            wbi_core.String(
+                value=timezone, prop_nr=os.environ[TIMEZONE_PROP], rank=NORMAL
+            )
         )
 
     # Main language code property
     dataset_data.append(
         wbi_core.String(
             value=metadata.main_language_code,
-            prop_nr=MAIN_LANGUAGE_CODE_PROP,
+            prop_nr=os.environ[MAIN_LANGUAGE_CODE_PROP],
             rank=PREFERRED,
         )
     )
@@ -106,45 +111,58 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
     # Start service date property
     dataset_data.append(
         wbi_core.String(
-            value=metadata.start_service_date, prop_nr=START_SERVICE_DATE_PROP
+            value=metadata.start_service_date,
+            prop_nr=os.environ[START_SERVICE_DATE_PROP],
         )
     )
 
     # End service date property
     dataset_data.append(
-        wbi_core.String(value=metadata.end_service_date, prop_nr=END_SERVICE_DATE_PROP)
+        wbi_core.String(
+            value=metadata.end_service_date, prop_nr=os.environ[END_SERVICE_DATE_PROP]
+        )
     )
 
     # Start timestamp property
     dataset_data.append(
-        wbi_core.String(value=metadata.start_timestamp, prop_nr=START_TIMESTAMP_PROP)
+        wbi_core.String(
+            value=metadata.start_timestamp, prop_nr=os.environ[START_TIMESTAMP_PROP]
+        )
     )
 
     # End timestamp property
     dataset_data.append(
-        wbi_core.String(value=metadata.end_timestamp, prop_nr=END_TIMESTAMP_PROP)
+        wbi_core.String(
+            value=metadata.end_timestamp, prop_nr=os.environ[END_TIMESTAMP_PROP]
+        )
     )
 
     # MD5 hash property
-    dataset_data.append(wbi_core.String(value=metadata.md5_hash, prop_nr=MD5_HASH_PROP))
+    dataset_data.append(
+        wbi_core.String(value=metadata.md5_hash, prop_nr=os.environ[MD5_HASH_PROP])
+    )
 
     # Bounding box property
     for order_key, corner_value in metadata.bounding_box.items():
         dataset_data.append(
-            create_geographical_property(order_key, corner_value, BOUNDING_BOX_PROP)
+            create_geographical_property(
+                order_key, corner_value, os.environ[BOUNDING_BOX_PROP]
+            )
         )
 
     # Bounding octagon property
     for order_key, corner_value in metadata.bounding_octagon.items():
         dataset_data.append(
-            create_geographical_property(order_key, corner_value, BOUNDING_OCTAGON_PROP)
+            create_geographical_property(
+                order_key, corner_value, os.environ[BOUNDING_OCTAGON_PROP]
+            )
         )
 
     # Number of stops property
     dataset_data.append(
         wbi_core.Quantity(
             quantity=metadata.stops_count_by_type.get(STOP_KEY),
-            prop_nr=NUM_OF_STOPS_PROP,
+            prop_nr=os.environ[NUM_OF_STOPS_PROP],
         )
     )
 
@@ -152,7 +170,7 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
     dataset_data.append(
         wbi_core.Quantity(
             quantity=metadata.stops_count_by_type.get(STATION_KEY),
-            prop_nr=NUM_OF_STATIONS_PROP,
+            prop_nr=os.environ[NUM_OF_STATIONS_PROP],
         )
     )
 
@@ -160,26 +178,28 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
     dataset_data.append(
         wbi_core.Quantity(
             quantity=metadata.stops_count_by_type.get(ENTRANCE_KEY),
-            prop_nr=NUM_OF_ENTRANCES_PROP,
+            prop_nr=os.environ[NUM_OF_ENTRANCES_PROP],
         )
     )
 
     # Number of agencies property
     dataset_data.append(
         wbi_core.Quantity(
-            quantity=metadata.agencies_count, prop_nr=NUM_OF_AGENCIES_PROP
+            quantity=metadata.agencies_count, prop_nr=os.environ[NUM_OF_AGENCIES_PROP]
         )
     )
 
     # Number of stops property
     for route_key, route_value in metadata.routes_count_by_type.items():
         route_qualifier = [
-            wbi_core.String(value=route_key, prop_nr=ROUTE_TYPE_PROP, is_qualifier=True)
+            wbi_core.String(
+                value=route_key, prop_nr=os.environ[ROUTE_TYPE_PROP], is_qualifier=True
+            )
         ]
         dataset_data.append(
             wbi_core.Quantity(
                 quantity=route_value,
-                prop_nr=NUM_OF_ROUTES_PROP,
+                prop_nr=os.environ[NUM_OF_ROUTES_PROP],
                 qualifiers=route_qualifier,
             )
         )
@@ -188,18 +208,18 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
     version_name_label = metadata.dataset_version_name
 
     metadata.dataset_version_entity_code = import_entity(
-        STAGING_USERNAME, STAGING_PASSWORD, dataset_data, version_name_label
+        os.environ[USERNAME], os.environ[PASSWORD], dataset_data, version_name_label
     )
 
     version_prop = wbi_core.ItemID(
         value=metadata.dataset_version_entity_code,
-        prop_nr=DATASET_VERSION_PROP,
+        prop_nr=os.environ[DATASET_VERSION_PROP],
         if_exists=APPEND,
     )
     source_data = [version_prop]
     metadata.source_entity_code = import_entity(
-        STAGING_USERNAME,
-        STAGING_PASSWORD,
+        os.environ[USERNAME],
+        os.environ[PASSWORD],
         source_data,
         item_id=metadata.source_entity_code,
     )

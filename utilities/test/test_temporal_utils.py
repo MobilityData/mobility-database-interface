@@ -489,10 +489,10 @@ class TestTemporalUtils(TestCase):
         mock_dataset.__class__ = Feed
         type(mock_dataset).agency = mock_agency
 
-        test_utc_offset = "±00:00"
+        test_utc_offset = ["±00:00", "+01:00"]
 
         under_test = get_gtfs_timezone_utc_offset(mock_dataset)
-        self.assertEqual(under_test, test_utc_offset)
+        self.assertTrue(under_test in test_utc_offset)
 
     @mock.patch("gtfs_kit.feed.Feed")
     def test_gtfs_stop_times_for_date_with_valid_parameters_should_return_stop_times_dataframe(

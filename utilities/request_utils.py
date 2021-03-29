@@ -1,30 +1,21 @@
 import re
-
+import os
+from wikibaseintegrator import wbi_core, wbi_login
 from utilities.constants import (
-    GTFS_CATALOG_OF_SOURCES_CODE,
-    GBFS_CATALOG_OF_SOURCES_CODE,
     RESULTS,
     BINDINGS,
     VALUE,
     SPARQL_ENTITY_CODE_REGEX,
     ENGLISH,
-    DATATYPE,
-    RANK,
-    PROP_ID,
-    IF_EXISTS,
     SPARQL_A,
-    SVC_SOURCE_PROPERTY_URL,
-    SVC_ENTITY_URL_PREFIX,
-    SVC_CATALOG_PROPERTY_URL,
+    SVC_ENTITY_URL_PATH,
+    SVC_PROP_URL_PATH,
+    SVC_URL,
+    GTFS_CATALOG_OF_SOURCES_CODE,
+    GBFS_CATALOG_OF_SOURCES_CODE,
+    SOURCE_ENTITY_PROP,
+    CATALOG_PROP,
 )
-
-from wikibaseintegrator import wbi_core, wbi_login
-from wikibaseintegrator.wbi_config import config as wbi_config
-from utilities.constants import STAGING_API_URL, STAGING_SPARQL_BIGDATA_URL, SVC_URL
-
-wbi_config["MEDIAWIKI_API_URL"] = STAGING_API_URL
-wbi_config["SPARQL_ENDPOINT_URL"] = STAGING_SPARQL_BIGDATA_URL
-wbi_config["WIKIBASE_URL"] = SVC_URL
 
 
 def import_entity(username, password, data, label="", item_id=""):
@@ -47,8 +38,8 @@ def extract_source_entity_codes(catalog_code):
             WHERE 
             {{
                 ?{SPARQL_A} 
-                <{SVC_CATALOG_PROPERTY_URL}>
-                <{SVC_ENTITY_URL_PREFIX}{catalog_code}>
+                <{SVC_URL}{SVC_PROP_URL_PATH}{os.environ[CATALOG_PROP]}>
+                <{SVC_URL}{SVC_ENTITY_URL_PATH}{catalog_code}>
             }}"""
 
     sparql_response = wbi_core.FunctionsEngine.execute_sparql_query(sparql_query)
@@ -69,8 +60,8 @@ def extract_dataset_version_codes(entity_code):
             WHERE 
             {{
                 ?{SPARQL_A} 
-                <{SVC_SOURCE_PROPERTY_URL}>
-                <{SVC_ENTITY_URL_PREFIX}{entity_code}>
+                <{SVC_URL}{SVC_PROP_URL_PATH}{os.environ[SOURCE_ENTITY_PROP]}>
+                <{SVC_URL}{SVC_ENTITY_URL_PATH}{entity_code}>
             }}"""
 
     sparql_response = wbi_core.FunctionsEngine.execute_sparql_query(sparql_query)
@@ -83,10 +74,10 @@ def extract_dataset_version_codes(entity_code):
     # Verify if entity if part of a catalog of sources.
     # If yes, removes the catalog of sources entity code, which appears in the results of a source entity
     if (
-        GTFS_CATALOG_OF_SOURCES_CODE in dataset_version_codes
-        or GBFS_CATALOG_OF_SOURCES_CODE in dataset_version_codes
+        os.environ[GTFS_CATALOG_OF_SOURCES_CODE] in dataset_version_codes
+        or os.environ[GBFS_CATALOG_OF_SOURCES_CODE] in dataset_version_codes
     ):
-        dataset_version_codes.discard(GTFS_CATALOG_OF_SOURCES_CODE)
-        dataset_version_codes.discard(GBFS_CATALOG_OF_SOURCES_CODE)
+        dataset_version_codes.discard(os.environ[GTFS_CATALOG_OF_SOURCES_CODE])
+        dataset_version_codes.discard(os.environ[GBFS_CATALOG_OF_SOURCES_CODE])
 
     return dataset_version_codes
