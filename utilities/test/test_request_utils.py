@@ -9,13 +9,20 @@ from utilities.constants import (
     VALUE,
     RESULTS,
     BINDINGS,
+    SOURCE_ENTITY_PROP,
+    GTFS_CATALOG_OF_SOURCES_CODE,
+    GBFS_CATALOG_OF_SOURCES_CODE,
+    CATALOG_PROP,
+    API_URL,
+    SPARQL_BIGDATA_URL,
 )
 
 
 class TestImportEntityRequestUtils(TestCase):
+    @mock.patch("utilities.request_utils.os.environ")
     @mock.patch("utilities.request_utils.wbi_core.ItemEngine")
     @mock.patch("utilities.request_utils.wbi_login")
-    def test_import_entity_with_item_id(self, mock_login, mock_item_engine):
+    def test_import_entity_with_item_id(self, mock_login, mock_item_engine, mock_env):
         test_username = "test_username "
         test_password = "test_password"
         test_properties = []
@@ -26,14 +33,20 @@ class TestImportEntityRequestUtils(TestCase):
         mock_item_engine.return_value.set_label.side_effect = None
         mock_item_engine.return_value.write.return_value = test_item_id
 
+        test_env = {API_URL: "test_api_url", SPARQL_BIGDATA_URL: "test_sparl_url"}
+        mock_env.__getitem__.side_effect = test_env.__getitem__
+
         under_test = import_entity(
             test_username, test_password, test_properties, test_label, test_item_id
         )
         self.assertEqual(under_test, test_item_id)
 
+    @mock.patch("utilities.request_utils.os.environ")
     @mock.patch("utilities.request_utils.wbi_core.ItemEngine")
     @mock.patch("utilities.request_utils.wbi_login")
-    def test_import_entity_with_empty_item_id(self, mock_login, mock_item_engine):
+    def test_import_entity_with_empty_item_id(
+        self, mock_login, mock_item_engine, mock_env
+    ):
         test_username = "test_username "
         test_password = "test_password"
         test_properties = []
@@ -44,6 +57,9 @@ class TestImportEntityRequestUtils(TestCase):
         mock_item_engine.return_value.set_label.side_effect = None
         mock_item_engine.return_value.write.return_value = "test_new_entity"
 
+        test_env = {API_URL: "test_api_url", SPARQL_BIGDATA_URL: "test_sparl_url"}
+        mock_env.__getitem__.side_effect = test_env.__getitem__
+
         under_test = import_entity(
             test_username, test_password, test_properties, test_label, test_item_id
         )
@@ -51,10 +67,16 @@ class TestImportEntityRequestUtils(TestCase):
 
 
 class TestSparqlRequestUtils(TestCase):
-    @mock.patch("utilities.request_utils.os.environ.get")
+    @mock.patch("utilities.request_utils.os.environ")
     @mock.patch("utilities.request_utils.wbi_core.FunctionsEngine.execute_sparql_query")
     def test_extract_dataset_version_codes(self, mock_sparql_request, mock_env):
-        mock_env.side_effect = ["QGTFS_test", "QGBFS_test", "test_source_entity_prop"]
+        test_env = {
+            SOURCE_ENTITY_PROP: "test_source_entity_prop",
+            GTFS_CATALOG_OF_SOURCES_CODE: "QGTFS_test",
+            GBFS_CATALOG_OF_SOURCES_CODE: "QGBFS_test",
+        }
+        mock_env.__getitem__.side_effect = test_env.__getitem__
+
         mock_sparql_request.return_value = {
             RESULTS: {
                 BINDINGS: [
@@ -77,8 +99,12 @@ class TestSparqlRequestUtils(TestCase):
         under_test = extract_dataset_version_codes(test_entity_code)
         self.assertEqual(under_test, {"Q81"})
 
+    @mock.patch("utilities.request_utils.os.environ")
     @mock.patch("utilities.request_utils.wbi_core.FunctionsEngine.execute_sparql_query")
-    def test_extract_dataset_entity_codes(self, mock_sparql_request):
+    def test_extract_dataset_entity_codes(self, mock_sparql_request, mock_env):
+        test_env = {CATALOG_PROP: "test_catalog_prop"}
+        mock_env.__getitem__.side_effect = test_env.__getitem__
+
         mock_sparql_request.return_value = {
             RESULTS: {
                 BINDINGS: [

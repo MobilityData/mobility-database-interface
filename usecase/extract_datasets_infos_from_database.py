@@ -7,6 +7,10 @@ from utilities.constants import (
     DATAVALUE,
     LABELS,
     ENGLISH,
+    GTFS_CATALOG_OF_SOURCES_CODE,
+    GBFS_CATALOG_OF_SOURCES_CODE,
+    MD5_HASH_PROP,
+    STABLE_URL_PROP,
 )
 from utilities.request_utils import (
     extract_dataset_version_codes,
@@ -19,20 +23,14 @@ OPEN_MOBILITY_DATA_URL = "openmobilitydata.org"
 
 
 def extract_gtfs_datasets_infos_from_database(api_url, sparql_api):
-    # Get environment variables
-    gtfs_catalog_of_sources_code = os.environ.get("GTFS_CATALOG_OF_SOURCES_CODE")
-
     return extract_datasets_infos_from_database(
-        api_url, sparql_api, gtfs_catalog_of_sources_code
+        api_url, sparql_api, os.environ[GTFS_CATALOG_OF_SOURCES_CODE]
     )
 
 
 def extract_gbfs_datasets_infos_from_database(api_url, sparql_api):
-    # Get environment variables
-    gbfs_catalog_of_sources_code = os.environ.get("GBFS_CATALOG_OF_SOURCES_CODE")
-
     return extract_datasets_infos_from_database(
-        api_url, sparql_api, gbfs_catalog_of_sources_code
+        api_url, sparql_api, os.environ[GBFS_CATALOG_OF_SOURCES_CODE]
     )
 
 
@@ -69,9 +67,6 @@ def extract_datasets_infos_from_database(api_url, sparql_api, catalog_code):
 
 
 def extract_previous_md5_hashes(entity_code):
-    # Get environment variables
-    md5_hash_prop = os.environ.get("MD5_HASH_PROP")
-
     entity_previous_md5_hashes = set()
     entity_md5_hashes = set()
 
@@ -85,7 +80,7 @@ def extract_previous_md5_hashes(entity_code):
             item_id=version_code
         ).get_json_representation()
 
-        for row in json_response.get(CLAIMS, {}).get(md5_hash_prop, []):
+        for row in json_response.get(CLAIMS, {}).get(os.environ[MD5_HASH_PROP], []):
             md5 = row.get(MAINSNAK, {}).get(DATAVALUE, {}).get(VALUE)
             if md5 is None:
                 continue
@@ -97,15 +92,12 @@ def extract_previous_md5_hashes(entity_code):
 
 
 def extract_source_infos(entity_code):
-    # Get environment variables
-    stable_url_prop = os.environ.get("STABLE_URL_PROP")
-
     # Export entity related to the entity code from database
     json_response = wbi_core.ItemEngine(item_id=entity_code).get_json_representation()
 
     url = None
     # Extract source stable URL
-    for link in json_response.get(CLAIMS, {}).get(stable_url_prop, []):
+    for link in json_response.get(CLAIMS, {}).get(os.environ[STABLE_URL_PROP], []):
         tmp_url = link.get(MAINSNAK, {}).get(DATAVALUE, {}).get(VALUE)
         if OPEN_MOBILITY_DATA_URL not in tmp_url:
             url = tmp_url

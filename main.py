@@ -42,6 +42,37 @@ from usecase.process_timestamp_for_gtfs_metadata import (
 from usecase.create_dataset_entity_for_gtfs_metadata import (
     create_dataset_entity_for_gtfs_metadata,
 )
+from utilities.constants import (
+    GTFS_CATALOG_OF_SOURCES_CODE,
+    GBFS_CATALOG_OF_SOURCES_CODE,
+    GTFS_SCHEDULE_DATA_FORMAT,
+    INSTANCE_PROP,
+    SOURCE_ENTITY_PROP,
+    TIMEZONE_PROP,
+    MAIN_LANGUAGE_CODE_PROP,
+    START_SERVICE_DATE_PROP,
+    END_SERVICE_DATE_PROP,
+    START_TIMESTAMP_PROP,
+    END_TIMESTAMP_PROP,
+    MD5_HASH_PROP,
+    DATASET_VERSION_PROP,
+    STABLE_URL_PROP,
+    ORDER_PROP,
+    BOUNDING_BOX_PROP,
+    BOUNDING_OCTAGON_PROP,
+    NUM_OF_STOPS_PROP,
+    NUM_OF_STATIONS_PROP,
+    NUM_OF_ENTRANCES_PROP,
+    NUM_OF_AGENCIES_PROP,
+    NUM_OF_ROUTES_PROP,
+    ROUTE_TYPE_PROP,
+    CATALOG_PROP,
+    SPARQL_URL,
+    SPARQL_BIGDATA_URL,
+    API_URL,
+    USERNAME,
+    PASSWORD,
+)
 
 
 if __name__ == "__main__":
@@ -77,12 +108,38 @@ if __name__ == "__main__":
     load_dotenv(args.path_to_env_var)
     with open(args.path_to_credentials) as f:
         credentials = json.load(f)
-    os.environ["USERNAME"] = credentials.get("USERNAME")
-    os.environ["PASSWORD"] = credentials.get("PASSWORD")
+    os.environ[USERNAME] = credentials.get(USERNAME)
+    os.environ[PASSWORD] = credentials.get(PASSWORD)
 
     # Get environment variables
-    sparql_url = os.environ.get("SPARQL_URL")
-    api_url = os.environ.get("API_URL")
+    sparql_url = os.environ.get(SPARQL_URL)
+    api_url = os.environ.get(API_URL)
+
+    # Create the different environment variables dictionaries
+    # needed for the use cases
+    create_dataset_env_vars = {
+        USERNAME: os.environ[USERNAME],
+        PASSWORD: os.environ[PASSWORD],
+        GTFS_SCHEDULE_DATA_FORMAT: os.environ[GTFS_SCHEDULE_DATA_FORMAT],
+        INSTANCE_PROP: os.environ[INSTANCE_PROP],
+        SOURCE_ENTITY_PROP: os.environ[SOURCE_ENTITY_PROP],
+        TIMEZONE_PROP: os.environ[TIMEZONE_PROP],
+        MAIN_LANGUAGE_CODE_PROP: os.environ[MAIN_LANGUAGE_CODE_PROP],
+        START_SERVICE_DATE_PROP: os.environ[START_SERVICE_DATE_PROP],
+        END_SERVICE_DATE_PROP: os.environ[END_SERVICE_DATE_PROP],
+        START_TIMESTAMP_PROP: os.environ[START_TIMESTAMP_PROP],
+        END_TIMESTAMP_PROP: os.environ[END_TIMESTAMP_PROP],
+        MD5_HASH_PROP: os.environ[MD5_HASH_PROP],
+        DATASET_VERSION_PROP: os.environ[DATASET_VERSION_PROP],
+        BOUNDING_BOX_PROP: os.environ[BOUNDING_BOX_PROP],
+        BOUNDING_OCTAGON_PROP: os.environ[BOUNDING_OCTAGON_PROP],
+        NUM_OF_STOPS_PROP: os.environ[NUM_OF_STOPS_PROP],
+        NUM_OF_STATIONS_PROP: os.environ[NUM_OF_STATIONS_PROP],
+        NUM_OF_ENTRANCES_PROP: os.environ[NUM_OF_ENTRANCES_PROP],
+        NUM_OF_AGENCIES_PROP: os.environ[NUM_OF_AGENCIES_PROP],
+        NUM_OF_ROUTES_PROP: os.environ[NUM_OF_ROUTES_PROP],
+        ROUTE_TYPE_PROP: os.environ[ROUTE_TYPE_PROP],
+    }
 
     # Initialize DataRepository
     data_repository = DataRepository()
