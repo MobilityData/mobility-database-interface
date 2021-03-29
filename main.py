@@ -115,32 +115,6 @@ if __name__ == "__main__":
     sparql_url = os.environ.get(SPARQL_URL)
     api_url = os.environ.get(API_URL)
 
-    # Create the different environment variables dictionaries
-    # needed for the use cases
-    create_dataset_env_vars = {
-        USERNAME: os.environ[USERNAME],
-        PASSWORD: os.environ[PASSWORD],
-        GTFS_SCHEDULE_DATA_FORMAT: os.environ[GTFS_SCHEDULE_DATA_FORMAT],
-        INSTANCE_PROP: os.environ[INSTANCE_PROP],
-        SOURCE_ENTITY_PROP: os.environ[SOURCE_ENTITY_PROP],
-        TIMEZONE_PROP: os.environ[TIMEZONE_PROP],
-        MAIN_LANGUAGE_CODE_PROP: os.environ[MAIN_LANGUAGE_CODE_PROP],
-        START_SERVICE_DATE_PROP: os.environ[START_SERVICE_DATE_PROP],
-        END_SERVICE_DATE_PROP: os.environ[END_SERVICE_DATE_PROP],
-        START_TIMESTAMP_PROP: os.environ[START_TIMESTAMP_PROP],
-        END_TIMESTAMP_PROP: os.environ[END_TIMESTAMP_PROP],
-        MD5_HASH_PROP: os.environ[MD5_HASH_PROP],
-        DATASET_VERSION_PROP: os.environ[DATASET_VERSION_PROP],
-        BOUNDING_BOX_PROP: os.environ[BOUNDING_BOX_PROP],
-        BOUNDING_OCTAGON_PROP: os.environ[BOUNDING_OCTAGON_PROP],
-        NUM_OF_STOPS_PROP: os.environ[NUM_OF_STOPS_PROP],
-        NUM_OF_STATIONS_PROP: os.environ[NUM_OF_STATIONS_PROP],
-        NUM_OF_ENTRANCES_PROP: os.environ[NUM_OF_ENTRANCES_PROP],
-        NUM_OF_AGENCIES_PROP: os.environ[NUM_OF_AGENCIES_PROP],
-        NUM_OF_ROUTES_PROP: os.environ[NUM_OF_ROUTES_PROP],
-        ROUTE_TYPE_PROP: os.environ[ROUTE_TYPE_PROP],
-    }
-
     # Initialize DataRepository
     data_repository = DataRepository()
 
