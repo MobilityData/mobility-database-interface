@@ -1,6 +1,6 @@
 import re
 import os
-
+from wikibaseintegrator import wbi_core, wbi_login
 from utilities.constants import (
     RESULTS,
     BINDINGS,
@@ -15,19 +15,10 @@ from utilities.constants import (
     GBFS_CATALOG_OF_SOURCES_CODE,
     SOURCE_ENTITY_PROP,
     CATALOG_PROP,
-    SPARQL_BIGDATA_URL,
-    API_URL,
 )
-
-from wikibaseintegrator import wbi_core, wbi_login
-from wikibaseintegrator.wbi_config import config as wbi_config
 
 
 def import_entity(username, password, data, label="", item_id=""):
-    wbi_config["MEDIAWIKI_API_URL"] = os.environ[API_URL]
-    wbi_config["SPARQL_ENDPOINT_URL"] = os.environ[SPARQL_BIGDATA_URL]
-    wbi_config["WIKIBASE_URL"] = SVC_URL
-
     login_instance = wbi_login.Login(user=username, pwd=password, use_clientlogin=True)
 
     entity = wbi_core.ItemEngine(data=data, item_id=item_id)

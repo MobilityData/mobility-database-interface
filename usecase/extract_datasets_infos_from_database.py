@@ -47,6 +47,7 @@ def extract_datasets_infos_from_database(api_url, sparql_api, catalog_code):
     datasets_infos = []
 
     entity_codes = extract_source_entity_codes(catalog_code)
+
     # Retrieves the sources' stable URL for the entity codes found
     for entity_code in entity_codes:
 

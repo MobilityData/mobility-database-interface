@@ -19,10 +19,9 @@ from utilities.constants import (
 
 
 class TestImportEntityRequestUtils(TestCase):
-    @mock.patch("utilities.request_utils.os.environ")
     @mock.patch("utilities.request_utils.wbi_core.ItemEngine")
     @mock.patch("utilities.request_utils.wbi_login")
-    def test_import_entity_with_item_id(self, mock_login, mock_item_engine, mock_env):
+    def test_import_entity_with_item_id(self, mock_login, mock_item_engine):
         test_username = "test_username "
         test_password = "test_password"
         test_properties = []
@@ -33,20 +32,14 @@ class TestImportEntityRequestUtils(TestCase):
         mock_item_engine.return_value.set_label.side_effect = None
         mock_item_engine.return_value.write.return_value = test_item_id
 
-        test_env = {API_URL: "test_api_url", SPARQL_BIGDATA_URL: "test_sparl_url"}
-        mock_env.__getitem__.side_effect = test_env.__getitem__
-
         under_test = import_entity(
             test_username, test_password, test_properties, test_label, test_item_id
         )
         self.assertEqual(under_test, test_item_id)
 
-    @mock.patch("utilities.request_utils.os.environ")
     @mock.patch("utilities.request_utils.wbi_core.ItemEngine")
     @mock.patch("utilities.request_utils.wbi_login")
-    def test_import_entity_with_empty_item_id(
-        self, mock_login, mock_item_engine, mock_env
-    ):
+    def test_import_entity_with_empty_item_id(self, mock_login, mock_item_engine):
         test_username = "test_username "
         test_password = "test_password"
         test_properties = []
@@ -56,9 +49,6 @@ class TestImportEntityRequestUtils(TestCase):
         mock_login.return_value = "test_login_instance"
         mock_item_engine.return_value.set_label.side_effect = None
         mock_item_engine.return_value.write.return_value = "test_new_entity"
-
-        test_env = {API_URL: "test_api_url", SPARQL_BIGDATA_URL: "test_sparl_url"}
-        mock_env.__getitem__.side_effect = test_env.__getitem__
 
         under_test = import_entity(
             test_username, test_password, test_properties, test_label, test_item_id

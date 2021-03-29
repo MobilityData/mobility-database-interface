@@ -3,8 +3,7 @@ from dotenv import load_dotenv
 import json
 from guppy import hpy
 import os
-
-# Import project files
+from wikibaseintegrator.wbi_config import config as wbi_config
 from repository.data_repository import DataRepository
 from usecase.download_dataset_as_zip import download_dataset_as_zip
 from usecase.process_agencies_count_for_gtfs_metadata import (
@@ -43,33 +42,10 @@ from usecase.create_dataset_entity_for_gtfs_metadata import (
     create_dataset_entity_for_gtfs_metadata,
 )
 from utilities.constants import (
-    GTFS_CATALOG_OF_SOURCES_CODE,
-    GBFS_CATALOG_OF_SOURCES_CODE,
-    GTFS_SCHEDULE_DATA_FORMAT,
-    INSTANCE_PROP,
-    SOURCE_ENTITY_PROP,
-    TIMEZONE_PROP,
-    MAIN_LANGUAGE_CODE_PROP,
-    START_SERVICE_DATE_PROP,
-    END_SERVICE_DATE_PROP,
-    START_TIMESTAMP_PROP,
-    END_TIMESTAMP_PROP,
-    MD5_HASH_PROP,
-    DATASET_VERSION_PROP,
-    STABLE_URL_PROP,
-    ORDER_PROP,
-    BOUNDING_BOX_PROP,
-    BOUNDING_OCTAGON_PROP,
-    NUM_OF_STOPS_PROP,
-    NUM_OF_STATIONS_PROP,
-    NUM_OF_ENTRANCES_PROP,
-    NUM_OF_AGENCIES_PROP,
-    NUM_OF_ROUTES_PROP,
-    ROUTE_TYPE_PROP,
-    CATALOG_PROP,
     SPARQL_URL,
-    SPARQL_BIGDATA_URL,
     API_URL,
+    SPARQL_BIGDATA_URL,
+    SVC_URL,
     USERNAME,
     PASSWORD,
 )
@@ -114,6 +90,11 @@ if __name__ == "__main__":
     # Get environment variables
     sparql_url = os.environ.get(SPARQL_URL)
     api_url = os.environ.get(API_URL)
+
+    # Load Wikibase Integrator config with the environment
+    wbi_config["MEDIAWIKI_API_URL"] = os.environ[API_URL]
+    wbi_config["SPARQL_ENDPOINT_URL"] = os.environ[SPARQL_BIGDATA_URL]
+    wbi_config["WIKIBASE_URL"] = SVC_URL
 
     # Initialize DataRepository
     data_repository = DataRepository()
