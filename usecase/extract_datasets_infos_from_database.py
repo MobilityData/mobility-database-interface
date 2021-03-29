@@ -1,13 +1,14 @@
+import os
 from representation.dataset_infos import DatasetInfos
 from utilities.constants import (
-    GTFS_CATALOG_OF_SOURCES_CODE,
-    GBFS_CATALOG_OF_SOURCES_CODE,
     VALUE,
     CLAIMS,
     MAINSNAK,
     DATAVALUE,
     LABELS,
     ENGLISH,
+    GTFS_CATALOG_OF_SOURCES_CODE,
+    GBFS_CATALOG_OF_SOURCES_CODE,
     MD5_HASH_PROP,
     STABLE_URL_PROP,
 )
@@ -23,13 +24,13 @@ OPEN_MOBILITY_DATA_URL = "openmobilitydata.org"
 
 def extract_gtfs_datasets_infos_from_database(api_url, sparql_api):
     return extract_datasets_infos_from_database(
-        api_url, sparql_api, GTFS_CATALOG_OF_SOURCES_CODE
+        api_url, sparql_api, os.environ[GTFS_CATALOG_OF_SOURCES_CODE]
     )
 
 
 def extract_gbfs_datasets_infos_from_database(api_url, sparql_api):
     return extract_datasets_infos_from_database(
-        api_url, sparql_api, GBFS_CATALOG_OF_SOURCES_CODE
+        api_url, sparql_api, os.environ[GBFS_CATALOG_OF_SOURCES_CODE]
     )
 
 
@@ -46,6 +47,7 @@ def extract_datasets_infos_from_database(api_url, sparql_api, catalog_code):
     datasets_infos = []
 
     entity_codes = extract_source_entity_codes(catalog_code)
+
     # Retrieves the sources' stable URL for the entity codes found
     for entity_code in entity_codes:
 
@@ -79,7 +81,7 @@ def extract_previous_md5_hashes(entity_code):
             item_id=version_code
         ).get_json_representation()
 
-        for row in json_response.get(CLAIMS, {}).get(MD5_HASH_PROP, []):
+        for row in json_response.get(CLAIMS, {}).get(os.environ[MD5_HASH_PROP], []):
             md5 = row.get(MAINSNAK, {}).get(DATAVALUE, {}).get(VALUE)
             if md5 is None:
                 continue
@@ -96,7 +98,7 @@ def extract_source_infos(entity_code):
 
     url = None
     # Extract source stable URL
-    for link in json_response.get(CLAIMS, {}).get(STABLE_URL_PROP, []):
+    for link in json_response.get(CLAIMS, {}).get(os.environ[STABLE_URL_PROP], []):
         tmp_url = link.get(MAINSNAK, {}).get(DATAVALUE, {}).get(VALUE)
         if OPEN_MOBILITY_DATA_URL not in tmp_url:
             url = tmp_url

@@ -9,6 +9,12 @@ from utilities.constants import (
     VALUE,
     RESULTS,
     BINDINGS,
+    SOURCE_ENTITY_PROP,
+    GTFS_CATALOG_OF_SOURCES_CODE,
+    GBFS_CATALOG_OF_SOURCES_CODE,
+    CATALOG_PROP,
+    API_URL,
+    SPARQL_BIGDATA_URL,
 )
 
 
@@ -51,8 +57,16 @@ class TestImportEntityRequestUtils(TestCase):
 
 
 class TestSparqlRequestUtils(TestCase):
+    @mock.patch("utilities.request_utils.os.environ")
     @mock.patch("utilities.request_utils.wbi_core.FunctionsEngine.execute_sparql_query")
-    def test_extract_dataset_version_codes(self, mock_sparql_request):
+    def test_extract_dataset_version_codes(self, mock_sparql_request, mock_env):
+        test_env = {
+            SOURCE_ENTITY_PROP: "test_source_entity_prop",
+            GTFS_CATALOG_OF_SOURCES_CODE: "QGTFS_test",
+            GBFS_CATALOG_OF_SOURCES_CODE: "QGBFS_test",
+        }
+        mock_env.__getitem__.side_effect = test_env.__getitem__
+
         mock_sparql_request.return_value = {
             RESULTS: {
                 BINDINGS: [
@@ -63,7 +77,7 @@ class TestSparqlRequestUtils(TestCase):
                     },
                     {
                         "a": {
-                            VALUE: "http://wikibase.svc/entity/statement/Q78-a14a67ef-4ee9-a15d-b9de-d6be2e03d43d"
+                            VALUE: "http://wikibase.svc/entity/statement/QGTFS_test-a14a67ef-4ee9-a15d-b9de-d6be2e03d43"
                         }
                     },
                 ]
@@ -75,8 +89,12 @@ class TestSparqlRequestUtils(TestCase):
         under_test = extract_dataset_version_codes(test_entity_code)
         self.assertEqual(under_test, {"Q81"})
 
+    @mock.patch("utilities.request_utils.os.environ")
     @mock.patch("utilities.request_utils.wbi_core.FunctionsEngine.execute_sparql_query")
-    def test_extract_dataset_entity_codes(self, mock_sparql_request):
+    def test_extract_dataset_entity_codes(self, mock_sparql_request, mock_env):
+        test_env = {CATALOG_PROP: "test_catalog_prop"}
+        mock_env.__getitem__.side_effect = test_env.__getitem__
+
         mock_sparql_request.return_value = {
             RESULTS: {
                 BINDINGS: [

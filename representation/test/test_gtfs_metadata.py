@@ -25,7 +25,7 @@ class TestGtfsMetadata(TestCase):
         test_metadata_string = (
             "Dataset version name: 2021-01-10's STM's GTFS Schedule dataset #012345\n"
             "Main timezone: \n"
-            "All timezones: \n"
+            "Other timezones: \n"
             "Country code: \n"
             "Sub country code: \n"
             "Main language code: \n"

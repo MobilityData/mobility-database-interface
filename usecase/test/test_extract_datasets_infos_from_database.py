@@ -15,42 +15,56 @@ from utilities.constants import (
     VALUE,
     LABELS,
     ENGLISH,
+    STABLE_URL_PROP,
+    MD5_HASH_PROP,
+    GTFS_CATALOG_OF_SOURCES_CODE,
+    GBFS_CATALOG_OF_SOURCES_CODE,
 )
 
 
 class TestExtractDatabaseMd5(TestCase):
+    @mock.patch("usecase.extract_datasets_infos_from_database.os.environ")
     @mock.patch("usecase.extract_datasets_infos_from_database.wbi_core.ItemEngine")
     @mock.patch(
         "usecase.extract_datasets_infos_from_database.extract_dataset_version_codes"
     )
     def test_extract_database_md5_with_existing_entity_codes_should_return_md5_dict(
-        self, mock_versions_extractor, mock_item_engine
+        self, mock_versions_extractor, mock_item_engine, mock_env
     ):
+        test_env = {
+            MD5_HASH_PROP: "test_md5_prop",
+        }
+        mock_env.__getitem__.side_effect = test_env.__getitem__
         mock_versions_extractor.return_value = {"Q81"}
 
         test_entity = ["Q80"]
         test_md5 = {"md5_hash"}
 
         mock_item_engine.return_value.get_json_representation.return_value = {
-            CLAIMS: {"P61": [{MAINSNAK: {DATAVALUE: {VALUE: "md5_hash"}}}]}
+            CLAIMS: {"test_md5_prop": [{MAINSNAK: {DATAVALUE: {VALUE: "md5_hash"}}}]}
         }
 
         under_test = extract_previous_md5_hashes(test_entity)
         self.assertEqual(under_test, test_md5)
 
+    @mock.patch("usecase.extract_datasets_infos_from_database.os.environ")
     @mock.patch("usecase.extract_datasets_infos_from_database.wbi_core.ItemEngine")
     @mock.patch(
         "usecase.extract_datasets_infos_from_database.extract_dataset_version_codes"
     )
     def test_extract_database_md5_with_None_md5(
-        self, mock_versions_extractor, mock_item_engine
+        self, mock_versions_extractor, mock_item_engine, mock_env
     ):
+        test_env = {
+            MD5_HASH_PROP: "test_md5_prop",
+        }
+        mock_env.__getitem__.side_effect = test_env.__getitem__
         mock_versions_extractor.return_value = {"Q81"}
 
         test_entity = ["Q80"]
 
         mock_item_engine.return_value.get_json_representation.return_value = {
-            CLAIMS: {"P61": [{MAINSNAK: {DATAVALUE: {VALUE: None}}}]}
+            CLAIMS: {"test_md5_prop": [{MAINSNAK: {DATAVALUE: {VALUE: None}}}]}
         }
 
         under_test = extract_previous_md5_hashes(test_entity)
@@ -72,13 +86,18 @@ class TestExtractDatabaseMd5(TestCase):
 
 
 class TestExtractInfosTest(TestCase):
+    @mock.patch("usecase.extract_datasets_infos_from_database.os.environ")
     @mock.patch("usecase.extract_datasets_infos_from_database.wbi_core.ItemEngine")
     def test_extract_source_infos_with_default_parameters_should_return_dataset_infos(
-        self, mock_item_engine
+        self, mock_item_engine, mock_env
     ):
+        test_env = {
+            STABLE_URL_PROP: "test_url_prop",
+        }
+        mock_env.__getitem__.side_effect = test_env.__getitem__
         mock_item_engine.return_value.get_json_representation.return_value = {
             CLAIMS: {
-                "P55": [
+                "test_url_prop": [
                     {
                         MAINSNAK: {
                             DATAVALUE: {
@@ -102,6 +121,7 @@ class TestExtractInfosTest(TestCase):
 
 
 class TestExtractDatasetsInfosFromDatabase(TestCase):
+    @mock.patch("usecase.extract_datasets_infos_from_database.os.environ")
     @mock.patch(
         "usecase.extract_datasets_infos_from_database.extract_source_entity_codes"
     )
@@ -114,7 +134,12 @@ class TestExtractDatasetsInfosFromDatabase(TestCase):
         mock_md5_extractor,
         mock_source_infos_extractor,
         mock_entity_codes_extractor,
+        mock_env,
     ):
+        test_env = {
+            GTFS_CATALOG_OF_SOURCES_CODE: "test_gtfs_catalog",
+        }
+        mock_env.__getitem__.side_effect = test_env.__getitem__
         mock_entity_codes_extractor.return_value = ["Q80"]
         mock_source_infos_extractor.return_value = "test_url", "test_name"
         mock_md5_extractor.return_value = {"test_md5_hash"}
@@ -129,6 +154,7 @@ class TestExtractDatasetsInfosFromDatabase(TestCase):
         self.assertEqual(under_test_dataset_info.source_name, "test_name")
         self.assertEqual(under_test_dataset_info.previous_md5_hashes, {"test_md5_hash"})
 
+    @mock.patch("usecase.extract_datasets_infos_from_database.os.environ")
     @mock.patch(
         "usecase.extract_datasets_infos_from_database.extract_source_entity_codes"
     )
@@ -141,7 +167,12 @@ class TestExtractDatasetsInfosFromDatabase(TestCase):
         mock_md5_extractor,
         mock_source_infos_extractor,
         mock_entity_codes_extractor,
+        mock_env,
     ):
+        test_env = {
+            GBFS_CATALOG_OF_SOURCES_CODE: "test_gbfs_catalog",
+        }
+        mock_env.__getitem__.side_effect = test_env.__getitem__
         mock_entity_codes_extractor.return_value = ["Q80"]
         mock_source_infos_extractor.return_value = "test_url", "test_name"
         mock_md5_extractor.return_value = {"test_md5_hash"}
