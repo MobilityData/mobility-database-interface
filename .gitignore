@@ -3,6 +3,9 @@
 .idea
 env/
 staging_credentials.json
+production_credentials.json
+properties_map.json
+entities_map.json
 
 # Python
 __pycache__/

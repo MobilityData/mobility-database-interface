@@ -8,5 +8,6 @@ mobility-database-interface
    repository
    representation
    request_manager
+   transfer_entities
    usecase
    utilities
