@@ -8,6 +8,6 @@ mobility-database-interface
    repository
    representation
    request_manager
-   transfer_basic_gtfs_metadata_entities
+   transfer_entities
    usecase
    utilities
