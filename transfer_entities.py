@@ -170,6 +170,3 @@ if __name__ == "__main__":
                 entity.set_description(description, ENGLISH)
 
             entity.write(login_instance)
-
-    else:
-        print("The execution mode is required.")
