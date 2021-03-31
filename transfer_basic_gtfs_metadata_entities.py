@@ -16,7 +16,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--staging-entities",
         action="store",
-        help="List of the staging entities to transfer to production.",
+        help="List of the staging entities to transfer to production. Format required: 'Q1 Q2 ... QN'",
     )
     parser.add_argument(
         "--path-to-props-map",
