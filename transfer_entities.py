@@ -2,7 +2,22 @@ import argparse
 import json
 from wikibaseintegrator import wbi_core, wbi_login
 from wikibaseintegrator.wbi_config import config as wbi_config
-from utilities.constants import SVC_URL, USERNAME, PASSWORD, ENGLISH
+from utilities.constants import (
+    SVC_URL,
+    USERNAME,
+    PASSWORD,
+    ENGLISH,
+    MAINSNAK,
+    VALUE,
+    LABELS,
+    DATAVALUE,
+    CLAIMS,
+    ID,
+    STRING,
+    WIKIBASE_ENTITY_ID,
+    DESCRIPTIONS,
+    TYPE,
+)
 
 
 if __name__ == "__main__":
@@ -67,6 +82,8 @@ if __name__ == "__main__":
 
     # ----------------------------------------
     # Transfer data from staging to production
+    # N.B. Brackets are used to get items in properties_map and entities_map
+    # when it is REQUIRED for the item to be represented in the map.
     # ----------------------------------------
 
     # Set Wikibase Integrator config for production
@@ -84,18 +101,75 @@ if __name__ == "__main__":
     # Create entities on the production database
     if args.mode == "create":
         entities_map = {}
-        for staging_entity_id, data in staging_entities_data.items():
+        for staging_entity_id, staging_data in staging_entities_data.items():
             entity = wbi_core.ItemEngine()
 
-            label = data.get("labels", {}).get("en", {}).get("value")
+            label = staging_data.get(LABELS, {}).get(ENGLISH, {}).get(VALUE)
             if label is not None:
                 entity.set_label(label, ENGLISH)
 
             prod_entity_id = entity.write(login_instance)
             entities_map[staging_entity_id] = prod_entity_id
 
-        print(entities_map)
+        # Save entities map
         with open(args.path_to_entities_map, "w") as f:
             json.dump(entities_map, f)
 
-    # TODO update the properties of the entities
+    # Update entities on the production database
+    elif args.mode == "update":
+
+        # Load entities map
+        with open(args.path_to_entities_map) as f:
+            entities_map = json.load(f)
+
+        for staging_entity_id, staging_data in staging_entities_data.items():
+            prod_entity_data = []
+            for staging_prop_key, staging_prop_elems in staging_data.get(
+                CLAIMS, {}
+            ).items():
+                for elem in staging_prop_elems:
+                    elem_type = elem.get(MAINSNAK, {}).get(DATAVALUE, {}).get(TYPE)
+                    if elem_type == WIKIBASE_ENTITY_ID:
+                        staging_elem_id = (
+                            elem.get(MAINSNAK, {})
+                            .get(DATAVALUE, {})
+                            .get(VALUE, {})
+                            .get(ID)
+                        )
+
+                        # Get the prod entity corresponding to the staging entity using the entities map.
+                        # Here the "get" function is used instead of brackets
+                        # because some entities won't exist in production.
+                        # For instance, test sources on staging won't be added to production.
+                        # Make sure that EVERY entity needed for properties references of another entity
+                        # in the production database were created PRIOR to this step.
+                        value = entities_map.get(staging_elem_id)
+                        if value is not None:
+                            prod_entity_data.append(
+                                wbi_core.ItemID(
+                                    value=value,
+                                    prop_nr=properties_map[staging_prop_key],
+                                )
+                            )
+                    elif elem_type == STRING:
+                        value = elem.get(MAINSNAK, {}).get(DATAVALUE, {}).get(VALUE)
+                        if value is not None:
+                            prod_entity_data.append(
+                                wbi_core.String(
+                                    value=value,
+                                    prop_nr=properties_map[staging_prop_key],
+                                )
+                            )
+
+            entity = wbi_core.ItemEngine(
+                data=prod_entity_data, item_id=entities_map[staging_entity_id]
+            )
+
+            description = staging_data.get(DESCRIPTIONS, {}).get(ENGLISH, {}).get(VALUE)
+            if description is not None:
+                entity.set_description(description, ENGLISH)
+
+            entity.write(login_instance)
+
+    else:
+        print("The execution mode is required.")
