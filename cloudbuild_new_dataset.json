@@ -1,0 +1,18 @@
+{
+ "steps": [
+  {
+     "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+     "args": [
+       "gcloud",
+       "functions",
+       "deploy",
+       "add-dataset-to-source-${_ENV}",
+       "--entry-point=add_dataset_to_source_cf",
+       "--runtime=python39",
+       "--trigger-topic=before-new-dataset-${_ENV}",
+       "--timeout=540",
+       "--set-env-vars=ENV=${_ENV},PROJECT_ID=$PROJECT_ID"
+     ]
+   }
+  ]
+}

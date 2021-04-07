@@ -2,7 +2,7 @@ from unittest import TestCase, mock
 from unittest.mock import MagicMock
 from representation.gtfs_representation import GtfsRepresentation
 from repository.data_repository import DataRepository
-from usecase.load_dataset import load_dataset, GTFS_TYPE
+from usecase.load_dataset import load_datasets, GTFS_TYPE
 from representation.dataset_infos import DatasetInfos
 
 
@@ -15,7 +15,7 @@ class TestLoadDataset(TestCase):
         mock_datatype.__class__ = str
         mock_datatype.__str__.return_value = GTFS_TYPE
         self.assertRaises(
-            TypeError, load_dataset, None, mock_datasets_infos, str(mock_datatype)
+            TypeError, load_datasets, None, mock_datasets_infos, str(mock_datatype)
         )
 
     def test_load_dataset_with_invalid_data_repository_should_raise_exception(self):
@@ -27,7 +27,7 @@ class TestLoadDataset(TestCase):
         mock_datatype.__str__.return_value = GTFS_TYPE
         self.assertRaises(
             TypeError,
-            load_dataset,
+            load_datasets,
             mock_datasets_infos,
             mock_datasets_infos,
             str(mock_datatype),
@@ -42,7 +42,7 @@ class TestLoadDataset(TestCase):
         mock_datatype.__class__ = str
         mock_datatype.__str__.return_value = GTFS_TYPE
         self.assertRaises(
-            TypeError, load_dataset, mock_data_repository, None, str(mock_datatype)
+            TypeError, load_datasets, mock_data_repository, None, str(mock_datatype)
         )
 
     @mock.patch("repository.data_repository.DataRepository")
@@ -58,7 +58,7 @@ class TestLoadDataset(TestCase):
         mock_datatype.__str__.return_value = GTFS_TYPE
         self.assertRaises(
             TypeError,
-            load_dataset,
+            load_datasets,
             mock_data_repository,
             mock_datasets_infos,
             str(mock_datatype),
@@ -67,7 +67,7 @@ class TestLoadDataset(TestCase):
         mock_datasets_infos = MagicMock()
         self.assertRaises(
             TypeError,
-            load_dataset,
+            load_datasets,
             mock_data_repository,
             str(mock_datasets_infos),
             str(mock_datatype),
@@ -82,7 +82,7 @@ class TestLoadDataset(TestCase):
         mock_dataset_infos.__class__ = DatasetInfos
         mock_datasets_infos = [mock_dataset_infos]
         self.assertRaises(
-            TypeError, load_dataset, mock_data_repository, mock_datasets_infos, None
+            TypeError, load_datasets, mock_data_repository, mock_datasets_infos, None
         )
 
     @mock.patch("repository.data_repository.DataRepository")
@@ -95,7 +95,7 @@ class TestLoadDataset(TestCase):
         mock_datasets_infos = [mock_dataset_infos]
         self.assertRaises(
             TypeError,
-            load_dataset,
+            load_datasets,
             mock_data_repository,
             mock_datasets_infos,
             mock_datasets_infos,
@@ -123,7 +123,7 @@ class TestLoadDataset(TestCase):
         mock_datatype.__class__ = str
         mock_datatype.__str__.return_value = GTFS_TYPE
 
-        under_test = load_dataset(mock_data_repository, [], str(mock_datatype))
+        under_test = load_datasets(mock_data_repository, [], str(mock_datatype))
 
         self.assertEqual(under_test.get_dataset_representations(), {})
         mock_data_repository.assert_not_called()
@@ -163,7 +163,7 @@ class TestLoadDataset(TestCase):
         mock_datatype.__class__ = str
         mock_datatype.__str__.return_value = GTFS_TYPE
 
-        under_test = load_dataset(
+        under_test = load_datasets(
             mock_data_repository, mock_datasets_infos, str(mock_datatype)
         )
 

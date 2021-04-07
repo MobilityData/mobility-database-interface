@@ -6,7 +6,7 @@ GTFS_TYPE = "GTFS"
 GBFS_TYPE = "GBFS"
 
 
-def load_dataset(data_repository, datasets_infos, dataset_type):
+def load_datasets(data_repository, datasets_infos, dataset_type):
     """Load the datasets in memory in the data repository.
     :param data_repository: Data repository containing the dataset representations.
     :param datasets_infos: A list of dataset infos, for the datasets to load.
@@ -23,13 +23,18 @@ def load_dataset(data_repository, datasets_infos, dataset_type):
 
     # Load the datasets indicated in datasets_infos
     for dataset_infos in datasets_infos:
-        print(
-            f"--------------- Loading dataset : {dataset_infos.zip_path} ---------------\n"
-        )
-        dataset_representation = build_representation(dataset_type, dataset_infos)
-        # TODO modify dataset key in data repository
-        data_repository.add_dataset_representation(
-            dataset_infos.entity_code, dataset_representation
-        )
+        data_repository = load_dataset(data_repository, dataset_infos, dataset_type)
 
+    return data_repository
+
+
+def load_dataset(data_repository, dataset_infos, dataset_type):
+    print(
+        f"--------------- Loading dataset : {dataset_infos.zip_path} ---------------\n"
+    )
+    dataset_representation = build_representation(dataset_type, dataset_infos)
+    # TODO modify dataset key in data repository
+    data_repository.add_dataset_representation(
+        dataset_infos.entity_code, dataset_representation
+    )
     return data_repository

@@ -1,0 +1,20 @@
+{
+ "steps": [
+  {
+     "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+     "args": [
+       "gcloud",
+       "functions",
+       "deploy",
+       "add-new-source-${_ENV}",
+       "--entry-point=add_new_source_cf",
+       "--runtime=python39",
+       "--service-account=pub-sub-publisher@top-glass-307718.iam.gserviceaccount.com",
+       "--trigger-topic=before-new-source-${_ENV}",
+       "--timeout=540",
+       "--set-env-vars=ENV=${_ENV},PROJECT_ID=$PROJECT_ID",
+       "--env-vars-file=staging.yaml"
+     ]
+   }
+  ]
+}

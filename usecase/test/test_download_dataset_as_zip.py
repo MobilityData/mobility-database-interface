@@ -3,7 +3,7 @@ from unittest.mock import MagicMock
 import os
 import warnings
 from representation.dataset_infos import DatasetInfos
-from usecase.download_dataset_as_zip import download_dataset_as_zip
+from usecase.download_dataset_as_zip import download_datasets_as_zip
 
 
 def ignore_resource_warnings(test_func):
@@ -22,14 +22,19 @@ class TestDownloadDatasetAsZip(TestCase):
         mock_dataset_infos = MagicMock()
         mock_dataset_infos.__class__ = DatasetInfos
         mock_datasets_infos = [mock_dataset_infos]
-        self.assertRaises(TypeError, download_dataset_as_zip, None, mock_datasets_infos)
+        self.assertRaises(
+            TypeError, download_datasets_as_zip, None, mock_datasets_infos
+        )
 
     def test_download_dataset_with_invalid_path_to_data_should_raise_exception(self):
         mock_dataset_infos = MagicMock()
         mock_dataset_infos.__class__ = DatasetInfos
         mock_datasets_infos = [mock_dataset_infos]
         self.assertRaises(
-            TypeError, download_dataset_as_zip, mock_datasets_infos, mock_datasets_infos
+            TypeError,
+            download_datasets_as_zip,
+            mock_datasets_infos,
+            mock_datasets_infos,
         )
 
     def test_download_dataset_with_none_datasets_infos_should_raise_exception(self):
@@ -37,7 +42,7 @@ class TestDownloadDatasetAsZip(TestCase):
         mock_path_to_data.__class__ = str
         mock_path_to_data.__str__.return_value = "./"
         self.assertRaises(
-            TypeError, download_dataset_as_zip, str(mock_path_to_data), None
+            TypeError, download_datasets_as_zip, str(mock_path_to_data), None
         )
 
     def test_download_dataset_with_invalid_urls_should_raise_exception(self):
@@ -48,13 +53,13 @@ class TestDownloadDatasetAsZip(TestCase):
         mock_dataset_infos.__class__ = str
         mock_datasets_infos = [mock_dataset_infos]
         self.assertRaises(
-            TypeError, download_dataset_as_zip, mock_path_to_data, mock_datasets_infos
+            TypeError, download_datasets_as_zip, mock_path_to_data, mock_datasets_infos
         )
 
         mock_datasets_infos = MagicMock()
         self.assertRaises(
             TypeError,
-            download_dataset_as_zip,
+            download_datasets_as_zip,
             mock_path_to_data,
             str(mock_datasets_infos),
         )
@@ -68,7 +73,7 @@ class TestDownloadDatasetAsZip(TestCase):
 
         mock_datasets_infos = []
 
-        under_test = download_dataset_as_zip(
+        under_test = download_datasets_as_zip(
             str(mock_path_to_data), mock_datasets_infos
         )
 
@@ -93,7 +98,7 @@ class TestDownloadDatasetAsZip(TestCase):
         type(mock_dataset_infos).url = test_url
         mock_datasets_infos = [mock_dataset_infos]
 
-        under_test = download_dataset_as_zip(
+        under_test = download_datasets_as_zip(
             str(mock_path_to_data), mock_datasets_infos
         )
         self.assertEqual(len(under_test), 1)

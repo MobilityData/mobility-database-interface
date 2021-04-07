@@ -1,0 +1,219 @@
+import base64
+import json
+import os
+
+from google import pubsub_v1
+from wikibaseintegrator import wbi_core, wbi_login
+from wikibaseintegrator.wbi_config import config as wbi_config
+
+from repository.data_repository import DataRepository
+from representation.dataset_infos import DatasetInfos
+from representation.dataset_representation_factory import GTFS_TYPE
+from usecase.create_dataset_entity_for_gtfs_metadata import (
+    create_dataset_entity_for_gtfs_metadata,
+)
+from usecase.download_dataset_as_zip import download_dataset_as_zip
+from usecase.load_dataset import load_dataset
+from usecase.process_agencies_count_for_gtfs_metadata import (
+    process_agencies_count_for_gtfs_metadata,
+)
+from usecase.process_geopraphical_boundaries_for_gtfs_metadata import (
+    process_bounding_box_for_gtfs_metadata,
+    process_bounding_octagon_for_gtfs_metadata,
+)
+from usecase.process_main_language_code_for_gtfs_metadata import (
+    process_main_language_code_for_gtfs_metadata,
+)
+from usecase.process_md5 import process_md5
+from usecase.process_routes_count_by_type_for_gtfs_metadata import (
+    process_routes_count_by_type_for_gtfs_metadata,
+)
+from usecase.process_service_date_for_gtfs_metadata import (
+    process_start_service_date_for_gtfs_metadata,
+    process_end_service_date_for_gtfs_metadata,
+)
+from usecase.process_stops_count_by_type_for_gtfs_metadata import (
+    process_stops_count_by_type_for_gtfs_metadata,
+)
+from usecase.process_timestamp_for_gtfs_metadata import (
+    process_start_timestamp_for_gtfs_metadata,
+    process_end_timestamp_for_gtfs_metadata,
+)
+from usecase.process_timezones_for_gtfs_metadata import (
+    process_timezones_for_gtfs_metadata,
+)
+from utilities.constants import (
+    API_URL,
+    SVC_URL,
+    SPARQL_BIGDATA_URL,
+    STAGING_API_URL,
+    STAGING_SPARQL_BIGDATA_URL,
+    USERNAME,
+    PASSWORD,
+    INSTANCE_PROP,
+    GTFS_SCHEDULE_SOURCE_CODE,
+    STABLE_URL_PROP,
+    CATALOG_PROP,
+    GTFS_CATALOG_OF_SOURCES_CODE,
+    LABELS,
+    ENGLISH,
+    VALUE,
+    SOURCE_NAME,
+    DATASET_URL,
+    SOURCE_ENTITY_ID,
+)
+
+
+def decode_message(event):
+    if "data" not in event:
+        return None
+    json_message = base64.b64decode(event["data"]).decode("utf-8")
+    message = json.loads(json_message)
+    return message
+
+
+def add_dataset_to_source(source_name, dataset_url, source_entity_id, data_type):
+    # Load Wikibase Integrator config with the environment
+    api_url = os.getenv(API_URL, STAGING_API_URL)
+    wbi_config["MEDIAWIKI_API_URL"] = api_url
+    wbi_config["SPARQL_ENDPOINT_URL"] = os.getenv(
+        SPARQL_BIGDATA_URL, STAGING_SPARQL_BIGDATA_URL
+    )
+    wbi_config["WIKIBASE_URL"] = SVC_URL
+
+    # Initialize DataRepository
+    data_repository = DataRepository()
+
+    dataset_infos = DatasetInfos()
+    dataset_infos.source_name = source_name
+    dataset_infos.url = dataset_url
+    dataset_infos.entity_code = source_entity_id
+    # Download datasets zip file
+    dataset_infos = download_dataset_as_zip(f"./tmp/{source_name}", dataset_infos)
+
+    # Process the MD5 hash
+    dataset_infos = process_md5(dataset_infos)
+
+    # Load the datasets in memory in the data repository
+    data_repository = load_dataset(data_repository, dataset_infos, data_type)
+
+    # Process each dataset representation in the data_repository
+    dataset_representations = []
+    for (
+        dataset_key,
+        dataset_representation,
+    ) in data_repository.get_dataset_representations().items():
+        dataset_representation = process_start_service_date_for_gtfs_metadata(
+            dataset_representation
+        )
+        dataset_representation = process_end_service_date_for_gtfs_metadata(
+            dataset_representation
+        )
+        dataset_representation = process_start_timestamp_for_gtfs_metadata(
+            dataset_representation
+        )
+        dataset_representation = process_end_timestamp_for_gtfs_metadata(
+            dataset_representation
+        )
+        dataset_representation = process_main_language_code_for_gtfs_metadata(
+            dataset_representation
+        )
+        dataset_representation = process_timezones_for_gtfs_metadata(
+            dataset_representation
+        )
+        dataset_representation = process_bounding_box_for_gtfs_metadata(
+            dataset_representation
+        )
+        dataset_representation = process_bounding_octagon_for_gtfs_metadata(
+            dataset_representation
+        )
+        dataset_representation = process_agencies_count_for_gtfs_metadata(
+            dataset_representation
+        )
+        dataset_representation = process_routes_count_by_type_for_gtfs_metadata(
+            dataset_representation
+        )
+        dataset_representation = process_stops_count_by_type_for_gtfs_metadata(
+            dataset_representation
+        )
+        dataset_representation = create_dataset_entity_for_gtfs_metadata(
+            dataset_representation, api_url
+        )
+        dataset_representations.append(dataset_representation)
+    return dataset_representations
+
+
+def add_source_in_db(source_name, stable_url):
+    """"""
+    # Load Wikibase Integrator config with the environment
+    wbi_config["MEDIAWIKI_API_URL"] = os.environ[API_URL]
+    wbi_config["SPARQL_ENDPOINT_URL"] = os.environ[SPARQL_BIGDATA_URL]
+    wbi_config["WIKIBASE_URL"] = SVC_URL
+
+    login_instance = wbi_login.Login(
+        user=os.environ[USERNAME], pwd=os.environ[PASSWORD], use_clientlogin=True
+    )
+
+    source_instance_of = wbi_core.ItemID(
+        prop_nr=os.environ[INSTANCE_PROP], value=os.environ[GTFS_SCHEDULE_SOURCE_CODE]
+    )
+    source_stable_url = wbi_core.String(
+        value=stable_url, prop_nr=os.environ[STABLE_URL_PROP]
+    )
+    source_catalog_ref = wbi_core.ItemID(
+        prop_nr=os.environ[CATALOG_PROP],
+        value=os.environ[GTFS_CATALOG_OF_SOURCES_CODE],  # fix this
+    )
+    source_catalog_entity = wbi_core.ItemEngine(
+        item_id=os.environ[GTFS_CATALOG_OF_SOURCES_CODE]
+    ).get_json_representation()
+
+    source_data = [source_instance_of, source_stable_url, source_catalog_ref]
+
+    source_entity = wbi_core.ItemEngine()
+    source_entity.set_label(
+        f"{source_name}'s {source_catalog_entity[LABELS][ENGLISH][VALUE]}"
+    )
+
+    source_entity.data = source_data
+    source_entity_id = source_entity.write(login=login_instance)
+
+    return source_entity_id
+
+
+def add_source_and_dispatch(source_name, stable_url, versions):
+    publisher = pubsub_v1.PublisherClient()
+
+    source_entity_id = add_source_in_db(source_name, stable_url)
+
+    for dataset_version_url in reversed(versions):
+        # adding old datasets first
+        message = {
+            SOURCE_NAME: source_name,
+            DATASET_URL: dataset_version_url,
+            SOURCE_ENTITY_ID: source_entity_id,
+        }
+        publish_dispatcher_message(publisher, message)
+    message = {
+        SOURCE_NAME: source_name,
+        DATASET_URL: stable_url,
+        SOURCE_ENTITY_ID: source_entity_id,
+    }
+    publish_dispatcher_message(publisher, message)
+    return source_entity_id
+
+
+def publish_message(publisher, topic_name, message):
+    project_id = os.environ["PROJECT_ID"]
+    topic_path = f"projects/{project_id}/topics/{topic_name}"
+
+    message_json = json.dumps(message)
+    encoded_message = message_json.encode("utf-8")
+    future = publisher.publish(topic_path, encoded_message)
+    return future.result()
+
+
+def publish_dispatcher_message(publisher, message):
+    topic_name = os.environ["TOPIC_DISPATCHER"]
+    published = publish_message(publisher, topic_name, message)
+    return published
