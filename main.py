@@ -49,6 +49,7 @@ from utilities.constants import (
     USERNAME,
     PASSWORD,
 )
+from utilities.report_utils import clean_report
 
 
 if __name__ == "__main__":
@@ -78,7 +79,25 @@ if __name__ == "__main__":
         default="./staging_credentials.json",
         help="Path to the credentials.",
     )
+    parser.add_argument(
+        "--path-to-validation-report",
+        action="store",
+        default="./report.json",
+        help="Path to the validation report.",
+    )
+    parser.add_argument(
+        "--path-to-system-report",
+        action="store",
+        default="./system_errors.json",
+        help="Path to the system errors report.",
+    )
     args = parser.parse_args()
+
+    # Load and clean the reports obtained from the validation output
+    with open(args.path_to_validation_report, "r") as f:
+        validation_report = clean_report(json.load(f))
+    with open(args.path_to_system_report, "r") as f:
+        system_report = clean_report(json.load(f))
 
     # Load environment from dotenv file and credentials json file
     load_dotenv(args.path_to_env_var)
