@@ -50,6 +50,7 @@ from utilities.constants import (
     PASSWORD,
 )
 from utilities.report_utils import clean_report
+from utilities.validators import validate_report
 
 
 if __name__ == "__main__":
