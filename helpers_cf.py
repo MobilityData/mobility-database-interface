@@ -8,7 +8,6 @@ from wikibaseintegrator.wbi_config import config as wbi_config
 
 from repository.data_repository import DataRepository
 from representation.dataset_infos import DatasetInfos
-from representation.dataset_representation_factory import GTFS_TYPE
 from usecase.create_dataset_entity_for_gtfs_metadata import (
     create_dataset_entity_for_gtfs_metadata,
 )
@@ -61,6 +60,8 @@ from utilities.constants import (
     SOURCE_NAME,
     DATASET_URL,
     SOURCE_ENTITY_ID,
+    GOOGLE_CLOUD_PROJECT,
+    TOPIC_DISPATCHER,
 )
 
 
@@ -204,7 +205,15 @@ def add_source_and_dispatch(source_name, stable_url, versions):
 
 
 def publish_message(publisher, topic_name, message):
-    project_id = os.environ["PROJECT_ID"]
+    project_id = os.environ[GOOGLE_CLOUD_PROJECT]
+    if not topic_name:
+        raise Exception(
+            f"env var TOPIC_DISPATCHER is badly set. It's current value is: {topic_name}"
+        )
+    if not project_id:
+        raise Exception(
+            f"env var GOOGLE_CLOUD_PROJECT is badly set. It's current value is: {project_id}"
+        )
     topic_path = f"projects/{project_id}/topics/{topic_name}"
 
     message_json = json.dumps(message)
@@ -214,6 +223,6 @@ def publish_message(publisher, topic_name, message):
 
 
 def publish_dispatcher_message(publisher, message):
-    topic_name = os.environ["TOPIC_DISPATCHER"]
+    topic_name = os.environ[TOPIC_DISPATCHER]
     published = publish_message(publisher, topic_name, message)
     return published
