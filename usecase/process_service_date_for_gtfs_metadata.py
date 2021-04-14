@@ -2,6 +2,39 @@ import pandas as pd
 
 from utilities.temporal_utils import get_gtfs_dates_by_type
 from utilities.validators import validate_gtfs_representation
+from utilities.notices import (
+    MISSING_CALENDAR_AND_CALENDAR_DATE_FILES,
+    DUPLICATED_COLUMN,
+    DUPLICATE_KEY,
+    EMPTY_FILE,
+    INVALID_COLOR,
+    INVALID_CURRENCY,
+    INVALID_DATE,
+    INVALID_EMAIL,
+    INVALID_FLOAT,
+    INVALID_INTEGER,
+    INVALID_LANGUAGE_CODE,
+    INVALID_PHONE_NUMBER,
+    INVALID_ROW_LENGTH,
+    INVALID_TIME,
+    INVALID_TIMEZONE,
+    INVALID_URL,
+    LEADING_OR_TRAILING_WHITESPACES,
+    MISSING_REQUIRED_COLUMN,
+    MISSING_REQUIRED_FIELD,
+    MISSING_REQUIRED_FILE,
+    NEW_LINE_IN_VALUE,
+    NUMBER_OUT_OF_RANGE,
+    START_AND_END_RANGE_OUT_OF_ORDER,
+    START_AND_END_RANGE_EQUAL,
+    SAME_NAME_AND_DESCRIPTION_FOR_ROUTE,
+    IO_ERROR,
+    THREAD_EXECUTION_ERROR,
+    THREAD_INTERRUPTED_ERROR,
+    URI_SYNTAX_ERROR,
+    RUNTIME_EXCEPTION_IN_LOADER_ERROR,
+    RUNTIME_EXCEPTION_IN_VALIDATOR_ERROR,
+)
 
 PD_DATE_FORMAT = "%Y%m%d"
 SERVICE_DATE_FORMAT = "%Y-%m-%d"
@@ -24,6 +57,45 @@ END_DATE_MAP = {
     FEED_DATE_KEY: "feed_end_date",
     MIN_MAX_ATTR: "max",
     SERVICE_DATE_ATTR: "end_service_date",
+}
+
+SERVICE_DATE_NOTICES = {
+    "validation_errors_standalone": {MISSING_CALENDAR_AND_CALENDAR_DATE_FILES},
+    "validation_errors_with_filename": {
+        DUPLICATED_COLUMN,
+        DUPLICATE_KEY,
+        EMPTY_FILE,
+        INVALID_COLOR,
+        INVALID_CURRENCY,
+        INVALID_DATE,
+        INVALID_EMAIL,
+        INVALID_FLOAT,
+        INVALID_INTEGER,
+        INVALID_LANGUAGE_CODE,
+        INVALID_PHONE_NUMBER,
+        INVALID_ROW_LENGTH,
+        INVALID_TIME,
+        INVALID_TIMEZONE,
+        INVALID_URL,
+        LEADING_OR_TRAILING_WHITESPACES,
+        MISSING_REQUIRED_COLUMN,
+        MISSING_REQUIRED_FIELD,
+        MISSING_REQUIRED_FILE,
+        NEW_LINE_IN_VALUE,
+        NUMBER_OUT_OF_RANGE,
+        START_AND_END_RANGE_OUT_OF_ORDER,
+        START_AND_END_RANGE_EQUAL,
+        SAME_NAME_AND_DESCRIPTION_FOR_ROUTE,
+    },
+    "system_errors_standalone": {
+        IO_ERROR,
+        THREAD_EXECUTION_ERROR,
+        THREAD_INTERRUPTED_ERROR,
+        URI_SYNTAX_ERROR,
+    },
+    "system_errors_with_filename": {RUNTIME_EXCEPTION_IN_LOADER_ERROR},
+    "system_errors_with_classname": {RUNTIME_EXCEPTION_IN_VALIDATOR_ERROR},
+    "filename": {"feed_info.txt", "calendar.txt", "calendar_dates.txt"},
 }
 
 

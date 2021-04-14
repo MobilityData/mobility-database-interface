@@ -41,6 +41,7 @@ from usecase.process_timestamp_for_gtfs_metadata import (
 from usecase.create_dataset_entity_for_gtfs_metadata import (
     create_dataset_entity_for_gtfs_metadata,
 )
+import scenarios.gtfs_metadata_scenario as gtfs_metadata_scenario
 from utilities.constants import (
     SPARQL_URL,
     API_URL,
@@ -49,8 +50,7 @@ from utilities.constants import (
     USERNAME,
     PASSWORD,
 )
-from utilities.report_utils import clean_report
-from utilities.validators import validate_report
+from utilities.report_utils import clean_report, merge_reports, apply_report_to_scenario
 
 
 if __name__ == "__main__":
@@ -99,6 +99,12 @@ if __name__ == "__main__":
         validation_report = clean_report(json.load(f))
     with open(args.path_to_system_report, "r") as f:
         system_report = clean_report(json.load(f))
+
+    # Merge both report into one
+    report = merge_reports(validation_report, system_report)
+
+    # Generating the use cases to execute using the reports and the scenario
+    use_cases = apply_report_to_scenario(report, gtfs_metadata_scenario.SCENARIO)
 
     # Load environment from dotenv file and credentials json file
     load_dotenv(args.path_to_env_var)

@@ -1,0 +1,97 @@
+#####################################
+# Standalone validation error notices
+#####################################
+
+# agency.txt
+INCONSISTENT_AGENCY_TIMEZONE = "inconsistent_agency_timezone"
+
+# stops.txt
+STATION_WITH_PARENT_STATION = "station_with_parent_station"
+LOCATION_WITHOUT_PARENT_STATION = "location_without_parent_station"
+WRONG_PARENT_LOCATION_TYPE = "wrong_parent_location_type"
+
+# routes.txt
+ROUTE_BOTH_SHORT_AND_LONG_NAME_MISSING = "route_both_short_and_long_name_missing"
+
+# trips.txt, stop_times.txt, calendar.txt and calendar_dates.txt
+BLOCK_TRIPS_WITH_OVERLAPPING_STOP_TIMES = "block_trips_with_overlapping_stop_times"
+
+# stop_times.txt
+STOP_TIME_WITH_ONLY_ARRIVAL_OR_DEPARTURE_TIME = (
+    "stop_time_with_only_arrival_or_departure_time"
+)
+STOP_TIME_WITH_ARRIVAL_BEFORE_PREVIOUS_DEPARTURE_TIME = (
+    "stop_time_with_arrival_before_previous_departure_time"
+)
+DECREASING_OR_EQUAL_STOP_TIME_DISTANCE = "decreasing_or_equal_stop_time_distance"
+MISSING_TRIP_EDGE = "missing_trip_edge"
+
+# calendar.txt and calendar_dates.txt
+MISSING_CALENDAR_AND_CALENDAR_DATE_FILES = "missing_calendar_and_calendar_date_files"
+
+# fare_rules.txt
+DUPLICATE_FARE_RULE_ZONE_ID_FIELDS = "duplicate_fare_rule_zone_id_fields"
+
+# shapes.txt
+DECREASING_OR_EQUAL_SHAPE_DISTANCE = "decreasing_or_equal_shape_distance"
+
+# frequencies.txt
+OVERLAPPING_FREQUENCY = "overlapping_frequency"
+
+
+########################################
+# Validation error notices with filename
+########################################
+DUPLICATED_COLUMN = "duplicated_column"
+DUPLICATE_KEY = "duplicate_key"
+EMPTY_FILE = "empty_file"
+INVALID_COLOR = "invalid_color"
+INVALID_CURRENCY = "invalid_currency"
+INVALID_DATE = "invalid_date"
+INVALID_EMAIL = "invalid_email"
+INVALID_FLOAT = "invalid_float"
+INVALID_INTEGER = "invalid_integer"
+INVALID_LANGUAGE_CODE = "invalid_language_code"
+INVALID_PHONE_NUMBER = "invalid_phone_number"
+INVALID_ROW_LENGTH = "invalid_row_length"
+INVALID_TIME = "invalid_time"
+INVALID_TIMEZONE = "invalid_timezone"
+INVALID_URL = "invalid_url"
+LEADING_OR_TRAILING_WHITESPACES = "leading_or_trailing_whitespaces"
+MISSING_REQUIRED_COLUMN = "missing_required_column"
+MISSING_REQUIRED_FIELD = "missing_required_field"
+MISSING_REQUIRED_FILE = "missing_required_file"
+NEW_LINE_IN_VALUE = "new_line_in_value"
+NUMBER_OUT_OF_RANGE = "number_out_of_range"
+START_AND_END_RANGE_OUT_OF_ORDER = "start_and_end_range_out_of_order"
+START_AND_END_RANGE_EQUAL = "start_and_end_range_equal"
+SAME_NAME_AND_DESCRIPTION_FOR_ROUTE = "same_name_and_description_for_route"
+
+
+#########################################################
+# Validation error notices were child file is problematic
+#########################################################
+FOREIGN_KEY_VIOLATION = "foreign_key_violation"
+
+
+#################################
+# Standalone system error notices
+#################################
+IO_ERROR = "io_error"  # TODO verify notice code because of uppercase in class name
+THREAD_EXECUTION_ERROR = "thread_execution_error"
+THREAD_INTERRUPTED_ERROR = "thread_interrupted_error"
+URI_SYNTAX_ERROR = (
+    "uri_syntax_error"  # TODO verify notice code because of uppercase in class name
+)
+
+
+####################################
+# System error notices with filename
+####################################
+RUNTIME_EXCEPTION_IN_LOADER_ERROR = "runtime_exception_in_loader_error"
+
+
+###############################################
+# System error notices with validator classname
+###############################################
+RUNTIME_EXCEPTION_IN_VALIDATOR_ERROR = "runtime_exception_in_validator_error"
