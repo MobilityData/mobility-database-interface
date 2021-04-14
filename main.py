@@ -92,6 +92,12 @@ if __name__ == "__main__":
         default="./system_errors.json",
         help="Path to the system errors report.",
     )
+    parser.add_argument(
+        "-e",
+        "--entity-code",
+        action="store",
+        help="The entity code corresponding to the source in the database.",
+    )
     args = parser.parse_args()
 
     # Load and clean the reports obtained from the validation output
@@ -105,7 +111,6 @@ if __name__ == "__main__":
 
     # Generating the use cases to execute using the reports and the scenario
     valid_scenario = apply_report_to_scenario(report, gtfs_metadata_scenario.SCENARIO)
-    print(valid_scenario)
 
     # Load environment from dotenv file and credentials json file
     load_dotenv(args.path_to_env_var)
@@ -129,8 +134,7 @@ if __name__ == "__main__":
     # Process data
     # Download datasets zip files
     datasets_infos = extract_gtfs_datasets_infos_from_database(
-        api_url,
-        sparql_url,
+        api_url, sparql_url, [args.entity_code]
     )
 
     # Download datasets zip files
@@ -147,39 +151,8 @@ if __name__ == "__main__":
         dataset_key,
         dataset_representation,
     ) in data_repository.get_dataset_representations().items():
-        dataset_representation = process_start_service_date_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_end_service_date_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_start_timestamp_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_end_timestamp_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_main_language_code_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_timezones_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_bounding_box_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_bounding_octagon_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_agencies_count_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_routes_count_by_type_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_stops_count_by_type_for_gtfs_metadata(
-            dataset_representation
-        )
+        for use_case in valid_scenario:
+            dataset_representation = use_case(dataset_representation)
         dataset_representation = create_dataset_entity_for_gtfs_metadata(
             dataset_representation, api_url
         )
