@@ -104,7 +104,8 @@ if __name__ == "__main__":
     report = merge_reports(validation_report, system_report)
 
     # Generating the use cases to execute using the reports and the scenario
-    use_cases = apply_report_to_scenario(report, gtfs_metadata_scenario.SCENARIO)
+    valid_scenario = apply_report_to_scenario(report, gtfs_metadata_scenario.SCENARIO)
+    print(valid_scenario)
 
     # Load environment from dotenv file and credentials json file
     load_dotenv(args.path_to_env_var)

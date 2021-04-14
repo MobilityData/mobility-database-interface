@@ -2,6 +2,7 @@ from utilities.validators import validate_report
 from utilities.notices import (
     STANDALONE,
     WITH_FILENAME,
+    FILENAME,
     REPORT_NOTICES_TYPE,
     REPORT_NOTICES,
     REPORT_CODE,
@@ -48,8 +49,28 @@ def merge_reports(validation_report, system_report):
 
 
 def apply_report_to_scenario(report, scenario):
-    use_cases_list = []
-    for notices, use_cases in scenario:
-        for notice in notices:
-            pass
-    return use_cases_list
+    validated_scenario = []
+    for use_case_notices, use_case_functions in scenario:
+        is_valid = True
+
+        # If a standalone notice is problematic for a use case
+        # and exists in the report standalone notices,
+        # then the use case is not valid
+        if use_case_notices[STANDALONE].intersection(report[STANDALONE]):
+            is_valid = False
+
+        # If a notice "with filename" is problematic for a use case
+        # and exists in the report notices "with filename"
+        # for a filename concerned by the use case,
+        # then the use case is not valid
+        if use_case_notices[FILENAME].intersection(report[WITH_FILENAME].keys()):
+            for filename, notices in report[WITH_FILENAME].items():
+                if filename in use_case_notices[FILENAME] and use_case_notices[
+                    WITH_FILENAME
+                ].intersection(notices):
+                    is_valid = False
+
+        # If the use case is valid, keep it in the validated scenario
+        if is_valid:
+            validated_scenario += use_case_functions
+    return validated_scenario
