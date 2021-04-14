@@ -1,4 +1,41 @@
 #####################################
+# Notice types
+#####################################
+
+STANDALONE = "standalone"
+WITH_FILENAME = "with_filename"
+
+
+#####################################
+# Filenames
+#####################################
+
+FILENAME = "filename"
+AGENCY_TXT = "agency.txt"
+STOPS_TXT = "stops.txt"
+ROUTES_TXT = "routes.txt"
+TRIPS_TXT = "trips.txt"
+STOP_TIMES_TXT = "stop_times.txt"
+CALENDAR_TXT = "calendar.txt"
+CALENDAR_DATES_TXT = "calendar_dates.txt"
+FARE_RULES_TXT = "fare_rules.txt"
+SHAPES_TXT = "shapes.txt"
+FREQUENCIES_TXT = "frequencies.txt"
+FEED_INFO_TXT = "feed_info.txt"
+
+
+#####################################
+# Keys used in both reports
+#####################################
+
+REPORT_NOTICES_TYPE = "notices"
+REPORT_NOTICES = "notices"
+REPORT_CODE = "code"
+REPORT_FILENAME = "filename"
+REPORT_CHILD_FILENAME = "childFilename"
+
+
+#####################################
 # Standalone validation error notices
 #####################################
 
@@ -77,12 +114,10 @@ FOREIGN_KEY_VIOLATION = "foreign_key_violation"
 #################################
 # Standalone system error notices
 #################################
-IO_ERROR = "io_error"  # TODO verify notice code because of uppercase in class name
+IO_ERROR = "i_o_error"
 THREAD_EXECUTION_ERROR = "thread_execution_error"
 THREAD_INTERRUPTED_ERROR = "thread_interrupted_error"
-URI_SYNTAX_ERROR = (
-    "uri_syntax_error"  # TODO verify notice code because of uppercase in class name
-)
+URI_SYNTAX_ERROR = "u_r_i_syntax_error"
 
 
 ####################################
@@ -93,5 +128,6 @@ RUNTIME_EXCEPTION_IN_LOADER_ERROR = "runtime_exception_in_loader_error"
 
 ###############################################
 # System error notices with validator classname
+# NB. Will be treated as standalone for now
 ###############################################
 RUNTIME_EXCEPTION_IN_VALIDATOR_ERROR = "runtime_exception_in_validator_error"
