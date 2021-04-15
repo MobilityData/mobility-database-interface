@@ -129,7 +129,7 @@ class TestApplyReportToScenario(TestCase):
                     },
                     FILENAME: {STOPS_TXT},
                 },
-                ["test_usecase_function"],
+                ["test_use_case_function"],
             ),
             (
                 {
@@ -139,10 +139,95 @@ class TestApplyReportToScenario(TestCase):
                     },
                     FILENAME: {ROUTES_TXT},
                 },
-                ["test_another_usecase_function"],
+                ["test_another_use_case_function"],
             ),
         ]
         under_test = apply_report_to_scenario(test_report, test_scenario)
         self.assertEqual(
-            under_test, ["test_usecase_function", "test_another_usecase_function"]
+            under_test, ["test_use_case_function", "test_another_use_case_function"]
         )
+
+    def test_apply_report_to_scenario(self):
+        test_report = {"standalone": {IO_ERROR}, "with_filename": {}}
+        test_scenario = [
+            (
+                {
+                    STANDALONE: {IO_ERROR},
+                    WITH_FILENAME: {
+                        MISSING_REQUIRED_FILE,
+                    },
+                    FILENAME: {STOPS_TXT},
+                },
+                ["test_use_case_function"],
+            ),
+            (
+                {
+                    STANDALONE: {URI_SYNTAX_ERROR},
+                    WITH_FILENAME: {
+                        MISSING_REQUIRED_FIELD,
+                    },
+                    FILENAME: {ROUTES_TXT},
+                },
+                ["test_another_use_case_function"],
+            ),
+        ]
+        under_test = apply_report_to_scenario(test_report, test_scenario)
+        self.assertEqual(under_test, ["test_another_use_case_function"])
+
+        test_report = {
+            "standalone": set(),
+            "with_filename": {ROUTES_TXT: {MISSING_REQUIRED_FIELD}},
+        }
+        test_scenario = [
+            (
+                {
+                    STANDALONE: {IO_ERROR},
+                    WITH_FILENAME: {
+                        MISSING_REQUIRED_FILE,
+                    },
+                    FILENAME: {STOPS_TXT},
+                },
+                ["test_use_case_function"],
+            ),
+            (
+                {
+                    STANDALONE: {URI_SYNTAX_ERROR},
+                    WITH_FILENAME: {
+                        MISSING_REQUIRED_FIELD,
+                    },
+                    FILENAME: {ROUTES_TXT},
+                },
+                ["test_another_use_case_function"],
+            ),
+        ]
+        under_test = apply_report_to_scenario(test_report, test_scenario)
+        self.assertEqual(under_test, ["test_use_case_function"])
+
+        test_report = {
+            "standalone": {IO_ERROR},
+            "with_filename": {ROUTES_TXT: {MISSING_REQUIRED_FIELD}},
+        }
+        test_scenario = [
+            (
+                {
+                    STANDALONE: {IO_ERROR},
+                    WITH_FILENAME: {
+                        MISSING_REQUIRED_FILE,
+                    },
+                    FILENAME: {STOPS_TXT},
+                },
+                ["test_use_case_function"],
+            ),
+            (
+                {
+                    STANDALONE: {URI_SYNTAX_ERROR},
+                    WITH_FILENAME: {
+                        MISSING_REQUIRED_FIELD,
+                    },
+                    FILENAME: {ROUTES_TXT},
+                },
+                ["test_another_use_case_function"],
+            ),
+        ]
+        under_test = apply_report_to_scenario(test_report, test_scenario)
+        self.assertEqual(under_test, [])
