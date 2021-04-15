@@ -36,7 +36,7 @@ def validate_datasets_infos(datasets_infos):
 
 def validate_report(report):
     notices = report.get("notices", None)
-    if notices is None or len(notices) == 0:
+    if notices is None:
         raise Exception("The report is invalid, does not contain notices.")
     for notice_type in notices:
         notice_code = notice_type.get("code", None)
@@ -47,4 +47,9 @@ def validate_report(report):
             raise Exception(
                 "The report is invalid, a notice type must have notice instances."
             )
+        for notice_instance in notice_instances:
+            if len(notice_instance) == 0:
+                raise Exception(
+                    "The report is invalid, a notice instance must not be empty."
+                )
     return True
