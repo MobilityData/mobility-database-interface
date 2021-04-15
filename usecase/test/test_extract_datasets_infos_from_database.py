@@ -7,8 +7,6 @@ from usecase.extract_datasets_infos_from_database import (
     extract_source_infos,
 )
 from utilities.constants import (
-    STAGING_API_URL,
-    STAGING_SPARQL_URL,
     CLAIMS,
     MAINSNAK,
     DATAVALUE,
@@ -144,9 +142,7 @@ class TestExtractDatasetsInfosFromDatabase(TestCase):
         mock_source_infos_extractor.return_value = "test_url", "test_name"
         mock_md5_extractor.return_value = {"test_md5_hash"}
 
-        under_test = extract_gtfs_datasets_infos_from_database(
-            STAGING_API_URL, STAGING_SPARQL_URL
-        )
+        under_test = extract_gtfs_datasets_infos_from_database()
         self.assertEqual(len(under_test), 1)
 
         under_test_dataset_info = under_test[0]
@@ -177,9 +173,7 @@ class TestExtractDatasetsInfosFromDatabase(TestCase):
         mock_source_infos_extractor.return_value = "test_url", "test_name"
         mock_md5_extractor.return_value = {"test_md5_hash"}
 
-        under_test = extract_gbfs_datasets_infos_from_database(
-            STAGING_API_URL, STAGING_SPARQL_URL
-        )
+        under_test = extract_gbfs_datasets_infos_from_database()
         self.assertEqual(len(under_test), 1)
 
         under_test_dataset_info = under_test[0]
