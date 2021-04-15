@@ -1,6 +1,16 @@
 from unittest import TestCase, mock
-
-from utilities.report_utils import clean_report, merge_reports
+from utilities.report_utils import clean_report, merge_reports, apply_report_to_scenario
+from utilities.notices import (
+    STANDALONE,
+    WITH_FILENAME,
+    FILENAME,
+    IO_ERROR,
+    MISSING_REQUIRED_FILE,
+    STOPS_TXT,
+    URI_SYNTAX_ERROR,
+    MISSING_REQUIRED_FIELD,
+    ROUTES_TXT,
+)
 
 
 class TestCleanReport(TestCase):
@@ -104,4 +114,35 @@ class TestMergeReports(TestCase):
                     "another_filename_system": {"another_system_filename_notice"},
                 },
             },
+        )
+
+
+class TestApplyReportToScenario(TestCase):
+    def test_apply_empty_report_to_scenario(self):
+        test_report = {"standalone": set(), "with_filename": {}}
+        test_scenario = [
+            (
+                {
+                    STANDALONE: {IO_ERROR},
+                    WITH_FILENAME: {
+                        MISSING_REQUIRED_FILE,
+                    },
+                    FILENAME: {STOPS_TXT},
+                },
+                ["test_usecase_function"],
+            ),
+            (
+                {
+                    STANDALONE: {URI_SYNTAX_ERROR},
+                    WITH_FILENAME: {
+                        MISSING_REQUIRED_FIELD,
+                    },
+                    FILENAME: {ROUTES_TXT},
+                },
+                ["test_another_usecase_function"],
+            ),
+        ]
+        under_test = apply_report_to_scenario(test_report, test_scenario)
+        self.assertEqual(
+            under_test, ["test_usecase_function", "test_another_usecase_function"]
         )
