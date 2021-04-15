@@ -22,8 +22,7 @@ class GtfsMetadata:
         )
         self.main_timezone = ""
         self.other_timezones = []
-        self.country_code = ""
-        self.sub_country_code = ""
+        self.country_codes = set()
         self.main_language_code = ""
         self.start_service_date = ""
         self.end_service_date = ""
@@ -69,8 +68,7 @@ class GtfsMetadata:
             f"Dataset version name: {self.dataset_version_name}\n"
             f"Main timezone: {self.main_timezone}\n"
             f"Other timezones: {', '.join(self.other_timezones)}\n"
-            f"Country code: {self.country_code}\n"
-            f"Sub country code: {self.sub_country_code}\n"
+            f"Country codes: {self.country_codes}\n"
             f"Main language code: {self.main_language_code}\n"
             f"Start service date: {self.start_service_date}\n"
             f"End service date: {self.end_service_date}\n"
