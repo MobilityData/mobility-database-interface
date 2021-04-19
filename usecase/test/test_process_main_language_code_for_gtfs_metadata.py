@@ -52,5 +52,4 @@ class TestProcessMainLanguageCodeForGtfsMetadata(TestCase):
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_agency.assert_called()
-        self.assertEqual(mock_agency.call_count, 1)
         self.assertEqual(mock_metadata.main_language_code, "fr")

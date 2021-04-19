@@ -1,6 +1,6 @@
 from utilities.validators import validate_gtfs_representation
+from utilities.constants import AGENCY_LANG
 
-AGENCY_LANG_KEY = "agency_lang"
 AGENCY_LANG_IDX = 0
 
 
@@ -14,8 +14,11 @@ def process_main_language_code_for_gtfs_metadata(gtfs_representation):
     dataset = gtfs_representation.dataset
     metadata = gtfs_representation.metadata
 
-    # Extract the main language code from the first row in the dataset agency
-    main_language_code = dataset.agency[AGENCY_LANG_KEY].iloc[AGENCY_LANG_IDX]
+    if dataset.agency is not None and AGENCY_LANG in dataset.agency.columns:
+        # Extract the main language code from the first row in the dataset agency
+        main_language_code = dataset.agency[AGENCY_LANG].iloc[AGENCY_LANG_IDX]
+    else:
+        main_language_code = ""
 
     # Set the main language code in the GTFS representation
     metadata.main_language_code = main_language_code
