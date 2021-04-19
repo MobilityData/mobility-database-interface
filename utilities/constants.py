@@ -21,18 +21,8 @@ LON = "longitude"
 REPLACE = "REPLACE"
 APPEND = "APPEND"
 
-STOP_LAT = "stop_lat"
-STOP_LON = "stop_lon"
 IS_ADDITION = "is_addition"
 IS_MAXIMUM = "is_maximum"
-
-STOP_KEY = "stop"
-STATION_KEY = "station"
-ENTRANCE_KEY = "entrance"
-STOP = 0
-STATION = 1
-ENTRANCE = 2
-LOCATION_TYPE = "location_type"
 
 SPARQL_A = "a"
 SVC_PROP_URL_PATH = "/prop/statement/"
@@ -69,6 +59,19 @@ ROUTE_TYPE = "route_type"
 
 AGENCY_NAME = "agency_name"
 AGENCY_LANG = "agency_lang"
+AGENCY_TIMEZONE = "agency_timezone"
+
+STOP_KEY = "stop"
+STATION_KEY = "station"
+ENTRANCE_KEY = "entrance"
+STOP = 0
+STATION = 1
+ENTRANCE = 2
+LOCATION_TYPE = "location_type"
+
+STOP_LAT = "stop_lat"
+STOP_LON = "stop_lon"
+STOP_TIMEZONE = "stop_timezone"
 
 # Define regex pattern for dataset version entity code in response retrieved by SPARQL query
 SPARQL_ENTITY_CODE_REGEX = "/(Q.+?)-"

@@ -1,7 +1,6 @@
 from utilities.validators import validate_gtfs_representation
+from utilities.constants import STOP_TIMEZONE, AGENCY_TIMEZONE
 
-STOP_TIMEZONE_KEY = "stop_timezone"
-AGENCY_TIMEZONE_KEY = "agency_timezone"
 AGENCY_TIMEZONE_IDX = 0
 
 
@@ -15,15 +14,18 @@ def process_timezones_for_gtfs_metadata(gtfs_representation):
     dataset = gtfs_representation.dataset
     metadata = gtfs_representation.metadata
 
-    # Extract main timezone
-    main_timezone = dataset.agency[AGENCY_TIMEZONE_KEY].iloc[AGENCY_TIMEZONE_IDX]
+    if dataset.agency is not None and AGENCY_TIMEZONE in dataset.agency.columns:
+        # Extract main timezone
+        main_timezone = dataset.agency[AGENCY_TIMEZONE].iloc[AGENCY_TIMEZONE_IDX]
+    else:
+        main_timezone = ""
 
-    # Extract the timezones using the stop_timezone in the dataset stops
     stop_timezones = set()
-    if STOP_TIMEZONE_KEY in dataset.stops.columns:
+    if dataset.stops is not None and STOP_TIMEZONE in dataset.stops.columns:
+        # Extract the timezones using the stop_timezone in the dataset stops
         for index, row in dataset.stops.iterrows():
-            if row[STOP_TIMEZONE_KEY] is not None:
-                stop_timezones.add(row[STOP_TIMEZONE_KEY])
+            if row[STOP_TIMEZONE] is not None:
+                stop_timezones.add(row[STOP_TIMEZONE])
 
     # Remove the main_timezone from the set of the stop_timezones
     # to create the other_timezones
