@@ -108,9 +108,9 @@ def process_timestamp_for_gtfs_metadata(gtfs_representation, timestamp_map):
 
     if (
         (calendar_is_present or calendar_dates_are_present)
-        and (trips_are_present)
-        and (stop_times_are_present)
-        and (agency_is_present)
+        and trips_are_present
+        and stop_times_are_present
+        and agency_is_present
     ):
         # Extract the start dates in the dataset representation
         # or

@@ -54,7 +54,6 @@ class TestProcessBoundingOctagonForGtfsMetadata(TestCase):
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_stops.assert_called()
-        self.assertEqual(mock_stops.call_count, 5)
         self.assertEqual(
             mock_metadata.bounding_octagon,
             {

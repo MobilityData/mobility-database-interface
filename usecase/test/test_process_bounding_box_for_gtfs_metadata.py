@@ -47,7 +47,6 @@ class TestProcessBoundingBoxForGtfsMetadata(TestCase):
         under_test = process_bounding_box_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_stops.assert_called()
-        self.assertEqual(mock_stops.call_count, 1)
         self.assertEqual(
             mock_metadata.bounding_box,
             {
