@@ -73,6 +73,8 @@ STOP_LAT = "stop_lat"
 STOP_LON = "stop_lon"
 STOP_TIMEZONE = "stop_timezone"
 
+TRIP_ID = "trip_id"
+
 # Define regex pattern for dataset version entity code in response retrieved by SPARQL query
 SPARQL_ENTITY_CODE_REGEX = "/(Q.+?)-"
 

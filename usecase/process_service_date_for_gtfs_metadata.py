@@ -9,8 +9,6 @@ from utilities.constants import (
     FRIDAY,
     SATURDAY,
     SUNDAY,
-    START_DATE,
-    END_DATE,
     DATE,
     SERVICE_ID,
     EXCEPTION_TYPE,

@@ -1,11 +1,26 @@
 import pandas as pd
 from unittest import TestCase, mock
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, PropertyMock
 from gtfs_kit.feed import Feed
 from representation.gtfs_metadata import GtfsMetadata
 from representation.gtfs_representation import GtfsRepresentation
 from usecase.process_timestamp_for_gtfs_metadata import (
     process_end_timestamp_for_gtfs_metadata,
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY,
+    DATE,
+    SERVICE_ID,
+    EXCEPTION_TYPE,
+    TRIP_ID,
+    AGENCY_TIMEZONE,
+    END_TIMESTAMP_MAP,
+    CALENDAR_DATE_KEY,
+    STOP_TIME_KEY,
 )
 
 
@@ -34,8 +49,51 @@ class TestProcessEndTimestampForGtfsMetadata(TestCase):
     def test_process_end_timestamp_execution_should_set_start_timestamp_metadata(
         self, mock_stop_times_for_date, mock_utc_offset, mock_dates_by_type
     ):
+        mock_calendar = PropertyMock(
+            return_value=pd.DataFrame(
+                {
+                    END_TIMESTAMP_MAP[CALENDAR_DATE_KEY]: ["20201010"],
+                    MONDAY: [0],
+                    TUESDAY: [0],
+                    WEDNESDAY: [0],
+                    THURSDAY: [0],
+                    FRIDAY: [0],
+                    SATURDAY: [1],
+                    SUNDAY: [0],
+                    SERVICE_ID: ["test_service_id"],
+                }
+            )
+        )
+        mock_calendar_dates = PropertyMock(return_value=None)
+        mock_stop_times = PropertyMock(
+            return_value=pd.DataFrame(
+                {
+                    TRIP_ID: ["test_trip_id"],
+                    END_TIMESTAMP_MAP[STOP_TIME_KEY]: ["test_stop_time"],
+                }
+            )
+        )
+        mock_trips = PropertyMock(
+            return_value=pd.DataFrame(
+                {
+                    SERVICE_ID: ["test_service_id"],
+                }
+            )
+        )
+        mock_agency = PropertyMock(
+            return_value=pd.DataFrame(
+                {
+                    AGENCY_TIMEZONE: ["test_agency_timezone"],
+                }
+            )
+        )
         mock_dataset = MagicMock()
         mock_dataset.__class__ = Feed
+        type(mock_dataset).calendar = mock_calendar
+        type(mock_dataset).calendar_dates = mock_calendar_dates
+        type(mock_dataset).stop_times = mock_stop_times
+        type(mock_dataset).trips = mock_trips
+        type(mock_dataset).agency = mock_agency
 
         mock_metadata = MagicMock()
         mock_metadata.__class__ = GtfsMetadata
@@ -46,11 +104,11 @@ class TestProcessEndTimestampForGtfsMetadata(TestCase):
         type(mock_gtfs_representation).metadata = mock_metadata
 
         mock_stop_times_for_date.return_value = pd.DataFrame(
-            {"trip_id": ["test_trip_id"], "departure_time": ["05:00:00"]}
+            {TRIP_ID: ["test_trip_id"], END_TIMESTAMP_MAP[STOP_TIME_KEY]: ["05:00:00"]}
         )
 
         mock_dates_by_type.return_value = pd.DataFrame(
-            {"service_id": ["test_service_id"], "date": ["20201010"]}
+            {SERVICE_ID: ["test_service_id"], DATE: ["20201010"]}
         )
 
         mock_utc_offset.return_value = "-05:00"
