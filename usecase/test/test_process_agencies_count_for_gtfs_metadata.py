@@ -53,5 +53,4 @@ class TestProcessAgenciesCountForGtfsMetadata(TestCase):
         under_test = process_agencies_count_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_agency.assert_called()
-        self.assertEqual(mock_agency.call_count, 1)
         self.assertEqual(mock_metadata.agencies_count, 2)
