@@ -1,5 +1,5 @@
 import pandas as pd
-from unittest import TestCase, mock
+from unittest import TestCase
 from unittest.mock import MagicMock, PropertyMock
 from gtfs_kit.feed import Feed
 from representation.gtfs_metadata import GtfsMetadata
