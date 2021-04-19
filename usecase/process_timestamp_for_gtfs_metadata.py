@@ -86,6 +86,10 @@ def process_timestamp_for_gtfs_metadata(gtfs_representation, timestamp_map):
     dataset = gtfs_representation.dataset
     metadata = gtfs_representation.metadata
 
+    agency_is_present = (
+        dataset.agency is not None and AGENCY_TIMEZONE in dataset.agency.columns
+    )
+
     if (
         (
             dataset.calendar is not None
