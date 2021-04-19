@@ -63,7 +63,6 @@ class TestProcessStopsCountByTypeForGtfsMetadata(TestCase):
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_stops.assert_called()
-        self.assertEqual(mock_stops.call_count, 10)
         self.assertEqual(
             mock_metadata.stops_count_by_type, {"stop": 6, "station": 2, "entrance": 1}
         )
