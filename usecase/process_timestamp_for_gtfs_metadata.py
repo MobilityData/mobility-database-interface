@@ -86,6 +86,16 @@ def process_timestamp_for_gtfs_metadata(gtfs_representation, timestamp_map):
     dataset = gtfs_representation.dataset
     metadata = gtfs_representation.metadata
 
+    calendar_is_present = (
+        dataset.calendar is not None
+        and CALENDAR_NECESSARY_COLUMNS.union(
+            {timestamp_map[CALENDAR_DATE_KEY]}
+        ).issubset(dataset.calendar.columns)
+    )
+    calendar_dates_are_present = (
+        dataset.calendar_dates is not None
+        and CALENDAR_DATES_NECESSARY_COLUMNS.issubset(dataset.calendar_dates.columns)
+    )
     trips_are_present = (
         dataset.trips is not None and SERVICE_ID in dataset.trips.columns
     )
