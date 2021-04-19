@@ -2,24 +2,33 @@ import operator
 from datetime import datetime, time, timedelta
 import pytz
 import pandas as pd
+from utilities.constants import (
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY,
+    START_DATE,
+    END_DATE,
+    DATE,
+    SERVICE_ID,
+    EXCEPTION_TYPE,
+)
 
 # Setting constants
 SECONDS_PER_HOUR = 3600
 MINUTES_PER_HOUR = 60
 UTC_THRESHOLD = 12
-START_DATE = "start_date"
-END_DATE = "end_date"
-DATE = "date"
-SERVICE_ID = "service_id"
-EXCEPTION_TYPE = "exception_type"
 WEEKDAYS = [
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday",
-    "sunday",
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY,
 ]
 DATE_FORMAT = "%Y%m%d"
 TRIP_ID = "trip_id"
