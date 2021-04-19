@@ -39,6 +39,37 @@ SVC_PROP_URL_PATH = "/prop/statement/"
 SVC_ENTITY_URL_PATH = "/entity/"
 SVC_URL = "http://wikibase.svc"
 
+# GTFS columns constants
+
+DATE = "date"
+SERVICE_ID = "service_id"
+EXCEPTION_TYPE = "exception_type"
+
+MONDAY = "monday"
+TUESDAY = "tuesday"
+WEDNESDAY = "wednesday"
+THURSDAY = "thursday"
+FRIDAY = "friday"
+SATURDAY = "saturday"
+SUNDAY = "sunday"
+START_DATE = "start_date"
+END_DATE = "end_date"
+
+TRAM = 0
+SUBWAY = 1
+RAIL = 2
+BUS = 3
+FERRY = 4
+CABLE_TRAM = 5
+AERIAL_LIFT = 6
+FUNICULAR = 7
+TROLLEY_BUS = 11
+MONORAIL = 12
+ROUTE_TYPE = "route_type"
+
+AGENCY_NAME = "agency_name"
+AGENCY_LANG = "agency_lang"
+
 # Define regex pattern for dataset version entity code in response retrieved by SPARQL query
 SPARQL_ENTITY_CODE_REGEX = "/(Q.+?)-"
 
