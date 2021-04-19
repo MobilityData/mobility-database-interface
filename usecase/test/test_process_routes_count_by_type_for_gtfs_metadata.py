@@ -72,7 +72,6 @@ class TestProcessRoutesCountByTypeForGtfsMetadata(TestCase):
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_routes.assert_called()
-        self.assertEqual(mock_routes.call_count, 20)
         self.assertEqual(
             mock_metadata.routes_count_by_type,
             {
