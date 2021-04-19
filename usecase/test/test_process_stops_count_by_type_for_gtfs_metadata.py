@@ -30,30 +30,64 @@ class TestProcessStopsCountByTypeForGtfsMetadata(TestCase):
             mock_gtfs_representation,
         )
 
-    @mock.patch("representation.gtfs_representation.GtfsRepresentation")
-    def test_process_stops_count_with_valid_gtfs_representation_should_return_instance(
-        self, mock_gtfs_representation
-    ):
+    def test_process_stops_count_with_missing_files(self):
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
         mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
         under_test = process_stops_count_by_type_for_gtfs_metadata(
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
+        self.assertEqual(
+            mock_metadata.stops_count_by_type,
+            {},
+        )
 
-    @mock.patch("representation.gtfs_representation.GtfsRepresentation")
-    @mock.patch("gtfs_kit.feed.Feed")
-    @mock.patch("representation.gtfs_metadata.GtfsMetadata")
+    def test_process_stops_count_with_missing_fields(self):
+        mock_stops = PropertyMock(return_value=pd.DataFrame({}))
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+        type(mock_dataset).stops = mock_stops
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
+        mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
+        under_test = process_stops_count_by_type_for_gtfs_metadata(
+            mock_gtfs_representation
+        )
+        self.assertIsInstance(under_test, GtfsRepresentation)
+        self.assertEqual(
+            mock_metadata.stops_count_by_type,
+            {},
+        )
+
     def test_process_stops_count_execution_should_set_start_agencies_count_metadata(
-        self, mock_gtfs_representation, mock_dataset, mock_metadata
+        self,
     ):
         mock_stops = PropertyMock(
             return_value=pd.DataFrame({LOCATION_TYPE: [0, 2, 1, 0, 0, 1, 0, 0, np.nan]})
         )
-
+        mock_dataset = MagicMock()
         mock_dataset.__class__ = Feed
         type(mock_dataset).stops = mock_stops
 
+        mock_metadata = MagicMock()
         mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
         mock_gtfs_representation.__class__ = GtfsRepresentation
         type(mock_gtfs_representation).dataset = mock_dataset
         type(mock_gtfs_representation).metadata = mock_metadata

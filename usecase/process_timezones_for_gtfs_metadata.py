@@ -14,7 +14,12 @@ def process_timezones_for_gtfs_metadata(gtfs_representation):
     dataset = gtfs_representation.dataset
     metadata = gtfs_representation.metadata
 
-    if dataset.agency is not None and AGENCY_TIMEZONE in dataset.agency.columns:
+    # Agency must be present AND not empty because we are accessing the first index
+    if (
+        dataset.agency is not None
+        and AGENCY_TIMEZONE in dataset.agency.columns
+        and not dataset.agency.empty
+    ):
         # Extract main timezone
         main_timezone = dataset.agency[AGENCY_TIMEZONE].iloc[AGENCY_TIMEZONE_IDX]
     else:

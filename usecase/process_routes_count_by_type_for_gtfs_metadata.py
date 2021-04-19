@@ -88,7 +88,7 @@ def process_routes_count_by_type_for_gtfs_metadata(gtfs_representation):
             MONORAIL_KEY: monorails_count,
         }
     else:
-        routes_count_by_type = ""
+        routes_count_by_type = {}
 
     metadata.routes_count_by_type = routes_count_by_type
     return gtfs_representation

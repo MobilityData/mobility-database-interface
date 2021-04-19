@@ -27,7 +27,7 @@ class TestProcessBoundingBoxForGtfsMetadata(TestCase):
             TypeError, process_bounding_box_for_gtfs_metadata, mock_gtfs_representation
         )
 
-    def test_process_bounding_box_execution_missing_files(self):
+    def test_process_bounding_box_execution_with_missing_files(self):
         mock_dataset = MagicMock()
         mock_dataset.__class__ = Feed
 
@@ -46,7 +46,7 @@ class TestProcessBoundingBoxForGtfsMetadata(TestCase):
             {},
         )
 
-    def test_process_bounding_box_execution_missing_fields(self):
+    def test_process_bounding_box_execution_with_missing_fields(self):
         mock_stops = PropertyMock(return_value=pd.DataFrame({}))
         mock_dataset = MagicMock()
         mock_dataset.__class__ = Feed
