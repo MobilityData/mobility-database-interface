@@ -36,7 +36,7 @@ class TestProcessSha1(TestCase):
         under_test_dataset_info = under_test[0]
         self.assertEqual(under_test_dataset_info.sha1_hash, test_sha1_hash)
 
-    def test_process_md5_with_dataset_md5_existing_in_md5_hashes_should_discard_dataset(
+    def test_process_sha1_with_dataset_sha1_existing_in_sha1_hashes_should_discard_dataset(
         self,
     ):
         test_zip_path = "./usecase/test/resources/test.zip"
