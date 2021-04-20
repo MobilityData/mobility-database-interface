@@ -35,7 +35,15 @@ from utilities.constants import (
     USERNAME,
     PASSWORD,
 )
-from utilities.validators import validate_gtfs_representation, validate_api_url
+from utilities.validators import (
+    validate_gtfs_representation,
+    validate_api_url,
+    is_valid_instance,
+    is_valid_str,
+    is_valid_list,
+    is_valid_dict,
+    is_valid_int,
+)
 
 
 def create_geographical_property(order_key, corner_value, property_type):
@@ -83,126 +91,149 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
     )
 
     # Main timezone property
-    dataset_data.append(
-        wbi_core.String(
-            value=metadata.main_timezone,
-            prop_nr=os.environ[TIMEZONE_PROP],
-            rank=PREFERRED,
+    if is_valid_str(metadata.main_timezone):
+        dataset_data.append(
+            wbi_core.String(
+                value=metadata.main_timezone,
+                prop_nr=os.environ[TIMEZONE_PROP],
+                rank=PREFERRED,
+            )
         )
-    )
 
     # Other timezones property
-    for timezone in metadata.other_timezones:
-        dataset_data.append(
-            wbi_core.String(
-                value=timezone, prop_nr=os.environ[TIMEZONE_PROP], rank=NORMAL
-            )
-        )
+    if is_valid_list(metadata.other_timezones):
+        for timezone in metadata.other_timezones:
+            if is_valid_str(timezone):
+                dataset_data.append(
+                    wbi_core.String(
+                        value=timezone, prop_nr=os.environ[TIMEZONE_PROP], rank=NORMAL
+                    )
+                )
 
     # Main language code property
-    dataset_data.append(
-        wbi_core.String(
-            value=metadata.main_language_code,
-            prop_nr=os.environ[MAIN_LANGUAGE_CODE_PROP],
-            rank=PREFERRED,
+    if is_valid_str(metadata.main_language_code):
+        dataset_data.append(
+            wbi_core.String(
+                value=metadata.main_language_code,
+                prop_nr=os.environ[MAIN_LANGUAGE_CODE_PROP],
+                rank=PREFERRED,
+            )
         )
-    )
 
     # Start service date property
-    dataset_data.append(
-        wbi_core.String(
-            value=metadata.start_service_date,
-            prop_nr=os.environ[START_SERVICE_DATE_PROP],
+    if is_valid_str(metadata.start_service_date):
+        dataset_data.append(
+            wbi_core.String(
+                value=metadata.start_service_date,
+                prop_nr=os.environ[START_SERVICE_DATE_PROP],
+            )
         )
-    )
 
     # End service date property
-    dataset_data.append(
-        wbi_core.String(
-            value=metadata.end_service_date, prop_nr=os.environ[END_SERVICE_DATE_PROP]
+    if is_valid_str(metadata.end_service_date):
+        dataset_data.append(
+            wbi_core.String(
+                value=metadata.end_service_date,
+                prop_nr=os.environ[END_SERVICE_DATE_PROP],
+            )
         )
-    )
 
     # Start timestamp property
-    dataset_data.append(
-        wbi_core.String(
-            value=metadata.start_timestamp, prop_nr=os.environ[START_TIMESTAMP_PROP]
+    if is_valid_str(metadata.start_timestamp):
+        dataset_data.append(
+            wbi_core.String(
+                value=metadata.start_timestamp, prop_nr=os.environ[START_TIMESTAMP_PROP]
+            )
         )
-    )
 
     # End timestamp property
-    dataset_data.append(
-        wbi_core.String(
-            value=metadata.end_timestamp, prop_nr=os.environ[END_TIMESTAMP_PROP]
+    if is_valid_str(metadata.end_timestamp):
+        dataset_data.append(
+            wbi_core.String(
+                value=metadata.end_timestamp, prop_nr=os.environ[END_TIMESTAMP_PROP]
+            )
         )
-    )
 
     # MD5 hash property
-    dataset_data.append(
-        wbi_core.String(value=metadata.md5_hash, prop_nr=os.environ[MD5_HASH_PROP])
-    )
+    if is_valid_str(metadata.md5_hash):
+        dataset_data.append(
+            wbi_core.String(value=metadata.md5_hash, prop_nr=os.environ[MD5_HASH_PROP])
+        )
 
     # Bounding box property
-    for order_key, corner_value in metadata.bounding_box.items():
-        dataset_data.append(
-            create_geographical_property(
-                order_key, corner_value, os.environ[BOUNDING_BOX_PROP]
+    if is_valid_dict(metadata.bounding_box):
+        for order_key, corner_value in metadata.bounding_box.items():
+            dataset_data.append(
+                create_geographical_property(
+                    order_key, corner_value, os.environ[BOUNDING_BOX_PROP]
+                )
             )
-        )
 
     # Bounding octagon property
-    for order_key, corner_value in metadata.bounding_octagon.items():
-        dataset_data.append(
-            create_geographical_property(
-                order_key, corner_value, os.environ[BOUNDING_OCTAGON_PROP]
+    if is_valid_dict(metadata.bounding_octagon):
+        for order_key, corner_value in metadata.bounding_octagon.items():
+            dataset_data.append(
+                create_geographical_property(
+                    order_key, corner_value, os.environ[BOUNDING_OCTAGON_PROP]
+                )
             )
-        )
 
-    # Number of stops property
-    dataset_data.append(
-        wbi_core.Quantity(
-            quantity=metadata.stops_count_by_type.get(STOP_KEY),
-            prop_nr=os.environ[NUM_OF_STOPS_PROP],
-        )
-    )
-
-    # Number of stations property
-    dataset_data.append(
-        wbi_core.Quantity(
-            quantity=metadata.stops_count_by_type.get(STATION_KEY),
-            prop_nr=os.environ[NUM_OF_STATIONS_PROP],
-        )
-    )
-
-    # Number of entrances property
-    dataset_data.append(
-        wbi_core.Quantity(
-            quantity=metadata.stops_count_by_type.get(ENTRANCE_KEY),
-            prop_nr=os.environ[NUM_OF_ENTRANCES_PROP],
-        )
-    )
-
-    # Number of agencies property
-    dataset_data.append(
-        wbi_core.Quantity(
-            quantity=metadata.agencies_count, prop_nr=os.environ[NUM_OF_AGENCIES_PROP]
-        )
-    )
-
-    # Number of stops property
-    for route_key, route_value in metadata.routes_count_by_type.items():
-        route_qualifier = [
-            wbi_core.String(
-                value=route_key, prop_nr=os.environ[ROUTE_TYPE_PROP], is_qualifier=True
+    # Stop counts
+    if is_valid_dict(metadata.stops_count_by_type):
+        # Number of stops property
+        if is_valid_int(metadata.stops_count_by_type.get(STOP_KEY)):
+            dataset_data.append(
+                wbi_core.Quantity(
+                    quantity=metadata.stops_count_by_type.get(STOP_KEY),
+                    prop_nr=os.environ[NUM_OF_STOPS_PROP],
+                )
             )
-        ]
+
+        # Number of stations property
+        if is_valid_int(metadata.stops_count_by_type.get(STATION_KEY)):
+            dataset_data.append(
+                wbi_core.Quantity(
+                    quantity=metadata.stops_count_by_type.get(STATION_KEY),
+                    prop_nr=os.environ[NUM_OF_STATIONS_PROP],
+                )
+            )
+
+        if is_valid_int(metadata.stops_count_by_type.get(ENTRANCE_KEY)):
+            # Number of entrances property
+            dataset_data.append(
+                wbi_core.Quantity(
+                    quantity=metadata.stops_count_by_type.get(ENTRANCE_KEY),
+                    prop_nr=os.environ[NUM_OF_ENTRANCES_PROP],
+                )
+            )
+
+    if is_valid_int(metadata.agencies_count):
+        # Number of agencies property
         dataset_data.append(
             wbi_core.Quantity(
-                quantity=route_value,
-                prop_nr=os.environ[NUM_OF_ROUTES_PROP],
-                qualifiers=route_qualifier,
+                quantity=metadata.agencies_count,
+                prop_nr=os.environ[NUM_OF_AGENCIES_PROP],
             )
         )
+
+    # Number of routes property
+    if is_valid_dict(metadata.routes_count_by_type):
+        for route_key, route_value in metadata.routes_count_by_type.items():
+            if is_valid_int(route_value):
+                route_qualifier = [
+                    wbi_core.String(
+                        value=route_key,
+                        prop_nr=os.environ[ROUTE_TYPE_PROP],
+                        is_qualifier=True,
+                    )
+                ]
+                dataset_data.append(
+                    wbi_core.Quantity(
+                        quantity=route_value,
+                        prop_nr=os.environ[NUM_OF_ROUTES_PROP],
+                        qualifiers=route_qualifier,
+                    )
+                )
 
     # Dataset version entity label
     version_name_label = metadata.dataset_version_name
