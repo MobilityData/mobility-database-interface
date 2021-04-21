@@ -40,13 +40,13 @@ END_DATE_MAP = {
     CALENDAR_DATE_KEY: "end_date",
 }
 
-CALENDAR_DATES_NECESSARY_COLUMNS = {
+CALENDAR_DATES_REQUIRED_COLUMNS = {
     DATE,
     SERVICE_ID,
     EXCEPTION_TYPE,
 }
 
-CALENDAR_NECESSARY_COLUMNS = {
+CALENDAR_REQUIRED_COLUMNS = {
     MONDAY,
     TUESDAY,
     WEDNESDAY,
@@ -80,7 +80,7 @@ def process_service_date_for_gtfs_metadata(gtfs_representation, service_date_map
     dataset = gtfs_representation.dataset
     metadata = gtfs_representation.metadata
 
-    calendar_necessary_columns = CALENDAR_NECESSARY_COLUMNS.union(
+    calendar_required_columns = CALENDAR_REQUIRED_COLUMNS.union(
         {service_date_map[CALENDAR_DATE_KEY]}
     )
 
@@ -90,11 +90,11 @@ def process_service_date_for_gtfs_metadata(gtfs_representation, service_date_map
     )
     calendar_is_present = (
         dataset.calendar is not None
-        and calendar_necessary_columns.issubset(dataset.calendar.columns)
+        and calendar_required_columns.issubset(dataset.calendar.columns)
     )
     calendar_dates_are_present = (
         dataset.calendar_dates is not None
-        and CALENDAR_DATES_NECESSARY_COLUMNS.issubset(dataset.calendar_dates.columns)
+        and CALENDAR_DATES_REQUIRED_COLUMNS.issubset(dataset.calendar_dates.columns)
     )
 
     if feed_info_is_present or calendar_is_present or calendar_dates_are_present:
