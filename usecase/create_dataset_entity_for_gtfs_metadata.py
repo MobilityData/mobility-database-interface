@@ -22,7 +22,7 @@ from utilities.constants import (
     START_TIMESTAMP_PROP,
     END_TIMESTAMP_PROP,
     SHA1_HASH_PROP,
-    DATASET_VERSION_PROP,
+    DATASET_PROP,
     ORDER_PROP,
     BOUNDING_BOX_PROP,
     BOUNDING_OCTAGON_PROP,
@@ -211,7 +211,7 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation):
 
     version_prop = wbi_core.ItemID(
         value=metadata.dataset_version_entity_code,
-        prop_nr=os.environ[DATASET_VERSION_PROP],
+        prop_nr=os.environ[DATASET_PROP],
         if_exists=APPEND,
     )
     source_data = [version_prop]
