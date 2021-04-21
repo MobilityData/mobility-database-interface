@@ -7,6 +7,5 @@ mobility-database-interface
    heuristic
    repository
    representation
-   request_manager
    usecase
    utilities
