@@ -80,15 +80,17 @@ def process_service_date_for_gtfs_metadata(gtfs_representation, service_date_map
     dataset = gtfs_representation.dataset
     metadata = gtfs_representation.metadata
 
+    calendar_necessary_columns = CALENDAR_NECESSARY_COLUMNS.union(
+        {service_date_map[CALENDAR_DATE_KEY]}
+    )
+
     feed_info_is_present = (
         dataset.feed_info is not None
         and service_date_map[FEED_DATE_KEY] in dataset.feed_info.columns
     )
     calendar_is_present = (
         dataset.calendar is not None
-        and CALENDAR_NECESSARY_COLUMNS.union(
-            {service_date_map[CALENDAR_DATE_KEY]}
-        ).issubset(dataset.calendar.columns)
+        and calendar_necessary_columns.issubset(dataset.calendar.columns)
     )
     calendar_dates_are_present = (
         dataset.calendar_dates is not None

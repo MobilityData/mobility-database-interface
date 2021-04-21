@@ -45,7 +45,9 @@ def process_geographical_boundaries_for_gtfs_metadata(
     dataset = gtfs_representation.dataset
     metadata = gtfs_representation.metadata
 
-    if dataset.stops is not None and {STOP_LAT, STOP_LON}.issubset(
+    stops_necessary_columns = {STOP_LAT, STOP_LON}
+
+    if dataset.stops is not None and stops_necessary_columns.issubset(
         dataset.stops.columns
     ):
         # Extract the box corners coordinates in the dataset representation and
