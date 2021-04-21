@@ -12,6 +12,14 @@ utilities.constants module
    :undoc-members:
    :show-inheritance:
 
+utilities.decorators module
+---------------------------
+
+.. automodule:: utilities.decorators
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 utilities.geographical\_utils module
 ------------------------------------
 

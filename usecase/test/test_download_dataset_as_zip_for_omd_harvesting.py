@@ -1,23 +1,12 @@
 from unittest import TestCase, mock
 from unittest.mock import MagicMock
 import os
-import warnings
 from representation.dataset_infos import DatasetInfos
 from usecase.download_dataset_as_zip import (
     download_dataset_as_zip_for_omd_harvesting,
     add_download_date_for_omd_harvesting,
 )
-
-
-def ignore_resource_warnings(test_func):
-    """Removes the resource warnings raised by testing download execution (normal class behaviour)."""
-
-    def test(self, *args, **kwargs):
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", ResourceWarning)
-            test_func(self, *args, **kwargs)
-
-    return test
+from utilities.decorators import ignore_resource_warnings
 
 
 class TestAddDownloadDateForCronJob(TestCase):

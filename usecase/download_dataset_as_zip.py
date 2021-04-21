@@ -6,17 +6,25 @@ from requests import HTTPError
 from requests.exceptions import SSLError
 from utilities.validators import validate_datasets_infos
 
+OMD_URL_DOWNLOAD_DATE_REGEX = r"(?<=/)\w+(?=/download)"
+OMD_URL_DOWNLOAD_DATE_FORMAT = "%Y%m%d"
+METADATA_DOWNLOAD_DATE_FORMAT = "%Y-%m-%d"
+
 
 def add_download_date_for_omd_harvesting(dataset_infos):
-    date_string = re.search(r"(?<=/)\w+(?=/download)", dataset_infos.url)
+    date_string = re.search(OMD_URL_DOWNLOAD_DATE_REGEX, dataset_infos.url)
     date_string = date_string.group(0)
-    date_string = datetime.strptime(date_string, "%Y%m%d").date().strftime("%Y-%m-%d")
+    date_string = (
+        datetime.strptime(date_string, OMD_URL_DOWNLOAD_DATE_FORMAT)
+        .date()
+        .strftime(METADATA_DOWNLOAD_DATE_FORMAT)
+    )
     dataset_infos.download_date = date_string
     return dataset_infos
 
 
 def add_download_date_for_cron_job(dataset_infos):
-    dataset_infos.download_date = date.today().strftime("%Y-%m-%d")
+    dataset_infos.download_date = date.today().strftime(METADATA_DOWNLOAD_DATE_FORMAT)
     return dataset_infos
 
 
