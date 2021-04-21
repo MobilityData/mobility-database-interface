@@ -48,7 +48,6 @@ rdflib==5.0.0
 requests==2.24.0
 reverse-geocoder==1.5.1
 Rtree==0.9.4
-scipy==1.6.2
 Shapely==1.7.1
 six==1.15.0
 snowballstemmer==2.0.0
