@@ -42,13 +42,13 @@ from usecase.create_dataset_entity_for_gtfs_metadata import (
     create_dataset_entity_for_gtfs_metadata,
 )
 from utilities.constants import (
-    SPARQL_URL,
     API_URL,
     SPARQL_BIGDATA_URL,
     SVC_URL,
     USERNAME,
     PASSWORD,
 )
+from utilities.validators import validate_api_url, validate_sparql_bigdata_url
 
 
 if __name__ == "__main__":
@@ -87,13 +87,17 @@ if __name__ == "__main__":
     os.environ[USERNAME] = credentials.get(USERNAME)
     os.environ[PASSWORD] = credentials.get(PASSWORD)
 
-    # Get environment variables
-    sparql_url = os.environ.get(SPARQL_URL)
-    api_url = os.environ.get(API_URL)
+    # Assign the environment API and SPARQL URLs
+    api_url = os.environ[API_URL]
+    sparql_bigdata_url = os.environ[SPARQL_BIGDATA_URL]
+
+    # Validate API and SPARQL url
+    validate_api_url(api_url)
+    validate_sparql_bigdata_url(sparql_bigdata_url)
 
     # Load Wikibase Integrator config with the environment
-    wbi_config["MEDIAWIKI_API_URL"] = os.environ[API_URL]
-    wbi_config["SPARQL_ENDPOINT_URL"] = os.environ[SPARQL_BIGDATA_URL]
+    wbi_config["MEDIAWIKI_API_URL"] = api_url
+    wbi_config["SPARQL_ENDPOINT_URL"] = sparql_bigdata_url
     wbi_config["WIKIBASE_URL"] = SVC_URL
 
     # Initialize DataRepository
@@ -101,10 +105,7 @@ if __name__ == "__main__":
 
     # Process data
     # Download datasets zip files
-    datasets_infos = extract_gtfs_datasets_infos_from_database(
-        api_url,
-        sparql_url,
-    )
+    datasets_infos = extract_gtfs_datasets_infos_from_database()
 
     # Download datasets zip files
     datasets_infos = download_dataset_as_zip(args.path_to_tmp_data, datasets_infos)
@@ -154,7 +155,7 @@ if __name__ == "__main__":
             dataset_representation
         )
         dataset_representation = create_dataset_entity_for_gtfs_metadata(
-            dataset_representation, api_url
+            dataset_representation
         )
 
         # Print results
