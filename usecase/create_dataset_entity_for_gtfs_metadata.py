@@ -21,7 +21,7 @@ from utilities.constants import (
     END_SERVICE_DATE_PROP,
     START_TIMESTAMP_PROP,
     END_TIMESTAMP_PROP,
-    MD5_HASH_PROP,
+    SHA1_HASH_PROP,
     DATASET_VERSION_PROP,
     ORDER_PROP,
     BOUNDING_BOX_PROP,
@@ -154,10 +154,12 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
             )
         )
 
-    # MD5 hash property
-    if is_valid_str(metadata.md5_hash):
+    # SHA-1 hash property
+    if is_valid_str(metadata.sha1_hash):
         dataset_data.append(
-            wbi_core.String(value=metadata.md5_hash, prop_nr=os.environ[MD5_HASH_PROP])
+            wbi_core.String(
+                value=metadata.sha1_hash, prop_nr=os.environ[SHA1_HASH_PROP]
+            )
         )
 
     # Bounding box property
