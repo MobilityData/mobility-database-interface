@@ -68,14 +68,6 @@ usecase.process\_main\_language\_code\_for\_gtfs\_metadata module
    :undoc-members:
    :show-inheritance:
 
-usecase.process\_md5 module
----------------------------
-
-.. automodule:: usecase.process_md5
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 usecase.process\_routes\_count\_by\_type\_for\_gtfs\_metadata module
 --------------------------------------------------------------------
 
@@ -88,6 +80,14 @@ usecase.process\_service\_date\_for\_gtfs\_metadata module
 ----------------------------------------------------------
 
 .. automodule:: usecase.process_service_date_for_gtfs_metadata
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+usecase.process\_sha1 module
+----------------------------
+
+.. automodule:: usecase.process_sha1
    :members:
    :undoc-members:
    :show-inheritance:
