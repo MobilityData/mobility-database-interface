@@ -87,13 +87,17 @@ if __name__ == "__main__":
     os.environ[USERNAME] = credentials.get(USERNAME)
     os.environ[PASSWORD] = credentials.get(PASSWORD)
 
+    # Assign the environment API and SPARQL URLs
+    api_url = os.environ[API_URL]
+    sparql_bigdata_url = os.environ[SPARQL_BIGDATA_URL]
+
     # Validate API and SPARQL url
-    validate_api_url(os.environ[API_URL])
-    validate_sparql_bigdata_url(os.environ[SPARQL_BIGDATA_URL])
+    validate_api_url(api_url)
+    validate_sparql_bigdata_url(sparql_bigdata_url)
 
     # Load Wikibase Integrator config with the environment
-    wbi_config["MEDIAWIKI_API_URL"] = os.environ[API_URL]
-    wbi_config["SPARQL_ENDPOINT_URL"] = os.environ[SPARQL_BIGDATA_URL]
+    wbi_config["MEDIAWIKI_API_URL"] = api_url
+    wbi_config["SPARQL_ENDPOINT_URL"] = sparql_bigdata_url
     wbi_config["WIKIBASE_URL"] = SVC_URL
 
     # Initialize DataRepository
