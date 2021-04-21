@@ -50,6 +50,27 @@ class TestProcessCountryCodesForGtfsMetadata(TestCase):
         self.assertEqual(mock_metadata.country_codes, set())
 
     @mock.patch("usecase.process_country_codes_for_gtfs_metadata.rg.search")
+    def test_process_country_codes_with_invalid_lat_lon(self, mock_rg):
+        mock_stops = PropertyMock(
+            return_value=pd.DataFrame({STOP_LAT: [850], STOP_LON: [-4000]})
+        )
+
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+        type(mock_dataset).stops = mock_stops
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+        mock_gtfs_representation = MagicMock()
+        mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
+        under_test = process_country_codes_for_gtfs_metadata(mock_gtfs_representation)
+        self.assertIsInstance(under_test, GtfsRepresentation)
+        self.assertEqual(mock_metadata.country_codes, set())
+
+    @mock.patch("usecase.process_country_codes_for_gtfs_metadata.rg.search")
     def test_process_country_codes_with_lat_lon(self, mock_rg):
         mock_stops = PropertyMock(
             return_value=pd.DataFrame({STOP_LAT: [45.446466], STOP_LON: [-73.603118]})

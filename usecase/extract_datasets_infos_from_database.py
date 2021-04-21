@@ -17,33 +17,28 @@ from utilities.request_utils import (
     extract_source_entity_codes,
     wbi_core,
 )
-from utilities.validators import validate_api_url, validate_sparql_url
 
 OPEN_MOBILITY_DATA_URL = "openmobilitydata.org"
 
 
-def extract_gtfs_datasets_infos_from_database(api_url, sparql_api):
+def extract_gtfs_datasets_infos_from_database():
     return extract_datasets_infos_from_database(
-        api_url, sparql_api, os.environ[GTFS_CATALOG_OF_SOURCES_CODE]
+        os.environ[GTFS_CATALOG_OF_SOURCES_CODE]
     )
 
 
-def extract_gbfs_datasets_infos_from_database(api_url, sparql_api):
+def extract_gbfs_datasets_infos_from_database():
     return extract_datasets_infos_from_database(
-        api_url, sparql_api, os.environ[GBFS_CATALOG_OF_SOURCES_CODE]
+        os.environ[GBFS_CATALOG_OF_SOURCES_CODE]
     )
 
 
-def extract_datasets_infos_from_database(api_url, sparql_api, catalog_code):
+def extract_datasets_infos_from_database(catalog_code):
     """Extract the stable URLs and MD5 hashes from previous dataset versions
     for each dataset of a data type in the database.
-    :param api_url: API url, either PRODUCTION_API_URL or STAGING_API_URL.
-    :param sparql_api: SPARQL api, either PRODUCTION_SPARQL_URL or STAGING_SPARQL_URL.
     :param catalog_code: Either GTFS_CATALOG_OF_SOURCES_CODE or GBFS_CATALOG_OF_SOURCES_CODE.
     :return: A list of DatasetInfos, each containing the URL and SHA-1 hashes of a dataset in the database.
     """
-    validate_api_url(api_url)
-    validate_sparql_url(sparql_api)
     datasets_infos = []
 
     entity_codes = extract_source_entity_codes(catalog_code)
