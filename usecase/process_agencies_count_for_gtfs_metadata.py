@@ -12,7 +12,11 @@ def process_agencies_count_for_gtfs_metadata(gtfs_representation):
     dataset = gtfs_representation.dataset
     metadata = gtfs_representation.metadata
 
-    if dataset.agency is not None and AGENCY_NAME in dataset.agency.columns:
+    is_agency_present = (
+        dataset.agency is not None and AGENCY_NAME in dataset.agency.columns
+    )
+
+    if is_agency_present:
         # Count agencies
         agencies_count = dataset.agency[AGENCY_NAME].size
     else:

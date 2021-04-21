@@ -46,10 +46,11 @@ def process_geographical_boundaries_for_gtfs_metadata(
     metadata = gtfs_representation.metadata
 
     stops_required_columns = {STOP_LAT, STOP_LON}
-
-    if dataset.stops is not None and stops_required_columns.issubset(
+    are_stops_present = dataset.stops is not None and stops_required_columns.issubset(
         dataset.stops.columns
-    ):
+    )
+
+    if are_stops_present:
         # Extract the box corners coordinates in the dataset representation and
         # Order the corners inside a bounding box
         # The order is clockwise, from the South East to the North East corner

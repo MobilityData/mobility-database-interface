@@ -20,7 +20,11 @@ def process_stops_count_by_type_for_gtfs_metadata(gtfs_representation):
     dataset = gtfs_representation.dataset
     metadata = gtfs_representation.metadata
 
-    if dataset.stops is not None and LOCATION_TYPE in dataset.stops.columns:
+    are_stops_present = (
+        dataset.stops is not None and LOCATION_TYPE in dataset.stops.columns
+    )
+
+    if are_stops_present:
         # Transform the blank location types to 0
         # According to the GTFS specification, blank location type is a Stop
         dataset.stops[LOCATION_TYPE] = dataset.stops[LOCATION_TYPE].fillna(0)

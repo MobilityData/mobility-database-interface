@@ -15,11 +15,13 @@ def process_main_language_code_for_gtfs_metadata(gtfs_representation):
     metadata = gtfs_representation.metadata
 
     # Agency must be present AND not empty because we are accessing the first index
-    if (
+    is_agency_present = (
         dataset.agency is not None
         and AGENCY_LANG in dataset.agency.columns
         and not dataset.agency.empty
-    ):
+    )
+
+    if is_agency_present:
         # Extract the main language code from the first row in the dataset agency
         main_language_code = dataset.agency[AGENCY_LANG].iloc[AGENCY_LANG_IDX]
     else:
