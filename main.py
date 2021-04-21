@@ -23,7 +23,7 @@ from usecase.process_geopraphical_boundaries_for_gtfs_metadata import (
 from usecase.process_main_language_code_for_gtfs_metadata import (
     process_main_language_code_for_gtfs_metadata,
 )
-from usecase.process_md5 import process_md5
+from usecase.process_sha1 import process_sha1
 from usecase.process_routes_count_by_type_for_gtfs_metadata import (
     process_routes_count_by_type_for_gtfs_metadata,
 )
@@ -110,8 +110,8 @@ if __name__ == "__main__":
     # Download datasets zip files
     datasets_infos = download_dataset_as_zip(args.path_to_tmp_data, datasets_infos)
 
-    # Process the MD5 hashes
-    datasets_infos = process_md5(datasets_infos)
+    # Process the SHA-1 hashes
+    datasets_infos = process_sha1(datasets_infos)
 
     # Load the datasets in memory in the data repository
     data_repository = load_dataset(data_repository, datasets_infos, args.data_type)

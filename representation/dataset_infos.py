@@ -6,6 +6,6 @@ class DatasetInfos:
         self.url = ""
         self.zip_path = ""
         self.download_date = ""
-        self.md5_hash = ""
-        self.previous_md5_hashes = set()
+        self.sha1_hash = ""
+        self.previous_sha1_hashes = set()
         self.previous_versions = set()
