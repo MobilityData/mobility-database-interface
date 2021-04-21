@@ -3,29 +3,7 @@ from utilities.geographical_utils import (
     process_bounding_octagon_corner_floats,
 )
 from utilities.validators import validate_gtfs_representation
-from utilities.notices import (
-    STANDALONE,
-    WITH_FILENAME,
-    FILENAME,
-    STOPS_TXT,
-    DUPLICATED_COLUMN,
-    DUPLICATE_KEY,
-    EMPTY_FILE,
-    INVALID_FLOAT,
-    INVALID_ROW_LENGTH,
-    LEADING_OR_TRAILING_WHITESPACES,
-    MISSING_REQUIRED_COLUMN,
-    MISSING_REQUIRED_FIELD,
-    MISSING_REQUIRED_FILE,
-    NEW_LINE_IN_VALUE,
-    NUMBER_OUT_OF_RANGE,
-    IO_ERROR,
-    THREAD_EXECUTION_ERROR,
-    THREAD_INTERRUPTED_ERROR,
-    URI_SYNTAX_ERROR,
-    RUNTIME_EXCEPTION_IN_LOADER_ERROR,
-    RUNTIME_EXCEPTION_IN_VALIDATOR_ERROR,
-)
+from utilities.notices import GEO_BOUNDARIES_FOR_GTFS_METADATA_NOTICES
 
 GEO_BOUNDARIES_UTILS = "geo_boundaries_utils"
 GEO_BOUNDARIES_ATTR = "geo_boundaries_attr"
@@ -40,30 +18,7 @@ BOUNDING_OCTAGON_MAP = {
     GEO_BOUNDARIES_ATTR: "bounding_octagon",
 }
 
-GEO_BOUNDARIES_NOTICES = {
-    STANDALONE: {
-        IO_ERROR,
-        THREAD_EXECUTION_ERROR,
-        THREAD_INTERRUPTED_ERROR,
-        URI_SYNTAX_ERROR,
-        RUNTIME_EXCEPTION_IN_VALIDATOR_ERROR,
-    },
-    WITH_FILENAME: {
-        DUPLICATED_COLUMN,
-        DUPLICATE_KEY,
-        EMPTY_FILE,
-        INVALID_FLOAT,
-        INVALID_ROW_LENGTH,
-        LEADING_OR_TRAILING_WHITESPACES,
-        MISSING_REQUIRED_COLUMN,
-        MISSING_REQUIRED_FIELD,
-        MISSING_REQUIRED_FILE,
-        NEW_LINE_IN_VALUE,
-        NUMBER_OUT_OF_RANGE,
-        RUNTIME_EXCEPTION_IN_LOADER_ERROR,
-    },
-    FILENAME: {STOPS_TXT},
-}
+GEO_BOUNDARIES_NOTICES = GEO_BOUNDARIES_FOR_GTFS_METADATA_NOTICES
 
 
 def process_bounding_box_for_gtfs_metadata(gtfs_representation):

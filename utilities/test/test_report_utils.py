@@ -21,24 +21,24 @@ class TestCleanReport(TestCase):
 
     def test_clean_invalid_report(self):
         test_report = {}
-        self.assertRaises(Exception, clean_report, test_report)
+        self.assertRaises(KeyError, clean_report, test_report)
 
         test_report = {"notices": [{"code_not_present": "code_not_present"}]}
-        self.assertRaises(Exception, clean_report, test_report)
+        self.assertRaises(KeyError, clean_report, test_report)
 
         test_report = {"notices": [{"code": ""}]}
-        self.assertRaises(Exception, clean_report, test_report)
+        self.assertRaises(ValueError, clean_report, test_report)
 
         test_report = {
             "notices": [{"code": "code", "notices_not_present": "notices_not_present"}]
         }
-        self.assertRaises(Exception, clean_report, test_report)
+        self.assertRaises(KeyError, clean_report, test_report)
 
         test_report = {"notices": [{"code": "code", "notices": []}]}
-        self.assertRaises(Exception, clean_report, test_report)
+        self.assertRaises(ValueError, clean_report, test_report)
 
         test_report = {"notices": [{"code": "code", "notices": [{}]}]}
-        self.assertRaises(Exception, clean_report, test_report)
+        self.assertRaises(ValueError, clean_report, test_report)
 
     def test_clean_valid_report(self):
         test_report = {
@@ -119,9 +119,8 @@ class TestMergeReports(TestCase):
 
 class TestApplyReportToScenario(TestCase):
     def test_apply_empty_report_to_scenario(self):
-        test_report = {"standalone": set(), "with_filename": {}}
-        test_scenario = [
-            (
+        test_scenario = {
+            "test_usecase_1": (
                 {
                     STANDALONE: {IO_ERROR},
                     WITH_FILENAME: {
@@ -131,7 +130,7 @@ class TestApplyReportToScenario(TestCase):
                 },
                 ["test_use_case_function"],
             ),
-            (
+            "test_usecase_2": (
                 {
                     STANDALONE: {URI_SYNTAX_ERROR},
                     WITH_FILENAME: {
@@ -141,16 +140,16 @@ class TestApplyReportToScenario(TestCase):
                 },
                 ["test_another_use_case_function"],
             ),
-        ]
+        }
+        test_report = {"standalone": set(), "with_filename": {}}
         under_test = apply_report_to_scenario(test_report, test_scenario)
         self.assertEqual(
             under_test, ["test_use_case_function", "test_another_use_case_function"]
         )
 
     def test_apply_report_to_scenario(self):
-        test_report = {"standalone": {IO_ERROR}, "with_filename": {}}
-        test_scenario = [
-            (
+        test_scenario = {
+            "test_usecase_1": (
                 {
                     STANDALONE: {IO_ERROR},
                     WITH_FILENAME: {
@@ -160,7 +159,7 @@ class TestApplyReportToScenario(TestCase):
                 },
                 ["test_use_case_function"],
             ),
-            (
+            "test_usecase_2": (
                 {
                     STANDALONE: {URI_SYNTAX_ERROR},
                     WITH_FILENAME: {
@@ -170,7 +169,9 @@ class TestApplyReportToScenario(TestCase):
                 },
                 ["test_another_use_case_function"],
             ),
-        ]
+        }
+
+        test_report = {"standalone": {IO_ERROR}, "with_filename": {}}
         under_test = apply_report_to_scenario(test_report, test_scenario)
         self.assertEqual(under_test, ["test_another_use_case_function"])
 
@@ -178,28 +179,6 @@ class TestApplyReportToScenario(TestCase):
             "standalone": set(),
             "with_filename": {ROUTES_TXT: {MISSING_REQUIRED_FIELD}},
         }
-        test_scenario = [
-            (
-                {
-                    STANDALONE: {IO_ERROR},
-                    WITH_FILENAME: {
-                        MISSING_REQUIRED_FILE,
-                    },
-                    FILENAME: {STOPS_TXT},
-                },
-                ["test_use_case_function"],
-            ),
-            (
-                {
-                    STANDALONE: {URI_SYNTAX_ERROR},
-                    WITH_FILENAME: {
-                        MISSING_REQUIRED_FIELD,
-                    },
-                    FILENAME: {ROUTES_TXT},
-                },
-                ["test_another_use_case_function"],
-            ),
-        ]
         under_test = apply_report_to_scenario(test_report, test_scenario)
         self.assertEqual(under_test, ["test_use_case_function"])
 
@@ -207,27 +186,5 @@ class TestApplyReportToScenario(TestCase):
             "standalone": {IO_ERROR},
             "with_filename": {ROUTES_TXT: {MISSING_REQUIRED_FIELD}},
         }
-        test_scenario = [
-            (
-                {
-                    STANDALONE: {IO_ERROR},
-                    WITH_FILENAME: {
-                        MISSING_REQUIRED_FILE,
-                    },
-                    FILENAME: {STOPS_TXT},
-                },
-                ["test_use_case_function"],
-            ),
-            (
-                {
-                    STANDALONE: {URI_SYNTAX_ERROR},
-                    WITH_FILENAME: {
-                        MISSING_REQUIRED_FIELD,
-                    },
-                    FILENAME: {ROUTES_TXT},
-                },
-                ["test_another_use_case_function"],
-            ),
-        ]
         under_test = apply_report_to_scenario(test_report, test_scenario)
         self.assertEqual(under_test, [])

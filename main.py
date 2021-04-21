@@ -56,6 +56,7 @@ from utilities.report_utils import clean_report, merge_reports, apply_report_to_
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="MobilityDatabase Interface Script")
     parser.add_argument(
+        "-d",
         "--data-type",
         action="store",
         choices=["GTFS", "GBFS"],
@@ -63,37 +64,42 @@ if __name__ == "__main__":
         help='Type of the datasets to process. Possible values : "GTFS", "GBFS".',
     )
     parser.add_argument(
+        "-t",
         "--path-to-tmp-data",
         action="store",
         default="./data/tmp/",
         help="Path to the folder where to temporary store downloaded datasets for processing.",
     )
     parser.add_argument(
+        "-e",
         "--path-to-env-var",
         action="store",
         default="./.env.staging",
         help="Path to the environment variables.",
     )
     parser.add_argument(
+        "-c",
         "--path-to-credentials",
         action="store",
         default="./staging_credentials.json",
         help="Path to the credentials.",
     )
     parser.add_argument(
+        "-v",
         "--path-to-validation-report",
         action="store",
         default="./report.json",
         help="Path to the validation report.",
     )
     parser.add_argument(
+        "-s",
         "--path-to-system-report",
         action="store",
         default="./system_errors.json",
         help="Path to the system errors report.",
     )
     parser.add_argument(
-        "-e",
+        "-E",
         "--entity-code",
         action="store",
         help="The entity code corresponding to the source in the database.",
@@ -109,7 +115,8 @@ if __name__ == "__main__":
     # Merge both report into one
     report = merge_reports(validation_report, system_report)
 
-    # Generating the use cases to execute using the reports and the scenario
+    # Generating the collection of use cases to execute (valid scenario)
+    # by using the reports and the scenario
     valid_scenario = apply_report_to_scenario(report, gtfs_metadata_scenario.SCENARIO)
 
     # Load environment from dotenv file and credentials json file
