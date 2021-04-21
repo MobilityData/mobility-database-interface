@@ -1,6 +1,6 @@
 from utilities.constants import (
-    PRODUCTION_SPARQL_URL,
-    STAGING_SPARQL_URL,
+    PRODUCTION_SPARQL_BIGDATA_URL,
+    STAGING_SPARQL_BIGDATA_URL,
     PRODUCTION_API_URL,
     STAGING_API_URL,
 )
@@ -8,10 +8,10 @@ from representation.dataset_infos import DatasetInfos
 from representation.gtfs_representation import GtfsRepresentation
 
 
-def validate_sparql_url(sparql_url):
-    if sparql_url not in [PRODUCTION_SPARQL_URL, STAGING_SPARQL_URL]:
+def validate_sparql_bigdata_url(sparql_url):
+    if sparql_url not in [PRODUCTION_SPARQL_BIGDATA_URL, STAGING_SPARQL_BIGDATA_URL]:
         raise TypeError(
-            f"sparql_api should be {PRODUCTION_SPARQL_URL} or {STAGING_SPARQL_URL}"
+            f"sparql_bigdata_url should be {PRODUCTION_SPARQL_BIGDATA_URL} or {STAGING_SPARQL_BIGDATA_URL}"
         )
     return True
 
