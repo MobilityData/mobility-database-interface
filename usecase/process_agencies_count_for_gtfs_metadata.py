@@ -1,6 +1,8 @@
 from utilities.validators import validate_gtfs_representation
+from utilities.notices import AGENCIES_COUNT_FOR_GTFS_METADATA_NOTICES
 
 AGENCY_NAME_KEY = "agency_name"
+AGENCIES_COUNT_NOTICES = AGENCIES_COUNT_FOR_GTFS_METADATA_NOTICES
 
 
 def process_agencies_count_for_gtfs_metadata(gtfs_representation):

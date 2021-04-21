@@ -1,7 +1,9 @@
 from utilities.validators import validate_gtfs_representation
+from utilities.notices import MAIN_LANGUAGE_FOR_GTFS_METADATA_NOTICES
 
 AGENCY_LANG_KEY = "agency_lang"
 AGENCY_LANG_IDX = 0
+MAIN_LANGUAGE_NOTICES = MAIN_LANGUAGE_FOR_GTFS_METADATA_NOTICES
 
 
 def process_main_language_code_for_gtfs_metadata(gtfs_representation):

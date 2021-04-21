@@ -2,6 +2,7 @@ import pandas as pd
 
 from utilities.temporal_utils import get_gtfs_dates_by_type
 from utilities.validators import validate_gtfs_representation
+from utilities.notices import SERVICE_DATE_FOR_GTFS_METADATA_NOTICES
 
 PD_DATE_FORMAT = "%Y%m%d"
 SERVICE_DATE_FORMAT = "%Y-%m-%d"
@@ -25,6 +26,8 @@ END_DATE_MAP = {
     MIN_MAX_ATTR: "max",
     SERVICE_DATE_ATTR: "end_service_date",
 }
+
+SERVICE_DATE_NOTICES = SERVICE_DATE_FOR_GTFS_METADATA_NOTICES
 
 
 def process_start_service_date_for_gtfs_metadata(gtfs_representation):

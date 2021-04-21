@@ -5,6 +5,7 @@ from utilities.temporal_utils import (
     get_gtfs_timezone_utc_offset,
     get_gtfs_stop_times_for_date,
 )
+from utilities.notices import TIMESTAMP_FOR_GTFS_METADATA_NOTICES
 
 PD_DATE_FORMAT = "%Y%m%d"
 TIMESTAMP_FORMAT = "%Y-%m-%d"
@@ -28,6 +29,8 @@ END_TIMESTAMP_MAP = {
     MIN_MAX_ATTR: "max",
     TIMESTAMP_ATTR: "end_timestamp",
 }
+
+TIMESTAMP_NOTICES = TIMESTAMP_FOR_GTFS_METADATA_NOTICES
 
 
 def process_start_timestamp_for_gtfs_metadata(gtfs_representation):

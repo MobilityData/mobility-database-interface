@@ -41,6 +41,7 @@ from usecase.process_timestamp_for_gtfs_metadata import (
 from usecase.create_dataset_entity_for_gtfs_metadata import (
     create_dataset_entity_for_gtfs_metadata,
 )
+import scenarios.gtfs_metadata_scenario as gtfs_metadata_scenario
 from utilities.constants import (
     SPARQL_URL,
     API_URL,
@@ -49,11 +50,13 @@ from utilities.constants import (
     USERNAME,
     PASSWORD,
 )
+from utilities.report_utils import clean_report, merge_reports, apply_report_to_scenario
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="MobilityDatabase Interface Script")
     parser.add_argument(
+        "-d",
         "--data-type",
         action="store",
         choices=["GTFS", "GBFS"],
@@ -61,24 +64,60 @@ if __name__ == "__main__":
         help='Type of the datasets to process. Possible values : "GTFS", "GBFS".',
     )
     parser.add_argument(
+        "-t",
         "--path-to-tmp-data",
         action="store",
         default="./data/tmp/",
         help="Path to the folder where to temporary store downloaded datasets for processing.",
     )
     parser.add_argument(
+        "-e",
         "--path-to-env-var",
         action="store",
         default="./.env.staging",
         help="Path to the environment variables.",
     )
     parser.add_argument(
+        "-c",
         "--path-to-credentials",
         action="store",
         default="./staging_credentials.json",
         help="Path to the credentials.",
     )
+    parser.add_argument(
+        "-v",
+        "--path-to-validation-report",
+        action="store",
+        default="./report.json",
+        help="Path to the validation report.",
+    )
+    parser.add_argument(
+        "-s",
+        "--path-to-system-report",
+        action="store",
+        default="./system_errors.json",
+        help="Path to the system errors report.",
+    )
+    parser.add_argument(
+        "-E",
+        "--entity-code",
+        action="store",
+        help="The entity code corresponding to the source in the database.",
+    )
     args = parser.parse_args()
+
+    # Load and clean the reports obtained from the validation output
+    with open(args.path_to_validation_report, "r") as f:
+        validation_report = clean_report(json.load(f))
+    with open(args.path_to_system_report, "r") as f:
+        system_report = clean_report(json.load(f))
+
+    # Merge both report into one
+    report = merge_reports(validation_report, system_report)
+
+    # Generating the collection of use cases to execute (valid scenario)
+    # by using the reports and the scenario
+    valid_scenario = apply_report_to_scenario(report, gtfs_metadata_scenario.SCENARIO)
 
     # Load environment from dotenv file and credentials json file
     load_dotenv(args.path_to_env_var)
@@ -102,8 +141,7 @@ if __name__ == "__main__":
     # Process data
     # Download datasets zip files
     datasets_infos = extract_gtfs_datasets_infos_from_database(
-        api_url,
-        sparql_url,
+        api_url, sparql_url, [args.entity_code]
     )
 
     # Download datasets zip files
@@ -120,39 +158,8 @@ if __name__ == "__main__":
         dataset_key,
         dataset_representation,
     ) in data_repository.get_dataset_representations().items():
-        dataset_representation = process_start_service_date_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_end_service_date_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_start_timestamp_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_end_timestamp_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_main_language_code_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_timezones_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_bounding_box_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_bounding_octagon_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_agencies_count_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_routes_count_by_type_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_stops_count_by_type_for_gtfs_metadata(
-            dataset_representation
-        )
+        for use_case in valid_scenario:
+            dataset_representation = use_case(dataset_representation)
         dataset_representation = create_dataset_entity_for_gtfs_metadata(
             dataset_representation, api_url
         )

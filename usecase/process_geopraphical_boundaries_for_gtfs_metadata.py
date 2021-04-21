@@ -3,6 +3,7 @@ from utilities.geographical_utils import (
     process_bounding_octagon_corner_floats,
 )
 from utilities.validators import validate_gtfs_representation
+from utilities.notices import GEO_BOUNDARIES_FOR_GTFS_METADATA_NOTICES
 
 GEO_BOUNDARIES_UTILS = "geo_boundaries_utils"
 GEO_BOUNDARIES_ATTR = "geo_boundaries_attr"
@@ -16,6 +17,8 @@ BOUNDING_OCTAGON_MAP = {
     GEO_BOUNDARIES_UTILS: process_bounding_octagon_corner_floats,
     GEO_BOUNDARIES_ATTR: "bounding_octagon",
 }
+
+GEO_BOUNDARIES_NOTICES = GEO_BOUNDARIES_FOR_GTFS_METADATA_NOTICES
 
 
 def process_bounding_box_for_gtfs_metadata(gtfs_representation):

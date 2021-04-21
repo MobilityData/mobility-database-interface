@@ -8,6 +8,9 @@ from utilities.constants import (
     LOCATION_TYPE,
 )
 from utilities.validators import validate_gtfs_representation
+from utilities.notices import STOPS_COUNT_FOR_GTFS_METADATA_NOTICES
+
+STOPS_COUNT_NOTICES = STOPS_COUNT_FOR_GTFS_METADATA_NOTICES
 
 
 def process_stops_count_by_type_for_gtfs_metadata(gtfs_representation):

@@ -1,8 +1,11 @@
 from utilities.validators import validate_gtfs_representation
+from utilities.notices import TIMEZONE_FOR_GTFS_METADATA_NOTICES
 
 STOP_TIMEZONE_KEY = "stop_timezone"
 AGENCY_TIMEZONE_KEY = "agency_timezone"
 AGENCY_TIMEZONE_IDX = 0
+
+TIMEZONE_NOTICES = TIMEZONE_FOR_GTFS_METADATA_NOTICES
 
 
 def process_timezones_for_gtfs_metadata(gtfs_representation):

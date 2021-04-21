@@ -1,4 +1,7 @@
 from utilities.validators import validate_gtfs_representation
+from utilities.notices import ROUTES_COUNT_FOR_GTFS_METADATA_NOTICES
+
+ROUTES_COUNT_NOTICES = ROUTES_COUNT_FOR_GTFS_METADATA_NOTICES
 
 TRAM = 0
 SUBWAY = 1
