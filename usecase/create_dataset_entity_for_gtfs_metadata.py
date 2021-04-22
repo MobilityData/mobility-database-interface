@@ -38,10 +38,6 @@ from utilities.constants import (
 )
 from utilities.validators import (
     validate_gtfs_representation,
-    is_valid_str,
-    is_valid_list,
-    is_valid_dict,
-    is_valid_int,
 )
 
 
@@ -88,7 +84,7 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation):
     )
 
     # Main timezone property
-    if is_valid_str(metadata.main_timezone):
+    if isinstance(metadata.main_timezone, str):
         dataset_data.append(
             wbi_core.String(
                 value=metadata.main_timezone,
@@ -98,25 +94,27 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation):
         )
 
     # Other timezones property
-    if is_valid_list(metadata.other_timezones):
+    if isinstance(metadata.other_timezones, list):
         for timezone in metadata.other_timezones:
-            if is_valid_str(timezone):
-                dataset_data.append(
-                    wbi_core.String(
-                        value=timezone, prop_nr=os.environ[TIMEZONE_PROP], rank=NORMAL
-                    )
+            dataset_data.append(
+                wbi_core.String(
+                    value=timezone, prop_nr=os.environ[TIMEZONE_PROP], rank=NORMAL
                 )
+            )
 
     # Country code property
-    for country_code in metadata.country_codes:
-        dataset_data.append(
-            wbi_core.String(
-                value=country_code, prop_nr=os.environ[COUNTRY_CODE_PROP], rank=NORMAL
+    if isinstance(metadata.country_codes, list):
+        for country_code in metadata.country_codes:
+            dataset_data.append(
+                wbi_core.String(
+                    value=country_code,
+                    prop_nr=os.environ[COUNTRY_CODE_PROP],
+                    rank=NORMAL,
+                )
             )
-        )
 
     # Main language code property
-    if is_valid_str(metadata.main_language_code):
+    if isinstance(metadata.main_language_code, str):
         dataset_data.append(
             wbi_core.String(
                 value=metadata.main_language_code,
@@ -126,7 +124,7 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation):
         )
 
     # Start service date property
-    if is_valid_str(metadata.start_service_date):
+    if isinstance(metadata.start_service_date, str):
         dataset_data.append(
             wbi_core.String(
                 value=metadata.start_service_date,
@@ -135,7 +133,7 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation):
         )
 
     # End service date property
-    if is_valid_str(metadata.end_service_date):
+    if isinstance(metadata.end_service_date, str):
         dataset_data.append(
             wbi_core.String(
                 value=metadata.end_service_date,
@@ -144,7 +142,7 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation):
         )
 
     # Start timestamp property
-    if is_valid_str(metadata.start_timestamp):
+    if isinstance(metadata.start_timestamp, str):
         dataset_data.append(
             wbi_core.String(
                 value=metadata.start_timestamp, prop_nr=os.environ[START_TIMESTAMP_PROP]
@@ -152,7 +150,7 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation):
         )
 
     # End timestamp property
-    if is_valid_str(metadata.end_timestamp):
+    if isinstance(metadata.end_timestamp, str):
         dataset_data.append(
             wbi_core.String(
                 value=metadata.end_timestamp, prop_nr=os.environ[END_TIMESTAMP_PROP]
@@ -160,7 +158,7 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation):
         )
 
     # SHA-1 hash property
-    if is_valid_str(metadata.sha1_hash):
+    if isinstance(metadata.sha1_hash, str):
         dataset_data.append(
             wbi_core.String(
                 value=metadata.sha1_hash, prop_nr=os.environ[SHA1_HASH_PROP]
@@ -168,7 +166,7 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation):
         )
 
     # Bounding box property
-    if is_valid_dict(metadata.bounding_box):
+    if isinstance(metadata.bounding_box, dict):
         for order_key, corner_value in metadata.bounding_box.items():
             dataset_data.append(
                 create_geographical_property(
@@ -177,7 +175,7 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation):
             )
 
     # Bounding octagon property
-    if is_valid_dict(metadata.bounding_octagon):
+    if isinstance(metadata.bounding_octagon, dict):
         for order_key, corner_value in metadata.bounding_octagon.items():
             dataset_data.append(
                 create_geographical_property(
@@ -186,35 +184,38 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation):
             )
 
     # Stop counts
-    if is_valid_dict(metadata.stops_count_by_type):
+    if isinstance(metadata.stops_count_by_type, dict):
         # Number of stops property
-        if is_valid_int(metadata.stops_count_by_type.get(STOP_KEY)):
+        stops_count = metadata.stops_count_by_type.get(STOP_KEY, None)
+        if stops_count is not None:
             dataset_data.append(
                 wbi_core.Quantity(
-                    quantity=metadata.stops_count_by_type.get(STOP_KEY),
+                    quantity=stops_count,
                     prop_nr=os.environ[NUM_OF_STOPS_PROP],
                 )
             )
 
         # Number of stations property
-        if is_valid_int(metadata.stops_count_by_type.get(STATION_KEY)):
+        stations_count = metadata.stops_count_by_type.get(STATION_KEY, None)
+        if stations_count is not None:
             dataset_data.append(
                 wbi_core.Quantity(
-                    quantity=metadata.stops_count_by_type.get(STATION_KEY),
+                    quantity=stations_count,
                     prop_nr=os.environ[NUM_OF_STATIONS_PROP],
                 )
             )
 
-        if is_valid_int(metadata.stops_count_by_type.get(ENTRANCE_KEY)):
-            # Number of entrances property
+        # Number of entrances property
+        entrances_count = metadata.stops_count_by_type.get(ENTRANCE_KEY, None)
+        if entrances_count is not None:
             dataset_data.append(
                 wbi_core.Quantity(
-                    quantity=metadata.stops_count_by_type.get(ENTRANCE_KEY),
+                    quantity=entrances_count,
                     prop_nr=os.environ[NUM_OF_ENTRANCES_PROP],
                 )
             )
 
-    if is_valid_int(metadata.agencies_count):
+    if isinstance(metadata.agencies_count, int):
         # Number of agencies property
         dataset_data.append(
             wbi_core.Quantity(
@@ -224,23 +225,22 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation):
         )
 
     # Number of routes property
-    if is_valid_dict(metadata.routes_count_by_type):
+    if isinstance(metadata.routes_count_by_type, dict):
         for route_key, route_value in metadata.routes_count_by_type.items():
-            if is_valid_int(route_value):
-                route_qualifier = [
-                    wbi_core.String(
-                        value=route_key,
-                        prop_nr=os.environ[ROUTE_TYPE_PROP],
-                        is_qualifier=True,
-                    )
-                ]
-                dataset_data.append(
-                    wbi_core.Quantity(
-                        quantity=route_value,
-                        prop_nr=os.environ[NUM_OF_ROUTES_PROP],
-                        qualifiers=route_qualifier,
-                    )
+            route_qualifier = [
+                wbi_core.String(
+                    value=route_key,
+                    prop_nr=os.environ[ROUTE_TYPE_PROP],
+                    is_qualifier=True,
                 )
+            ]
+            dataset_data.append(
+                wbi_core.Quantity(
+                    quantity=route_value,
+                    prop_nr=os.environ[NUM_OF_ROUTES_PROP],
+                    qualifiers=route_qualifier,
+                )
+            )
 
     # Dataset version entity label
     version_name_label = metadata.dataset_version_name

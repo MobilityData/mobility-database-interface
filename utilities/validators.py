@@ -32,25 +32,3 @@ def validate_datasets_infos(datasets_infos):
     if not all(isinstance(item, DatasetInfos) for item in datasets_infos):
         raise TypeError("Datasets infos must be a valid DatasetInfos list.")
     return True
-
-
-def is_valid_instance(prop_instance, prop_class):
-    # Verify if the property instance is instance of the property class
-    # and make sure the property instance is not falsy (empty string, dict, or 0)
-    return isinstance(prop_instance, prop_class) and prop_instance
-
-
-def is_valid_str(prop_instance):
-    return is_valid_instance(prop_instance, str)
-
-
-def is_valid_int(prop_instance):
-    return is_valid_instance(prop_instance, int)
-
-
-def is_valid_dict(prop_instance):
-    return is_valid_instance(prop_instance, dict)
-
-
-def is_valid_list(prop_instance):
-    return is_valid_instance(prop_instance, list)

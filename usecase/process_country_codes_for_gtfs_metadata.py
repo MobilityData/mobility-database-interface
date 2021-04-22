@@ -39,7 +39,8 @@ def process_country_codes_for_gtfs_metadata(gtfs_representation):
             infos = rg.search(coordinates)
             for info in infos:
                 country_code = info.get(RG_COUNTRY_CODE_KEY, None)
-                if country_code:
+                # Keep the country code only if the value is not None and is not empty
+                if country_code is not None and len(country_code) != 0:
                     country_codes.add(country_code)
 
         # Convert the country codes set to a list, and sort it alphabetically

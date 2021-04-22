@@ -35,7 +35,8 @@ def process_timezones_for_gtfs_metadata(gtfs_representation):
         if are_stops_present:
             # Extract the timezones using the stop_timezone in the dataset stops
             for index, row in dataset.stops.iterrows():
-                if row[STOP_TIMEZONE] is not None:
+                # Keep the stop timezone only if the value exist and is not empty
+                if row[STOP_TIMEZONE] is not None and len(row[STOP_TIMEZONE]) != 0:
                     stop_timezones.add(row[STOP_TIMEZONE])
 
         # Remove the main_timezone from the set of the stop_timezones
