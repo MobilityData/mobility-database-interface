@@ -78,7 +78,7 @@ class TestProcessEndTimestampForGtfsMetadata(TestCase):
 
         under_test = process_end_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.end_timestamp, "")
+        mock_metadata.end_timestamp.assert_not_called()
 
     def test_process_end_timestamp_execution_missing_calendar_fields(self):
         mock_calendar = PropertyMock(return_value=pd.DataFrame({}))
@@ -123,7 +123,7 @@ class TestProcessEndTimestampForGtfsMetadata(TestCase):
 
         under_test = process_end_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.end_timestamp, "")
+        mock_metadata.end_timestamp.assert_not_called()
 
     def test_process_end_timestamp_execution_missing_stop_times_file(self):
         mock_calendar = PropertyMock(
@@ -181,7 +181,7 @@ class TestProcessEndTimestampForGtfsMetadata(TestCase):
 
         under_test = process_end_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.end_timestamp, "")
+        mock_metadata.end_timestamp.assert_not_called()
 
     def test_process_end_timestamp_execution_missing_stop_times_fields(self):
         mock_calendar = PropertyMock(
@@ -241,7 +241,7 @@ class TestProcessEndTimestampForGtfsMetadata(TestCase):
 
         under_test = process_end_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.end_timestamp, "")
+        mock_metadata.end_timestamp.assert_not_called()
 
     def test_process_end_timestamp_execution_missing_trips_file(self):
         mock_calendar = PropertyMock(
@@ -300,7 +300,7 @@ class TestProcessEndTimestampForGtfsMetadata(TestCase):
 
         under_test = process_end_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.end_timestamp, "")
+        mock_metadata.end_timestamp.assert_not_called()
 
     def test_process_end_timestamp_execution_missing_trips_fields(self):
         mock_calendar = PropertyMock(
@@ -361,7 +361,7 @@ class TestProcessEndTimestampForGtfsMetadata(TestCase):
 
         under_test = process_end_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.end_timestamp, "")
+        mock_metadata.end_timestamp.assert_not_called()
 
     def test_process_end_timestamp_execution_missing_agency_file(self):
         mock_calendar = PropertyMock(
@@ -420,7 +420,7 @@ class TestProcessEndTimestampForGtfsMetadata(TestCase):
 
         under_test = process_end_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.end_timestamp, "")
+        mock_metadata.end_timestamp.assert_not_called()
 
     def test_process_end_timestamp_execution_missing_agency_fields(self):
         mock_calendar = PropertyMock(
@@ -481,7 +481,7 @@ class TestProcessEndTimestampForGtfsMetadata(TestCase):
 
         under_test = process_end_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.end_timestamp, "")
+        mock_metadata.end_timestamp.assert_not_called()
 
     @mock.patch("usecase.process_timestamp_for_gtfs_metadata.get_gtfs_dates_by_type")
     @mock.patch(

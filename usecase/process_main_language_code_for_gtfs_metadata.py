@@ -24,10 +24,10 @@ def process_main_language_code_for_gtfs_metadata(gtfs_representation):
     if is_agency_present:
         # Extract the main language code from the first row in the dataset agency
         main_language_code = dataset.agency[AGENCY_LANG].iloc[AGENCY_LANG_IDX]
-    else:
-        main_language_code = ""
 
-    # Set the main language code in the GTFS representation
-    metadata.main_language_code = main_language_code
+        # Set the main language code in the GTFS representation
+        # if not an empty string
+        if len(main_language_code) != 0:
+            metadata.main_language_code = main_language_code
 
     return gtfs_representation

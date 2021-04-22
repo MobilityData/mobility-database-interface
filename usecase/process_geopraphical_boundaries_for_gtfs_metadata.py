@@ -7,15 +7,18 @@ from utilities.constants import STOP_LAT, STOP_LON
 
 GEO_BOUNDARIES_UTILS = "geo_boundaries_utils"
 GEO_BOUNDARIES_ATTR = "geo_boundaries_attr"
+GEO_BOUNDARIES_SIZE = "geo_boundaries_size"
 
 BOUNDING_BOX_MAP = {
     GEO_BOUNDARIES_UTILS: process_bounding_box_corner_floats,
     GEO_BOUNDARIES_ATTR: "bounding_box",
+    GEO_BOUNDARIES_SIZE: 4,
 }
 
 BOUNDING_OCTAGON_MAP = {
     GEO_BOUNDARIES_UTILS: process_bounding_octagon_corner_floats,
     GEO_BOUNDARIES_ATTR: "bounding_octagon",
+    GEO_BOUNDARIES_SIZE: 8,
 }
 
 
@@ -66,12 +69,12 @@ def process_geographical_boundaries_for_gtfs_metadata(
                 geo_boundaries_map[GEO_BOUNDARIES_UTILS](dataset)
             )
         }
-    else:
-        geo_boundaries = {}
 
-    # Set the bounding box in the GTFS representation
-    # or
-    # Set the bounding octagon in the GTFS representation
-    setattr(metadata, geo_boundaries_map[GEO_BOUNDARIES_ATTR], geo_boundaries)
+        # Set the bounding box in the GTFS representation
+        # or
+        # Set the bounding octagon in the GTFS representation
+        # if the dictionary is of the correct size
+        if len(geo_boundaries) == geo_boundaries_map[GEO_BOUNDARIES_SIZE]:
+            setattr(metadata, geo_boundaries_map[GEO_BOUNDARIES_ATTR], geo_boundaries)
 
     return gtfs_representation

@@ -55,7 +55,7 @@ class TestProcessStartTimestampForGtfsMetadata(TestCase):
 
         under_test = process_start_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.start_timestamp, "")
+        mock_metadata.start_timestamp.assert_not_called()
 
     def test_process_start_timestamp_execution_missing_both_calendar_files(self):
         mock_stop_times = PropertyMock(
@@ -96,7 +96,7 @@ class TestProcessStartTimestampForGtfsMetadata(TestCase):
 
         under_test = process_start_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.start_timestamp, "")
+        mock_metadata.start_timestamp.assert_not_called()
 
     def test_process_start_timestamp_execution_missing_calendar_fields(self):
         mock_calendar = PropertyMock(return_value=pd.DataFrame({}))
@@ -141,7 +141,7 @@ class TestProcessStartTimestampForGtfsMetadata(TestCase):
 
         under_test = process_start_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.start_timestamp, "")
+        mock_metadata.start_timestamp.assert_not_called()
 
     def test_process_start_timestamp_execution_missing_stop_times_file(self):
         mock_calendar = PropertyMock(
@@ -199,7 +199,7 @@ class TestProcessStartTimestampForGtfsMetadata(TestCase):
 
         under_test = process_start_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.start_timestamp, "")
+        mock_metadata.start_timestamp.assert_not_called()
 
     def test_process_start_timestamp_execution_missing_stop_times_fields(self):
         mock_calendar = PropertyMock(
@@ -259,7 +259,7 @@ class TestProcessStartTimestampForGtfsMetadata(TestCase):
 
         under_test = process_start_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.start_timestamp, "")
+        mock_metadata.start_timestamp.assert_not_called()
 
     def test_process_start_timestamp_execution_missing_trips_file(self):
         mock_calendar = PropertyMock(
@@ -318,7 +318,7 @@ class TestProcessStartTimestampForGtfsMetadata(TestCase):
 
         under_test = process_start_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.start_timestamp, "")
+        mock_metadata.start_timestamp.assert_not_called()
 
     def test_process_start_timestamp_execution_missing_trips_fields(self):
         mock_calendar = PropertyMock(
@@ -379,7 +379,7 @@ class TestProcessStartTimestampForGtfsMetadata(TestCase):
 
         under_test = process_start_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.start_timestamp, "")
+        mock_metadata.start_timestamp.assert_not_called()
 
     def test_process_start_timestamp_execution_missing_agency_file(self):
         mock_calendar = PropertyMock(
@@ -438,7 +438,7 @@ class TestProcessStartTimestampForGtfsMetadata(TestCase):
 
         under_test = process_start_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.start_timestamp, "")
+        mock_metadata.start_timestamp.assert_not_called()
 
     def test_process_start_timestamp_execution_missing_agency_fields(self):
         mock_calendar = PropertyMock(
@@ -499,7 +499,7 @@ class TestProcessStartTimestampForGtfsMetadata(TestCase):
 
         under_test = process_start_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.start_timestamp, "")
+        mock_metadata.start_timestamp.assert_not_called()
 
     @mock.patch("usecase.process_timestamp_for_gtfs_metadata.get_gtfs_dates_by_type")
     @mock.patch(

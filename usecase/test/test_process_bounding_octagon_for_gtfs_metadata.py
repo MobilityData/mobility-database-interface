@@ -45,10 +45,7 @@ class TestProcessBoundingOctagonForGtfsMetadata(TestCase):
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(
-            mock_metadata.bounding_octagon,
-            {},
-        )
+        mock_metadata.bounding_octagon.assert_not_called()
 
     def test_process_bounding_octagon_execution_with_missing_fields(self):
         mock_stops = PropertyMock(return_value=pd.DataFrame({}))
@@ -68,10 +65,7 @@ class TestProcessBoundingOctagonForGtfsMetadata(TestCase):
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(
-            mock_metadata.bounding_octagon,
-            {},
-        )
+        mock_metadata.bounding_octagon.assert_not_called()
 
     def test_process_bounding_octagon_execution(self):
         mock_stops = PropertyMock(

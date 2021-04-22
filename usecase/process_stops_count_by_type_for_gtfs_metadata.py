@@ -53,8 +53,16 @@ def process_stops_count_by_type_for_gtfs_metadata(gtfs_representation):
             STATION_KEY: stations_count,
             ENTRANCE_KEY: entrances_count,
         }
-    else:
-        stops_count_by_type = {}
 
-    metadata.stops_count_by_type = stops_count_by_type
+        # Clean the dictionary to keep only the stop type
+        # where the stop count is one or more
+        stops_count_by_type = {
+            key: count for key, count in stops_count_by_type.items() if count > 0
+        }
+
+        # Set the stops count by type in the GTFS representation
+        # if the dictionary is not empty
+        if len(stops_count_by_type) != 0:
+            metadata.stops_count_by_type = stops_count_by_type
+
     return gtfs_representation

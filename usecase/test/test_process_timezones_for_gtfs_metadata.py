@@ -43,8 +43,6 @@ class TestProcessTimezonesForGtfsMetadata(TestCase):
 
         under_test = process_timezones_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.main_timezone, "")
-        self.assertEqual(mock_metadata.other_timezones, [])
 
     def test_process_timezones_with_missing_fields(self):
         mock_agency = PropertyMock(return_value=pd.DataFrame({}))
@@ -64,8 +62,8 @@ class TestProcessTimezonesForGtfsMetadata(TestCase):
 
         under_test = process_timezones_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.main_timezone, "")
-        self.assertEqual(mock_metadata.other_timezones, [])
+        mock_metadata.main_timezone.assert_not_called()
+        mock_metadata.other_timezones.assert_not_called()
 
     def test_process_timezones_with_missing_stop_timezones(self):
         mock_agency = PropertyMock(
@@ -87,7 +85,7 @@ class TestProcessTimezonesForGtfsMetadata(TestCase):
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_agency.assert_called()
         self.assertEqual(mock_metadata.main_timezone, MONTREAL_TIMEZONE)
-        self.assertEqual(mock_metadata.other_timezones, [])
+        mock_metadata.other_timezones.assert_not_called()
 
     def test_process_timezones_with_missing_stop_timezones_fields(self):
         mock_stops = PropertyMock(return_value=pd.DataFrame())
@@ -112,7 +110,7 @@ class TestProcessTimezonesForGtfsMetadata(TestCase):
         mock_stops.assert_called()
         mock_agency.assert_called()
         self.assertEqual(mock_metadata.main_timezone, MONTREAL_TIMEZONE)
-        self.assertEqual(mock_metadata.other_timezones, [])
+        mock_metadata.other_timezones.assert_not_called()
 
     def test_process_timezones_with_empty_stop_timezones(
         self,
@@ -139,7 +137,7 @@ class TestProcessTimezonesForGtfsMetadata(TestCase):
         mock_stops.assert_called()
         mock_agency.assert_called()
         self.assertEqual(mock_metadata.main_timezone, MONTREAL_TIMEZONE)
-        self.assertEqual(mock_metadata.other_timezones, [])
+        mock_metadata.other_timezones.assert_not_called()
 
     def test_process_timezones_with_missing_agency(self):
         mock_stops = PropertyMock(
@@ -162,7 +160,7 @@ class TestProcessTimezonesForGtfsMetadata(TestCase):
         under_test = process_timezones_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_stops.assert_called()
-        self.assertEqual(mock_metadata.main_timezone, "")
+        mock_metadata.main_timezone.assert_not_called()
         self.assertEqual(
             mock_metadata.other_timezones, [MONTREAL_TIMEZONE, TORONTO_TIMEZONE]
         )
@@ -193,7 +191,7 @@ class TestProcessTimezonesForGtfsMetadata(TestCase):
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_stops.assert_called()
         mock_agency.assert_called()
-        self.assertEqual(mock_metadata.main_timezone, "")
+        mock_metadata.main_timezone.assert_not_called()
         self.assertEqual(
             mock_metadata.other_timezones, [MONTREAL_TIMEZONE, TORONTO_TIMEZONE]
         )
@@ -224,7 +222,7 @@ class TestProcessTimezonesForGtfsMetadata(TestCase):
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_stops.assert_called()
         mock_agency.assert_called()
-        self.assertEqual(mock_metadata.main_timezone, "")
+        mock_metadata.main_timezone.assert_not_called()
         self.assertEqual(
             mock_metadata.other_timezones, [MONTREAL_TIMEZONE, TORONTO_TIMEZONE]
         )

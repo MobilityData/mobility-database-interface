@@ -41,10 +41,7 @@ class TestProcessBoundingBoxForGtfsMetadata(TestCase):
 
         under_test = process_bounding_box_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(
-            mock_metadata.bounding_box,
-            {},
-        )
+        mock_metadata.bounding_box.assert_not_called()
 
     def test_process_bounding_box_execution_with_missing_fields(self):
         mock_stops = PropertyMock(return_value=pd.DataFrame({}))
@@ -62,10 +59,7 @@ class TestProcessBoundingBoxForGtfsMetadata(TestCase):
 
         under_test = process_bounding_box_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(
-            mock_metadata.bounding_box,
-            {},
-        )
+        mock_metadata.bounding_box.assert_not_called()
 
     def test_process_bounding_box_execution_should_set_bounding_box_metadata(
         self,

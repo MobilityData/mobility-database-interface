@@ -127,12 +127,12 @@ def process_service_date_for_gtfs_metadata(gtfs_representation, service_date_map
         # Get last end service date with max() and converting the date into a ISO 8601 string
         service_date = getattr(dates, service_date_map[MIN_MAX_ATTR])()
         service_date = service_date.strftime(SERVICE_DATE_FORMAT)
-    else:
-        service_date = ""
 
-    # Set the start service date in the GTFS representation
-    # or
-    # Set the end service date in the GTFS representation
-    setattr(metadata, service_date_map[SERVICE_DATE_ATTR], service_date)
+        # Set the start service date in the GTFS representation
+        # or
+        # Set the end service date in the GTFS representation
+        # if the string is not empty
+        if len(service_date) != 0:
+            setattr(metadata, service_date_map[SERVICE_DATE_ATTR], service_date)
 
     return gtfs_representation

@@ -20,31 +20,38 @@ def process_timezones_for_gtfs_metadata(gtfs_representation):
         and AGENCY_TIMEZONE in dataset.agency.columns
         and not dataset.agency.empty
     )
+    are_stops_present = (
+        dataset.stops is not None and STOP_TIMEZONE in dataset.stops.columns
+    )
 
-    if is_agency_present:
-        # Extract main timezone
-        main_timezone = dataset.agency[AGENCY_TIMEZONE].iloc[AGENCY_TIMEZONE_IDX]
-    else:
-        main_timezone = ""
+    if is_agency_present or are_stops_present:
+        if is_agency_present:
+            # Extract main timezone
+            main_timezone = dataset.agency[AGENCY_TIMEZONE].iloc[AGENCY_TIMEZONE_IDX]
+        else:
+            main_timezone = ""
 
-    stop_timezones = set()
-    if dataset.stops is not None and STOP_TIMEZONE in dataset.stops.columns:
-        # Extract the timezones using the stop_timezone in the dataset stops
-        for index, row in dataset.stops.iterrows():
-            if row[STOP_TIMEZONE] is not None:
-                stop_timezones.add(row[STOP_TIMEZONE])
+        stop_timezones = set()
+        if are_stops_present:
+            # Extract the timezones using the stop_timezone in the dataset stops
+            for index, row in dataset.stops.iterrows():
+                if row[STOP_TIMEZONE] is not None:
+                    stop_timezones.add(row[STOP_TIMEZONE])
 
-    # Remove the main_timezone from the set of the stop_timezones
-    # to create the other_timezones
-    other_timezones = []
-    if len(stop_timezones) != 0:
-        other_timezones = stop_timezones
-        other_timezones.discard(main_timezone)
-        # Convert the set of time to a list, and sort it alphabetically
-        other_timezones = sorted(list(other_timezones))
+        # Remove the main_timezone from the set of the stop_timezones
+        # to create the other_timezones
+        other_timezones = set()
+        if len(stop_timezones) != 0:
+            other_timezones.update(stop_timezones)
+            other_timezones.discard(main_timezone)
+            # Convert the set of time to a list, and sort it alphabetically
+            other_timezones = sorted(list(other_timezones))
 
-    # Set the timezones in the GTFS representation
-    metadata.main_timezone = main_timezone
-    metadata.other_timezones = other_timezones
+        # Set the timezones in the GTFS representation
+        # if they are not empty
+        if len(main_timezone) != 0:
+            metadata.main_timezone = main_timezone
+        if len(other_timezones) != 0:
+            metadata.other_timezones = other_timezones
 
     return gtfs_representation

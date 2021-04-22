@@ -91,8 +91,16 @@ def process_routes_count_by_type_for_gtfs_metadata(gtfs_representation):
             TROLLEY_BUS_KEY: trolley_buses_count,
             MONORAIL_KEY: monorails_count,
         }
-    else:
-        routes_count_by_type = {}
 
-    metadata.routes_count_by_type = routes_count_by_type
+        # Clean the dictionary to keep only the route type
+        # where the route count is one or more
+        routes_count_by_type = {
+            key: count for key, count in routes_count_by_type.items() if count > 0
+        }
+
+        # Set the routes count by type in the GTFS representation
+        # if the dictionary is not empty
+        if len(routes_count_by_type) != 0:
+            metadata.routes_count_by_type = routes_count_by_type
+
     return gtfs_representation

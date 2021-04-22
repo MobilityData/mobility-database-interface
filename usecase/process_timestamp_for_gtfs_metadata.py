@@ -151,10 +151,9 @@ def process_timestamp_for_gtfs_metadata(gtfs_representation, timestamp_map):
         timestamp = (
             f"{service_date.strftime(TIMESTAMP_FORMAT)}T{stop_time}{timezone_offset}"
         )
-    else:
-        timestamp = ""
 
-    # Set timestamp
-    setattr(metadata, timestamp_map[TIMESTAMP_ATTR], timestamp)
+        # Set timestamp if the string is not empty
+        if len(timestamp) != 0:
+            setattr(metadata, timestamp_map[TIMESTAMP_ATTR], timestamp)
 
     return gtfs_representation

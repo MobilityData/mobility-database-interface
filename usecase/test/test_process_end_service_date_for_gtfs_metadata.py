@@ -55,7 +55,7 @@ class TestProcessEndServiceDateForGtfsMetadata(TestCase):
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.end_service_date, "")
+        mock_metadata.end_service_date.assert_not_called()
 
     def test_process_end_service_date_with_dataset_with_missing_fields(self):
         mock_feed_info = PropertyMock(return_value=pd.DataFrame({}))
@@ -78,7 +78,7 @@ class TestProcessEndServiceDateForGtfsMetadata(TestCase):
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.end_service_date, "")
+        mock_metadata.end_service_date.assert_not_called()
 
     def test_process_end_service_date_with_dataset_with_feed_info(self):
         mock_feed_info = PropertyMock(

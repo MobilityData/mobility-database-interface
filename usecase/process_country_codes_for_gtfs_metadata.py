@@ -16,11 +16,16 @@ def process_country_codes_for_gtfs_metadata(gtfs_representation):
     dataset = gtfs_representation.dataset
     metadata = gtfs_representation.metadata
 
-    # Initialize the country codes set
-    country_codes = set()
+    stops_required_columns = {STOP_LAT, STOP_LON}
+    are_stops_present = dataset.stops is not None and stops_required_columns.issubset(
+        dataset.stops.columns
+    )
 
     # Make sure latitude and longitude columns are present in stops.txt before execution
-    if {STOP_LAT, STOP_LON}.issubset(dataset.stops.columns):
+    if are_stops_present:
+        # Initialize the country codes set
+        country_codes = set()
+
         # Zip the latitude and longitude pairs in stops.txt
         coordinates = [
             (lat, lon)
@@ -37,7 +42,12 @@ def process_country_codes_for_gtfs_metadata(gtfs_representation):
                 if country_code:
                     country_codes.add(country_code)
 
-    # Set the country codes in the GTFS representation
-    metadata.country_codes = country_codes
+        # Convert the country codes set to a list, and sort it alphabetically
+        country_codes = sorted(list(country_codes))
+
+        # Set the country codes in the GTFS representation
+        # if the list is not empty
+        if len(country_codes) != 0:
+            metadata.country_codes = country_codes
 
     return gtfs_representation

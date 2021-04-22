@@ -39,10 +39,7 @@ class TestProcessMainLanguageCodeForGtfsMetadata(TestCase):
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(
-            mock_metadata.main_language_code,
-            "",
-        )
+        mock_metadata.main_language_code.assert_not_called()
 
     def test_process_main_language_code_with_missing_fields(self):
         mock_agency = PropertyMock(return_value=pd.DataFrame({}))
@@ -62,10 +59,7 @@ class TestProcessMainLanguageCodeForGtfsMetadata(TestCase):
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(
-            mock_metadata.main_language_code,
-            "",
-        )
+        mock_metadata.main_language_code.assert_not_called()
 
     def test_process_main_language_code_with_empty_file(self):
         mock_agency = PropertyMock(return_value=pd.DataFrame({AGENCY_LANG: []}))
@@ -85,10 +79,7 @@ class TestProcessMainLanguageCodeForGtfsMetadata(TestCase):
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(
-            mock_metadata.main_language_code,
-            "",
-        )
+        mock_metadata.main_language_code.assert_not_called()
 
     def test_process_main_language_code(self):
         mock_agency = PropertyMock(return_value=pd.DataFrame({AGENCY_LANG: ["fr"]}))

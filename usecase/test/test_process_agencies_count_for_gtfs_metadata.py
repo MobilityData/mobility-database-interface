@@ -36,10 +36,7 @@ class TestProcessAgenciesCountForGtfsMetadata(TestCase):
 
         under_test = process_agencies_count_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(
-            mock_metadata.agencies_count,
-            0,
-        )
+        mock_metadata.agencies_count.assert_not_called()
 
     def test_process_agencies_count_with_missing_fields(self):
         mock_agency = PropertyMock(return_value=pd.DataFrame({}))
@@ -57,10 +54,7 @@ class TestProcessAgenciesCountForGtfsMetadata(TestCase):
 
         under_test = process_agencies_count_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(
-            mock_metadata.agencies_count,
-            0,
-        )
+        mock_metadata.agencies_count.assert_not_called()
 
     def test_process_agencies_count(self):
         mock_agency = PropertyMock(

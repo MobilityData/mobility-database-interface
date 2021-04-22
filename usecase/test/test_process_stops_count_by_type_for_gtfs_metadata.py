@@ -46,10 +46,7 @@ class TestProcessStopsCountByTypeForGtfsMetadata(TestCase):
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(
-            mock_metadata.stops_count_by_type,
-            {},
-        )
+        mock_metadata.stops_count_by_type.assert_not_called()
 
     def test_process_stops_count_with_missing_fields(self):
         mock_stops = PropertyMock(return_value=pd.DataFrame({}))
@@ -69,12 +66,9 @@ class TestProcessStopsCountByTypeForGtfsMetadata(TestCase):
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(
-            mock_metadata.stops_count_by_type,
-            {},
-        )
+        mock_metadata.stops_count_by_type.assert_not_called()
 
-    def test_process_stops_count_execution_should_set_start_agencies_count_metadata(
+    def test_process_stops_count_execution_with_every_stop_type(
         self,
     ):
         mock_stops = PropertyMock(
@@ -100,3 +94,51 @@ class TestProcessStopsCountByTypeForGtfsMetadata(TestCase):
         self.assertEqual(
             mock_metadata.stops_count_by_type, {"stop": 6, "station": 2, "entrance": 1}
         )
+
+    def test_process_stops_count_execution_with_some_stop_types(
+        self,
+    ):
+        mock_stops = PropertyMock(
+            return_value=pd.DataFrame({LOCATION_TYPE: [0, 1, 0, 0, 1, 0, 0, np.nan]})
+        )
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+        type(mock_dataset).stops = mock_stops
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
+        mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
+        under_test = process_stops_count_by_type_for_gtfs_metadata(
+            mock_gtfs_representation
+        )
+        self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_stops.assert_called()
+        self.assertEqual(mock_metadata.stops_count_by_type, {"stop": 6, "station": 2})
+
+    def test_process_stops_count_execution_with_empty_stop_types(
+        self,
+    ):
+        mock_stops = PropertyMock(return_value=pd.DataFrame({LOCATION_TYPE: []}))
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+        type(mock_dataset).stops = mock_stops
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
+        mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
+        under_test = process_stops_count_by_type_for_gtfs_metadata(
+            mock_gtfs_representation
+        )
+        self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_stops.assert_called()
+        mock_metadata.stops_count_by_type.assert_not_called()

@@ -55,10 +55,7 @@ class TestProcessRoutesCountByTypeForGtfsMetadata(TestCase):
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(
-            mock_metadata.routes_count_by_type,
-            {},
-        )
+        mock_metadata.routes_count_by_type.assert_not_called()
 
     def test_process_routes_count_with_missing_fields(self):
         mock_routes = PropertyMock(return_value=pd.DataFrame({}))
@@ -78,12 +75,9 @@ class TestProcessRoutesCountByTypeForGtfsMetadata(TestCase):
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(
-            mock_metadata.routes_count_by_type,
-            {},
-        )
+        mock_metadata.routes_count_by_type.assert_not_called()
 
-    def test_process_routes_count_execution_should_set_start_agencies_count_metadata(
+    def test_process_routes_count_by_type_with_some_routes(
         self,
     ):
         mock_routes = PropertyMock(
@@ -112,12 +106,70 @@ class TestProcessRoutesCountByTypeForGtfsMetadata(TestCase):
                 TRAM_KEY: 5,
                 SUBWAY_KEY: 1,
                 RAIL_KEY: 1,
-                BUS_KEY: 0,
-                FERRY_KEY: 0,
                 CABLE_TRAM_KEY: 1,
-                AERIAL_LIFT_KEY: 0,
-                FUNICULAR_KEY: 0,
-                TROLLEY_BUS_KEY: 0,
                 MONORAIL_KEY: 1,
             },
         )
+
+    def test_process_routes_count_by_type_with_every_route(
+        self,
+    ):
+        mock_routes = PropertyMock(
+            return_value=pd.DataFrame(
+                {ROUTE_TYPE: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
+            )
+        )
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+        type(mock_dataset).routes = mock_routes
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
+        mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
+        under_test = process_routes_count_by_type_for_gtfs_metadata(
+            mock_gtfs_representation
+        )
+        self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_routes.assert_called()
+        self.assertEqual(
+            mock_metadata.routes_count_by_type,
+            {
+                TRAM_KEY: 1,
+                SUBWAY_KEY: 1,
+                RAIL_KEY: 1,
+                BUS_KEY: 1,
+                FERRY_KEY: 1,
+                CABLE_TRAM_KEY: 1,
+                AERIAL_LIFT_KEY: 1,
+                FUNICULAR_KEY: 1,
+                TROLLEY_BUS_KEY: 1,
+                MONORAIL_KEY: 1,
+            },
+        )
+
+    def test_process_routes_count_by_type_with_no_routes(
+        self,
+    ):
+        mock_routes = PropertyMock(return_value=pd.DataFrame({ROUTE_TYPE: []}))
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+        type(mock_dataset).routes = mock_routes
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
+        mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
+        under_test = process_routes_count_by_type_for_gtfs_metadata(
+            mock_gtfs_representation
+        )
+        self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_metadata.routes_count_by_type.assert_not_called()

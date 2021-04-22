@@ -19,10 +19,10 @@ def process_agencies_count_for_gtfs_metadata(gtfs_representation):
     if is_agency_present:
         # Count agencies
         agencies_count = dataset.agency[AGENCY_NAME].size
-    else:
-        agencies_count = 0
 
-    # Set the main timezone in the GTFS representation
-    metadata.agencies_count = agencies_count
+        # Set the main timezone in the GTFS representation
+        # if there is one agency or more
+        if agencies_count > 0:
+            metadata.agencies_count = agencies_count
 
     return gtfs_representation
