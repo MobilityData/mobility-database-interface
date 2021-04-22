@@ -16,13 +16,14 @@ from utilities.constants import (
     INSTANCE_PROP,
     SOURCE_ENTITY_PROP,
     TIMEZONE_PROP,
+    COUNTRY_CODE_PROP,
     MAIN_LANGUAGE_CODE_PROP,
     START_SERVICE_DATE_PROP,
     END_SERVICE_DATE_PROP,
     START_TIMESTAMP_PROP,
     END_TIMESTAMP_PROP,
     SHA1_HASH_PROP,
-    DATASET_VERSION_PROP,
+    DATASET_PROP,
     ORDER_PROP,
     BOUNDING_BOX_PROP,
     BOUNDING_OCTAGON_PROP,
@@ -105,6 +106,14 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation):
                         value=timezone, prop_nr=os.environ[TIMEZONE_PROP], rank=NORMAL
                     )
                 )
+
+    # Country code property
+    for country_code in metadata.country_codes:
+        dataset_data.append(
+            wbi_core.String(
+                value=country_code, prop_nr=os.environ[COUNTRY_CODE_PROP], rank=NORMAL
+            )
+        )
 
     # Main language code property
     if is_valid_str(metadata.main_language_code):
@@ -242,7 +251,7 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation):
 
     version_prop = wbi_core.ItemID(
         value=metadata.dataset_version_entity_code,
-        prop_nr=os.environ[DATASET_VERSION_PROP],
+        prop_nr=os.environ[DATASET_PROP],
         if_exists=APPEND,
     )
     source_data = [version_prop]
