@@ -16,6 +16,7 @@ from utilities.constants import (
     INSTANCE_PROP,
     SOURCE_ENTITY_PROP,
     TIMEZONE_PROP,
+    COUNTRY_CODE_PROP,
     MAIN_LANGUAGE_CODE_PROP,
     START_SERVICE_DATE_PROP,
     END_SERVICE_DATE_PROP,
@@ -94,6 +95,14 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation):
         dataset_data.append(
             wbi_core.String(
                 value=timezone, prop_nr=os.environ[TIMEZONE_PROP], rank=NORMAL
+            )
+        )
+
+    # Country code property
+    for country_code in metadata.country_codes:
+        dataset_data.append(
+            wbi_core.String(
+                value=country_code, prop_nr=os.environ[COUNTRY_CODE_PROP], rank=NORMAL
             )
         )
 

@@ -41,6 +41,9 @@ from usecase.process_timestamp_for_gtfs_metadata import (
 from usecase.create_dataset_entity_for_gtfs_metadata import (
     create_dataset_entity_for_gtfs_metadata,
 )
+from usecase.process_country_codes_for_gtfs_metadata import (
+    process_country_codes_for_gtfs_metadata,
+)
 from utilities.constants import (
     API_URL,
     SPARQL_BIGDATA_URL,
@@ -121,6 +124,9 @@ if __name__ == "__main__":
         dataset_key,
         dataset_representation,
     ) in data_repository.get_dataset_representations().items():
+        dataset_representation = process_country_codes_for_gtfs_metadata(
+            dataset_representation
+        )
         dataset_representation = process_start_service_date_for_gtfs_metadata(
             dataset_representation
         )
