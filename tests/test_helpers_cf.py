@@ -16,6 +16,7 @@ from helpers_cf import (
     add_dataset_to_source,
 )
 from repository.data_repository import DataRepository
+from usecase.load_dataset import GTFS_TYPE
 from utilities.constants import (
     GOOGLE_CLOUD_PROJECT,
     TOPIC_DISPATCHER,
@@ -129,7 +130,9 @@ class AddSourceTestCase(unittest.TestCase):
 
         mock_add_source_in_db.return_value = "Q1"
 
-        source_entity_id = add_source_and_dispatch(source_name, stable_url, versions)
+        source_entity_id = add_source_and_dispatch(
+            source_name, stable_url, versions, GTFS_TYPE
+        )
         self.assertEqual(4, mock_publish_dispatcher.call_count)
         self.assertEqual(
             "some://url3",

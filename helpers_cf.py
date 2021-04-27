@@ -62,6 +62,7 @@ from utilities.constants import (
     SOURCE_ENTITY_ID,
     GOOGLE_CLOUD_PROJECT,
     TOPIC_DISPATCHER,
+    DATATYPE,
 )
 
 
@@ -182,7 +183,7 @@ def add_source_in_db(source_name, stable_url):
     return source_entity_id
 
 
-def add_source_and_dispatch(source_name, stable_url, versions):
+def add_source_and_dispatch(source_name, stable_url, versions, datatype):
     publisher = pubsub_v1.PublisherClient()
 
     source_entity_id = add_source_in_db(source_name, stable_url)
@@ -193,12 +194,14 @@ def add_source_and_dispatch(source_name, stable_url, versions):
             SOURCE_NAME: source_name,
             DATASET_URL: dataset_version_url,
             SOURCE_ENTITY_ID: source_entity_id,
+            DATATYPE: datatype,
         }
         publish_dispatcher_message(publisher, message)
     message = {
         SOURCE_NAME: source_name,
         DATASET_URL: stable_url,
         SOURCE_ENTITY_ID: source_entity_id,
+        DATATYPE: datatype,
     }
     publish_dispatcher_message(publisher, message)
     return source_entity_id

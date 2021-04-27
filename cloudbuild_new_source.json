@@ -1,5 +1,13 @@
 {
  "steps": [
+   {
+     "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
+     "entrypoint": "bash",
+     "args": [
+       "-c",
+       "if [ {$_ENV} == 'test']; then cp staging.yaml ./${_ENV}.yaml"
+     ]
+   },
   {
      "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
      "args": [
@@ -13,7 +21,7 @@
        "--trigger-topic=before-new-source-${_ENV}",
        "--timeout=540",
        "--set-env-vars=ENV=${_ENV},GOOGLE_CLOUD_PROJECT=$PROJECT_ID",
-       "--env-vars-file=staging.yaml"
+       "--env-vars-file=${_ENV}.yaml"
      ]
    }
   ]
