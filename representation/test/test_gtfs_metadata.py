@@ -26,8 +26,7 @@ class TestGtfsMetadata(TestCase):
             "Dataset version name: 2021-01-10's STM's GTFS Schedule dataset #012345\n"
             "Main timezone: \n"
             "Other timezones: \n"
-            "Country code: \n"
-            "Sub country code: \n"
+            "Country codes: set()\n"
             "Main language code: \n"
             "Start service date: \n"
             "End service date: \n"
@@ -39,16 +38,16 @@ class TestGtfsMetadata(TestCase):
             "Routes count by type: {}\n"
             "Stops count by type: {}\n"
             "Stable url: \n"
-            "MD5 hash: 0123456789"
+            "SHA-1 hash: 0123456789"
         )
 
-        test_md5_hash = "0123456789"
+        test_sha1_hash = "0123456789"
         test_source_name = "STM's GTFS Schedule source"
         test_download_date = "2021-01-10"
 
         mock_dataset_infos = MagicMock()
         mock_dataset_infos.__class__ = DatasetInfos
-        type(mock_dataset_infos).md5_hash = test_md5_hash
+        type(mock_dataset_infos).sha1_hash = test_sha1_hash
         type(mock_dataset_infos).source_name = test_source_name
         type(mock_dataset_infos).download_date = test_download_date
 

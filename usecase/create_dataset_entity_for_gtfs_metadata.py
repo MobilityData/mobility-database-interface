@@ -16,13 +16,14 @@ from utilities.constants import (
     INSTANCE_PROP,
     SOURCE_ENTITY_PROP,
     TIMEZONE_PROP,
+    COUNTRY_CODE_PROP,
     MAIN_LANGUAGE_CODE_PROP,
     START_SERVICE_DATE_PROP,
     END_SERVICE_DATE_PROP,
     START_TIMESTAMP_PROP,
     END_TIMESTAMP_PROP,
-    MD5_HASH_PROP,
-    DATASET_VERSION_PROP,
+    SHA1_HASH_PROP,
+    DATASET_PROP,
     ORDER_PROP,
     BOUNDING_BOX_PROP,
     BOUNDING_OCTAGON_PROP,
@@ -35,7 +36,7 @@ from utilities.constants import (
     USERNAME,
     PASSWORD,
 )
-from utilities.validators import validate_gtfs_representation, validate_api_url
+from utilities.validators import validate_gtfs_representation
 
 
 def create_geographical_property(order_key, corner_value, property_type):
@@ -55,13 +56,11 @@ def create_geographical_property(order_key, corner_value, property_type):
     )
 
 
-def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
+def create_dataset_entity_for_gtfs_metadata(gtfs_representation):
     """Create a dataset entity for a new dataset version on the Database.
     :param gtfs_representation: The representation of the GTFS dataset to process.
-    :param api_url: API url, either PRODUCTION_API_URL or STAGING_API_URL.
     :return: The representation of the GTFS dataset post-execution.
     """
-    validate_api_url(api_url)
     validate_gtfs_representation(gtfs_representation)
     metadata = gtfs_representation.metadata
 
@@ -96,6 +95,14 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
         dataset_data.append(
             wbi_core.String(
                 value=timezone, prop_nr=os.environ[TIMEZONE_PROP], rank=NORMAL
+            )
+        )
+
+    # Country code property
+    for country_code in metadata.country_codes:
+        dataset_data.append(
+            wbi_core.String(
+                value=country_code, prop_nr=os.environ[COUNTRY_CODE_PROP], rank=NORMAL
             )
         )
 
@@ -137,9 +144,9 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
         )
     )
 
-    # MD5 hash property
+    # SHA-1 hash property
     dataset_data.append(
-        wbi_core.String(value=metadata.md5_hash, prop_nr=os.environ[MD5_HASH_PROP])
+        wbi_core.String(value=metadata.sha1_hash, prop_nr=os.environ[SHA1_HASH_PROP])
     )
 
     # Bounding box property
@@ -217,7 +224,7 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
 
     version_prop = wbi_core.ItemID(
         value=metadata.dataset_version_entity_code,
-        prop_nr=os.environ[DATASET_VERSION_PROP],
+        prop_nr=os.environ[DATASET_PROP],
         if_exists=APPEND,
     )
     source_data = [version_prop]

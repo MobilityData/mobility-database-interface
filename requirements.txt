@@ -31,11 +31,11 @@ numpy==1.19.1
 packaging==20.4
 pandas==1.1.2
 pluggy==0.13.1
-py==1.9.0
+py==1.10.0
 pycodestyle==2.6.0
 pycountry==19.8.18
 pyflakes==2.2.0
-Pygments==2.7.1
+Pygments==2.7.4
 pyparsing==2.4.7
 pyproj==2.6.1.post1
 pytest==6.1.1
@@ -46,6 +46,7 @@ python-dotenv==0.15.0
 pytz==2020.1
 rdflib==5.0.0
 requests==2.24.0
+reverse-geocoder==1.5.1
 Rtree==0.9.4
 Shapely==1.7.1
 six==1.15.0

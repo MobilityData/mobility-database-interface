@@ -2,7 +2,6 @@
 *.iml
 .idea
 env/
-staging_credentials.json
 
 # Python
 __pycache__/
@@ -17,3 +16,9 @@ docs/build/*
 
 # Project 
 data/
+entities_map.json
+production_credentials.json
+staging_credentials.json
+properties_map.json
+report.json
+system_errors.json
