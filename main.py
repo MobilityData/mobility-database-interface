@@ -5,7 +5,7 @@ from guppy import hpy
 import os
 from wikibaseintegrator.wbi_config import config as wbi_config
 from repository.data_repository import DataRepository
-from usecase.download_dataset_as_zip import download_dataset_as_zip
+from usecase.download_dataset_as_zip import download_dataset_as_zip_for_cron_job
 from usecase.process_agencies_count_for_gtfs_metadata import (
     process_agencies_count_for_gtfs_metadata,
 )
@@ -111,7 +111,9 @@ if __name__ == "__main__":
     datasets_infos = extract_gtfs_datasets_infos_from_database()
 
     # Download datasets zip files
-    datasets_infos = download_dataset_as_zip(args.path_to_tmp_data, datasets_infos)
+    datasets_infos = download_dataset_as_zip_for_cron_job(
+        args.path_to_tmp_data, datasets_infos
+    )
 
     # Process the SHA-1 hashes
     datasets_infos = process_sha1(datasets_infos)

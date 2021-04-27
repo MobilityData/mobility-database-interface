@@ -1,3 +1,4 @@
+import os
 from utilities.validators import validate_gtfs_representation
 from utilities.constants import (
     TRAM,
@@ -11,6 +12,16 @@ from utilities.constants import (
     TROLLEY_BUS,
     MONORAIL,
     ROUTE_TYPE,
+    TRAM_CODE,
+    SUBWAY_CODE,
+    RAIL_CODE,
+    BUS_CODE,
+    FERRY_CODE,
+    CABLE_TRAM_CODE,
+    AERIAL_LIFT_CODE,
+    FUNICULAR_CODE,
+    TROLLEY_BUS_CODE,
+    MONORAIL_CODE,
 )
 
 TRAM_KEY = "Tram"
@@ -80,16 +91,16 @@ def process_routes_count_by_type_for_gtfs_metadata(gtfs_representation):
 
         # Create the dictionary of routes count by type
         routes_count_by_type = {
-            TRAM_KEY: trams_count,
-            SUBWAY_KEY: subways_count,
-            RAIL_KEY: rails_count,
-            BUS_KEY: buses_count,
-            FERRY_KEY: ferries_count,
-            CABLE_TRAM_KEY: cable_trams_count,
-            AERIAL_LIFT_KEY: aerial_lifts_count,
-            FUNICULAR_KEY: funiculars_count,
-            TROLLEY_BUS_KEY: trolley_buses_count,
-            MONORAIL_KEY: monorails_count,
+            os.environ[TRAM_CODE]: trams_count,
+            os.environ[SUBWAY_CODE]: subways_count,
+            os.environ[RAIL_CODE]: rails_count,
+            os.environ[BUS_CODE]: buses_count,
+            os.environ[FERRY_CODE]: ferries_count,
+            os.environ[CABLE_TRAM_CODE]: cable_trams_count,
+            os.environ[AERIAL_LIFT_CODE]: aerial_lifts_count,
+            os.environ[FUNICULAR_CODE]: funiculars_count,
+            os.environ[TROLLEY_BUS_CODE]: trolley_buses_count,
+            os.environ[MONORAIL_CODE]: monorails_count,
         }
 
         # Clean the dictionary to keep only the route type
