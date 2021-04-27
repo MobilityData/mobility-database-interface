@@ -35,11 +35,11 @@ def process_routes_count_by_type_for_gtfs_metadata(gtfs_representation):
     dataset = gtfs_representation.dataset
     metadata = gtfs_representation.metadata
 
-    are_routes_present = (
+    routes_are_present = (
         dataset.routes is not None and ROUTE_TYPE in dataset.routes.columns
     )
 
-    if are_routes_present:
+    if routes_are_present:
         # Count routes by route type
         trams_count = (
             dataset.routes[ROUTE_TYPE].loc[dataset.routes[ROUTE_TYPE] == TRAM].size

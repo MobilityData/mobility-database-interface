@@ -84,26 +84,22 @@ def process_service_date_for_gtfs_metadata(gtfs_representation, service_date_map
         {service_date_map[CALENDAR_DATE_KEY]}
     )
 
-    is_feed_info_present = (
+    feed_info_is_present = (
         dataset.feed_info is not None
         and service_date_map[FEED_DATE_KEY] in dataset.feed_info.columns
+        and not dataset.feed_info[service_date_map[FEED_DATE_KEY]].isnull().values.all()
     )
-    is_calendar_present = (
+    calendar_is_present = (
         dataset.calendar is not None
         and calendar_required_columns.issubset(dataset.calendar.columns)
     )
-    are_calendar_dates_present = (
+    calendar_dates_are_present = (
         dataset.calendar_dates is not None
         and CALENDAR_DATES_REQUIRED_COLUMNS.issubset(dataset.calendar_dates.columns)
     )
 
-    if is_feed_info_present or is_calendar_present or are_calendar_dates_present:
-        if (
-            dataset.feed_info is not None
-            and not dataset.feed_info[service_date_map[FEED_DATE_KEY]]
-            .isnull()
-            .values.all()
-        ):
+    if feed_info_is_present or calendar_is_present or calendar_dates_are_present:
+        if feed_info_is_present:
             # Extract start service date from feed info if the file is provided
             # or
             # Extract end service date from feed info if the file is provided

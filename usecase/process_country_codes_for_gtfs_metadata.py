@@ -17,12 +17,12 @@ def process_country_codes_for_gtfs_metadata(gtfs_representation):
     metadata = gtfs_representation.metadata
 
     stops_required_columns = {STOP_LAT, STOP_LON}
-    are_stops_present = dataset.stops is not None and stops_required_columns.issubset(
+    stops_are_present = dataset.stops is not None and stops_required_columns.issubset(
         dataset.stops.columns
     )
 
     # Make sure latitude and longitude columns are present in stops.txt before execution
-    if are_stops_present:
+    if stops_are_present:
         # Initialize the country codes set
         country_codes = set()
 

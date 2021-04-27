@@ -91,30 +91,30 @@ def process_timestamp_for_gtfs_metadata(gtfs_representation, timestamp_map):
     )
     stop_times_required_columns = {TRIP_ID, timestamp_map[STOP_TIME_KEY]}
 
-    is_calendar_present = (
+    calendar_is_present = (
         dataset.calendar is not None
         and calendar_required_columns.issubset(dataset.calendar.columns)
     )
-    are_calendar_dates_present = (
+    calendar_dates_are_present = (
         dataset.calendar_dates is not None
         and CALENDAR_DATES_REQUIRED_COLUMNS.issubset(dataset.calendar_dates.columns)
     )
-    are_trips_present = (
+    trips_are_present = (
         dataset.trips is not None and SERVICE_ID in dataset.trips.columns
     )
-    are_stop_times_present = (
+    stop_times_are_present = (
         dataset.stop_times is not None
         and stop_times_required_columns.issubset(dataset.stop_times.columns)
     )
-    is_agency_present = (
+    agency_is_present = (
         dataset.agency is not None and AGENCY_TIMEZONE in dataset.agency.columns
     )
 
     if (
-        (is_calendar_present or are_calendar_dates_present)
-        and are_trips_present
-        and are_stop_times_present
-        and is_agency_present
+        (calendar_is_present or calendar_dates_are_present)
+        and trips_are_present
+        and stop_times_are_present
+        and agency_is_present
     ):
         # Extract the start dates in the dataset representation
         # or

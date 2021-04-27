@@ -15,24 +15,24 @@ def process_timezones_for_gtfs_metadata(gtfs_representation):
     metadata = gtfs_representation.metadata
 
     # Agency must be present AND not empty because we are accessing the first index
-    is_agency_present = (
+    agency_is_present = (
         dataset.agency is not None
         and AGENCY_TIMEZONE in dataset.agency.columns
         and not dataset.agency.empty
     )
-    are_stops_present = (
+    stops_are_present = (
         dataset.stops is not None and STOP_TIMEZONE in dataset.stops.columns
     )
 
-    if is_agency_present or are_stops_present:
-        if is_agency_present:
+    if agency_is_present or stops_are_present:
+        if agency_is_present:
             # Extract main timezone
             main_timezone = dataset.agency[AGENCY_TIMEZONE].iloc[AGENCY_TIMEZONE_IDX]
         else:
             main_timezone = ""
 
         stop_timezones = set()
-        if are_stops_present:
+        if stops_are_present:
             # Extract the timezones using the stop_timezone in the dataset stops
             for index, row in dataset.stops.iterrows():
                 # Keep the stop timezone only if the value exist and is not empty
