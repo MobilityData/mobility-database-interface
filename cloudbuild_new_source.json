@@ -8,7 +8,7 @@
        "deploy",
        "add-new-source-${_ENV}",
        "--entry-point=add_new_source_cf",
-       "--runtime=python39",
+       "--runtime=python38",
        "--service-account=pub-sub-publisher@top-glass-307718.iam.gserviceaccount.com",
        "--trigger-topic=before-new-source-${_ENV}",
        "--timeout=540",
