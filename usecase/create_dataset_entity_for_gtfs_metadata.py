@@ -226,7 +226,7 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation):
     if is_valid_instance(metadata.routes_count_by_type, dict):
         for route_key, route_value in metadata.routes_count_by_type.items():
             route_qualifier = [
-                wbi_core.String(
+                wbi_core.ItemID(
                     value=route_key,
                     prop_nr=os.environ[ROUTE_TYPE_PROP],
                     is_qualifier=True,
