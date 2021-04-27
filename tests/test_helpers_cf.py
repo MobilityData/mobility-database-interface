@@ -15,7 +15,6 @@ from helpers_cf import (
     decode_message,
     add_dataset_to_source,
 )
-from repository.data_repository import DataRepository
 from usecase.load_dataset import GTFS_TYPE
 from utilities.constants import (
     GOOGLE_CLOUD_PROJECT,

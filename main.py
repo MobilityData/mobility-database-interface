@@ -1,12 +1,17 @@
 import argparse
 import json
 import os
+from pathlib import Path
 
 from dotenv import load_dotenv
 from guppy import hpy
 from wikibaseintegrator.wbi_config import config as wbi_config
 
-from helpers_cf import decode_message, add_source_and_dispatch, add_dataset_to_source
+from helpers_cf import (
+    decode_message,
+    add_source_and_dispatch,
+    add_dataset_to_source,
+)
 from repository.data_repository import DataRepository
 from usecase.create_dataset_entity_for_gtfs_metadata import (
     create_dataset_entity_for_gtfs_metadata,
@@ -60,6 +65,8 @@ from utilities.constants import (
     SOURCE_ENTITY_ID,
     DATATYPE,
 )
+
+BASE_DIR = Path(__file__).resolve().parent
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="MobilityDatabase Interface Script")
@@ -233,6 +240,11 @@ def add_dataset_to_source_cf(event, context):
              The `event_id` field contains the Pub/Sub message ID.
              The `timestamp` field contains the publish time.
     """
+    if os.getenv("ENV") == "prod":
+        load_dotenv(f"{BASE_DIR}/.env.production")
+    else:
+        load_dotenv(f"{BASE_DIR}/.env.staging")
+
     message = decode_message(event)
 
     source_name = message[SOURCE_NAME]
