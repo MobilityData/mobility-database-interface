@@ -14,3 +14,4 @@ Sphinx==3.2.1
 pre-commit
 wikibaseintegrator==0.10.0
 google-cloud-pubsub==2.3.0
+guppy
