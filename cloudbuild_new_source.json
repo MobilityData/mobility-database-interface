@@ -8,11 +8,11 @@
        "deploy",
        "add-new-source-${_ENV}",
        "--entry-point=add_new_source_cf",
-       "--runtime=python38",
+       "--runtime=python39",
        "--service-account=pub-sub-publisher@top-glass-307718.iam.gserviceaccount.com",
        "--trigger-topic=before-new-source-${_ENV}",
        "--timeout=540",
-       "--set-env-vars=ENV=${_ENV},GOOGLE_CLOUD_PROJECT=$PROJECT_ID",
+       "--set-env-vars=ENV=${_ENV},GOOGLE_CLOUD_PROJECT=$PROJECT_ID"
      ]
    }
   ]

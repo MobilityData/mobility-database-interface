@@ -16,7 +16,7 @@
        "deploy",
        "add-dataset-to-source-${_ENV}",
        "--entry-point=add_dataset_to_source_cf",
-       "--runtime=python38",
+       "--runtime=python39",
        "--trigger-topic=before-new-dataset-${_ENV}",
        "--timeout=540",
        "--set-env-vars=ENV=${_ENV},GOOGLE_CLOUD_PROJECT=$PROJECT_ID,TOPIC_DISPATCHER=before-dispatcher-${_ENV},LOCATION_ID=us-central1"
