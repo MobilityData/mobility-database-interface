@@ -212,7 +212,10 @@ def add_new_source_cf(event, context):
     source_name = message[SOURCE_NAME]
     stable_url = message[STABLE_URL]
     versions = message[VERSIONS]
-    source_entity_id = add_source_and_dispatch(source_name, stable_url, versions)
+    datatype = message[DATATYPE]
+    source_entity_id = add_source_and_dispatch(
+        source_name, stable_url, versions, datatype
+    )
     return source_entity_id
 
 
