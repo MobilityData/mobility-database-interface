@@ -2,14 +2,6 @@
  "steps": [
    {
      "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
-     "entrypoint": "bash",
-     "args": [
-       "-c",
-       "if [ $_ENV == 'test' ]; then cp ./staging.yaml ./${_ENV}.yaml; fi"
-     ]
-   },
-   {
-     "name": "gcr.io/google.com/cloudsdktool/cloud-sdk",
      "args": [
        "gcloud",
        "functions",
