@@ -208,6 +208,11 @@ def add_new_source_cf(event, context):
              The `event_id` field contains the Pub/Sub message ID.
              The `timestamp` field contains the publish time.
     """
+    if os.getenv("ENV") == "prod":
+        load_dotenv(f"{BASE_DIR}/.env.production")
+    else:
+        load_dotenv(f"{BASE_DIR}/.env.staging")
+
     message = decode_message(event)
     source_name = message[SOURCE_NAME]
     stable_url = message[STABLE_URL]
