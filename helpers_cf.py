@@ -231,7 +231,10 @@ def publish_message(publisher, topic_name, message):
     encoded_message = message_json.encode("utf-8")
     message_obj = PubsubMessage(data=encoded_message)
     future = publisher.publish(topic=topic_path, messages=[message_obj])
-    return future.result()
+    try:
+        return future.result()
+    except AttributeError as ae:
+        print(f"AttributeError on future.result. future is {future}")
 
 
 def publish_dispatcher_message(publisher, message):
