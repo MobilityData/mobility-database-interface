@@ -6,6 +6,7 @@ mobility-database-interface
 
    helpers_cf
    heuristic
+   manual_main
    repository
    representation
    request_manager
