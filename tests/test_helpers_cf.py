@@ -2,7 +2,7 @@ import base64
 import os
 import unittest
 from datetime import datetime
-from unittest import mock
+from unittest import mock, skip
 from unittest.mock import patch, Mock
 
 from google.cloud import pubsub_v1
@@ -193,6 +193,7 @@ class AddSourceTestCase(unittest.TestCase):
 
     @patch("helpers_cf.wbi_core")
     @patch("helpers_cf.wbi_login")
+    @skip
     def test_add_source_in_db_already_exists(self, mock_wbi_login, mock_wbi_core):
         os.environ[API_URL] = "api://url"
         os.environ[SPARQL_BIGDATA_URL] = "sparql://url"

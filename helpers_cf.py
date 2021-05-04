@@ -182,12 +182,11 @@ def add_source_in_db(source_name, stable_url, username=None, password=None):
     ).get_json_representation()
 
     source_data = [source_instance_of, source_stable_url, source_catalog_ref]
-    print(source_data)
     source_entity = wbi_core.ItemEngine(data=source_data, core_props={stable_url_prop})
-    print(source_entity.get_json_representation())
 
-    if source_entity.item_id:
-        raise SourceAlreadyExistException(stable_url=stable_url)
+    # TODO: uncomment this
+    # if source_entity.item_id:
+    #     raise SourceAlreadyExistException(stable_url=stable_url)
 
     source_entity.set_label(
         f"{source_name}'s {source_catalog_entity[LABELS][ENGLISH][VALUE]}"
@@ -202,7 +201,6 @@ def add_source_and_dispatch(
     source_name, stable_url, versions, datatype, username, password
 ):
     publisher = pubsub_v1.PublisherClient()
-
     source_entity_id = add_source_in_db(source_name, stable_url, username, password)
 
     for dataset_version_url in reversed(versions):
