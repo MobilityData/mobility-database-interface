@@ -28,6 +28,7 @@ from utilities.constants import (
     STABLE_URL_PROP,
     CATALOG_PROP,
     GTFS_CATALOG_OF_SOURCES_CODE,
+    DATASET_URL,
 )
 
 
@@ -130,12 +131,12 @@ class AddSourceTestCase(unittest.TestCase):
         mock_add_source_in_db.return_value = "Q1"
 
         source_entity_id = add_source_and_dispatch(
-            source_name, stable_url, versions, GTFS_TYPE
+            source_name, stable_url, versions, GTFS_TYPE, "someusername", "somepassword"
         )
         self.assertEqual(4, mock_publish_dispatcher.call_count)
         self.assertEqual(
             "some://url3",
-            mock_publish_dispatcher.call_args_list[0].args[1]["dataset_url"],
+            mock_publish_dispatcher.call_args_list[0].args[1][DATASET_URL],
         )
         self.assertEqual("Q1", source_entity_id)
 
@@ -222,6 +223,11 @@ class AddDatasetTestCase(unittest.TestCase):
         # each process_ function being already tested, I'm not including a test case that goes through each and every of them.
         # unless it's deemed necessary.
         dataset_representations = add_dataset_to_source(
-            source_name, dataset_url, dataset_entity_id, data_type
+            source_name,
+            dataset_url,
+            dataset_entity_id,
+            data_type,
+            "someusername",
+            "somepassword",
         )
         self.assertEqual([], dataset_representations)

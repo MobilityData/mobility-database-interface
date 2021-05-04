@@ -12,6 +12,7 @@ from helpers_cf import (
     add_source_and_dispatch,
     add_dataset_to_source,
 )
+from google.cloud import secretmanager
 from repository.data_repository import DataRepository
 from usecase.create_dataset_entity_for_gtfs_metadata import (
     create_dataset_entity_for_gtfs_metadata,
@@ -64,6 +65,7 @@ from utilities.constants import (
     DATASET_URL,
     SOURCE_ENTITY_ID,
     DATATYPE,
+    SECRET_PATH,
 )
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -218,8 +220,18 @@ def add_new_source_cf(event, context):
     stable_url = message[STABLE_URL]
     versions = message[VERSIONS]
     datatype = message[DATATYPE]
+
+    client = secretmanager.SecretManagerServiceClient()
+    credentials = client.access_secret_version(
+        request={"name": f"{os.getenv(SECRET_PATH)}/versions/latest"}
+    )
+    decoded_credentials_str = credentials.payload.data.decode("utf_8")
+    json_creds = json.loads(decoded_credentials_str)
+    username = json_creds[USERNAME]
+    password = json_creds[PASSWORD]
+
     source_entity_id = add_source_and_dispatch(
-        source_name, stable_url, versions, datatype
+        source_name, stable_url, versions, datatype, username, password
     )
     return source_entity_id
 
@@ -262,4 +274,21 @@ def add_dataset_to_source_cf(event, context):
     dataset_data_type = message[DATATYPE]
     if dataset_data_type not in [GTFS_TYPE, GBFS_TYPE]:
         raise Exception(f"{dataset_data_type} is invalid")
-    add_dataset_to_source(source_name, dataset_url, source_entity_id, dataset_data_type)
+
+    client = secretmanager.SecretManagerServiceClient()
+    credentials = client.access_secret_version(
+        request={"name": f"{os.getenv(SECRET_PATH)}/versions/latest"}
+    )
+    decoded_credentials_str = credentials.payload.data.decode("utf_8")
+    json_creds = json.loads(decoded_credentials_str)
+    username = json_creds[USERNAME]
+    password = json_creds[PASSWORD]
+
+    add_dataset_to_source(
+        source_name,
+        dataset_url,
+        source_entity_id,
+        dataset_data_type,
+        username,
+        password,
+    )

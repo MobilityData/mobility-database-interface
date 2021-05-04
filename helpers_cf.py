@@ -74,7 +74,9 @@ def decode_message(event):
     return message
 
 
-def add_dataset_to_source(source_name, dataset_url, source_entity_id, data_type):
+def add_dataset_to_source(
+    source_name, dataset_url, source_entity_id, data_type, username, password
+):
     # Load Wikibase Integrator config with the environment
     api_url = os.getenv(API_URL, STAGING_API_URL)
     wbi_config["MEDIAWIKI_API_URL"] = api_url
@@ -139,22 +141,25 @@ def add_dataset_to_source(source_name, dataset_url, source_entity_id, data_type)
             dataset_representation
         )
         dataset_representation = create_dataset_entity_for_gtfs_metadata(
-            dataset_representation, api_url
+            dataset_representation, api_url, username, password
         )
         dataset_representations.append(dataset_representation)
     return dataset_representations
 
 
-def add_source_in_db(source_name, stable_url):
+def add_source_in_db(source_name, stable_url, username=None, password=None):
     """"""
     # Load Wikibase Integrator config with the environment
     wbi_config["MEDIAWIKI_API_URL"] = os.environ[API_URL]
     wbi_config["SPARQL_ENDPOINT_URL"] = os.environ[SPARQL_BIGDATA_URL]
     wbi_config["WIKIBASE_URL"] = SVC_URL
 
-    login_instance = wbi_login.Login(
-        user=os.environ[USERNAME], pwd=os.environ[PASSWORD], use_clientlogin=True
-    )
+    if not username:
+        username = os.environ[USERNAME]
+    if not password:
+        password = os.environ[PASSWORD]
+
+    login_instance = wbi_login.Login(user=username, pwd=password, use_clientlogin=True)
 
     source_instance_of = wbi_core.ItemID(
         prop_nr=os.environ[INSTANCE_PROP], value=os.environ[GTFS_SCHEDULE_SOURCE_CODE]
@@ -183,10 +188,12 @@ def add_source_in_db(source_name, stable_url):
     return source_entity_id
 
 
-def add_source_and_dispatch(source_name, stable_url, versions, datatype):
+def add_source_and_dispatch(
+    source_name, stable_url, versions, datatype, username, password
+):
     publisher = pubsub_v1.PublisherClient()
 
-    source_entity_id = add_source_in_db(source_name, stable_url)
+    source_entity_id = add_source_in_db(source_name, stable_url, username, password)
 
     for dataset_version_url in reversed(versions):
         # adding old datasets first

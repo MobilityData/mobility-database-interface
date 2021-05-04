@@ -55,7 +55,9 @@ def create_geographical_property(order_key, corner_value, property_type):
     )
 
 
-def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
+def create_dataset_entity_for_gtfs_metadata(
+    gtfs_representation, api_url, username=None, password=None
+):
     """Create a dataset entity for a new dataset version on the Database.
     :param gtfs_representation: The representation of the GTFS dataset to process.
     :param api_url: API url, either PRODUCTION_API_URL or STAGING_API_URL.
@@ -206,9 +208,12 @@ def create_dataset_entity_for_gtfs_metadata(gtfs_representation, api_url):
 
     # Dataset version entity label
     version_name_label = metadata.dataset_version_name
-
+    if not username:
+        username = os.environ[USERNAME]
+    if not password:
+        spassword = os.environ[PASSWORD]
     metadata.dataset_version_entity_code = import_entity(
-        os.environ[USERNAME], os.environ[PASSWORD], dataset_data, version_name_label
+        username, password, dataset_data, version_name_label
     )
 
     version_prop = wbi_core.ItemID(
