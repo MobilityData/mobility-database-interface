@@ -6,6 +6,7 @@ from unittest import mock
 from unittest.mock import patch, Mock
 
 from google.cloud import pubsub_v1
+from google.pubsub_v1 import PubsubMessage
 
 from helpers_cf import (
     publish_message,
@@ -33,9 +34,10 @@ from utilities.constants import (
 
 
 class PubSubTestCase(unittest.TestCase):
-    def test_publish_message(self):
+    @patch("helpers_cf.pubsub_v1")
+    def test_publish_message(self, mock_pubsub):
         os.environ[GOOGLE_CLOUD_PROJECT] = "someprojectid"
-        publisher = mock.create_autospec(pubsub_v1.PublisherClient)
+        publisher = mock_pubsub.PublisherClient()
         topic_name = "somestr"
         message = {
             "source_name": "test_source_name",
@@ -46,9 +48,10 @@ class PubSubTestCase(unittest.TestCase):
         self.assertEqual(1, publisher.publish.call_count)
         del os.environ[GOOGLE_CLOUD_PROJECT]
 
-    def test_publish_message_invalid_json(self):
+    @patch("helpers_cf.pubsub_v1")
+    def test_publish_message_invalid_json(self, mock_pubsub):
         os.environ[GOOGLE_CLOUD_PROJECT] = "someprojectid"
-        publisher = mock.create_autospec(pubsub_v1.PublisherClient)
+        publisher = mock_pubsub.PublisherClient()
         topic_name = "somestr"
         message = {
             "source_name": datetime.now(),
@@ -58,9 +61,10 @@ class PubSubTestCase(unittest.TestCase):
         self.assertRaises(TypeError, publish_message, publisher, topic_name, message)
         del os.environ[GOOGLE_CLOUD_PROJECT]
 
-    def test_publish_message_topic_name_none(self):
+    @patch("helpers_cf.pubsub_v1")
+    def test_publish_message_topic_name_none(self, mock_pubsub):
         os.environ[GOOGLE_CLOUD_PROJECT] = "test-project-id-123123"
-        publisher = mock.create_autospec(pubsub_v1.PublisherClient)
+        publisher = mock_pubsub.PublisherClient()
         topic_name = None
         message = {
             "source_name": "test_source_name",
@@ -70,10 +74,11 @@ class PubSubTestCase(unittest.TestCase):
         self.assertRaises(Exception, publish_message, publisher, topic_name, message)
         del os.environ[GOOGLE_CLOUD_PROJECT]
 
-    def test_publish_message_project_id_none(self):
+    @patch("helpers_cf.pubsub_v1")
+    def test_publish_message_project_id_none(self, mock_pubsub):
         if os.getenv(GOOGLE_CLOUD_PROJECT):
             del os.environ[GOOGLE_CLOUD_PROJECT]
-        publisher = mock.create_autospec(pubsub_v1.PublisherClient)
+        publisher = mock_pubsub.PublisherClient()
         topic_name = "somestr"
         message = {
             "source_name": "test_source_name",
@@ -82,9 +87,10 @@ class PubSubTestCase(unittest.TestCase):
         }
         self.assertRaises(KeyError, publish_message, publisher, topic_name, message)
 
-    def test_publish_message_project_id_falsy(self):
+    @patch("helpers_cf.pubsub_v1")
+    def test_publish_message_project_id_falsy(self, mock_pubsub):
         os.environ[GOOGLE_CLOUD_PROJECT] = ""
-        publisher = mock.create_autospec(pubsub_v1.PublisherClient)
+        publisher = mock_pubsub.PublisherClient()
         topic_name = "somestr"
         message = {
             "source_name": "test_source_name",
@@ -94,8 +100,9 @@ class PubSubTestCase(unittest.TestCase):
         self.assertRaises(Exception, publish_message, publisher, topic_name, message)
         del os.environ[GOOGLE_CLOUD_PROJECT]
 
-    def test_publish_dispatcher_message(self):
-        publisher = mock.create_autospec(pubsub_v1.PublisherClient)
+    @patch("helpers_cf.pubsub_v1")
+    def test_publish_dispatcher_message(self, mock_pubsub):
+        publisher = mock_pubsub.PublisherClient()
         message = {
             "source_name": "test_source_name",
             "dataset_url": "someurl",
@@ -103,13 +110,19 @@ class PubSubTestCase(unittest.TestCase):
         }
         os.environ[GOOGLE_CLOUD_PROJECT] = "test-project-id-123123"
         os.environ[TOPIC_DISPATCHER] = "test-topic-dispatcher"
-        expected_arg_message = b'{"source_name": "test_source_name", "dataset_url": "someurl", "source_entity_id": "someid"}'
+        expected_arg_message = [
+            PubsubMessage(
+                data=b'{"source_name": "test_source_name", "dataset_url": "someurl", "source_entity_id": "someid"}'
+            )
+        ]
         publish_dispatcher_message(publisher, message)
         self.assertEqual(
             "projects/test-project-id-123123/topics/test-topic-dispatcher",
-            publisher.publish.call_args.args[0],
+            publisher.publish.call_args.kwargs["topic"],
         )
-        self.assertEqual(expected_arg_message, publisher.publish.call_args.args[1])
+        self.assertEqual(
+            expected_arg_message, publisher.publish.call_args.kwargs["messages"]
+        )
         self.assertEqual(1, publisher.publish.call_count)
         del os.environ[GOOGLE_CLOUD_PROJECT]
         del os.environ[TOPIC_DISPATCHER]

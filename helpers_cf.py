@@ -3,6 +3,7 @@ import json
 import os
 
 from google import pubsub_v1
+from google.pubsub_v1 import PubsubMessage
 from wikibaseintegrator import wbi_core, wbi_login
 from wikibaseintegrator.wbi_config import config as wbi_config
 
@@ -228,7 +229,8 @@ def publish_message(publisher, topic_name, message):
 
     message_json = json.dumps(message)
     encoded_message = message_json.encode("utf-8")
-    future = publisher.publish(topic_path, encoded_message)
+    message_obj = PubsubMessage(data=encoded_message)
+    future = publisher.publish(topic=topic_path, messages=[message_obj])
     return future.result()
 
 
