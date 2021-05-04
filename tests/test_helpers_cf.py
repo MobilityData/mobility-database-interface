@@ -15,6 +15,7 @@ from helpers_cf import (
     add_source_in_db,
     decode_message,
     add_dataset_to_source,
+    SourceAlreadyExistException,
 )
 from usecase.load_dataset import GTFS_TYPE
 from utilities.constants import (
@@ -167,6 +168,7 @@ class AddSourceTestCase(unittest.TestCase):
         os.environ[GTFS_CATALOG_OF_SOURCES_CODE] = "gtfsschedprop"
 
         mock_wbi_core.ItemEngine.return_value.write.return_value = "Q1"
+        mock_wbi_core.ItemEngine.return_value.item_id = ""
 
         source_name = "source name"
         stable_url = "stable://url"
@@ -177,6 +179,37 @@ class AddSourceTestCase(unittest.TestCase):
             mock_wbi_core.ItemEngine.return_value.set_label.call_args_list[0]
             .args[0]
             .startswith("source name's")
+        )
+
+        del os.environ[API_URL]
+        del os.environ[SPARQL_BIGDATA_URL]
+        del os.environ[USERNAME]
+        del os.environ[PASSWORD]
+        del os.environ[INSTANCE_PROP]
+        del os.environ[GTFS_SCHEDULE_SOURCE_CODE]
+        del os.environ[STABLE_URL_PROP]
+        del os.environ[CATALOG_PROP]
+        del os.environ[GTFS_CATALOG_OF_SOURCES_CODE]
+
+    @patch("helpers_cf.wbi_core")
+    @patch("helpers_cf.wbi_login")
+    def test_add_source_in_db_already_exists(self, mock_wbi_login, mock_wbi_core):
+        os.environ[API_URL] = "api://url"
+        os.environ[SPARQL_BIGDATA_URL] = "sparql://url"
+        os.environ[USERNAME] = "usrname"
+        os.environ[PASSWORD] = "pwd"
+        os.environ[INSTANCE_PROP] = "instanceprop"
+        os.environ[GTFS_SCHEDULE_SOURCE_CODE] = "gtfsschedprop"
+        os.environ[STABLE_URL_PROP] = "gtfsschedprop"
+        os.environ[CATALOG_PROP] = "gtfsschedprop"
+        os.environ[GTFS_CATALOG_OF_SOURCES_CODE] = "gtfsschedprop"
+
+        mock_wbi_core.ItemEngine.return_value.item_id = "Q1"
+
+        source_name = "source name"
+        stable_url = "stable://url"
+        self.assertRaises(
+            SourceAlreadyExistException, add_source_in_db, source_name, stable_url
         )
 
         del os.environ[API_URL]

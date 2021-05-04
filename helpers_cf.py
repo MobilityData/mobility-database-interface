@@ -148,6 +148,11 @@ def add_dataset_to_source(
     return dataset_representations
 
 
+class SourceAlreadyExistException(Exception):
+    def __init__(self, stable_url):
+        self.message = f"source with stable url: {stable_url} already exists"
+
+
 def add_source_in_db(source_name, stable_url, username=None, password=None):
     """"""
     # Load Wikibase Integrator config with the environment
@@ -159,17 +164,17 @@ def add_source_in_db(source_name, stable_url, username=None, password=None):
         username = os.environ[USERNAME]
     if not password:
         password = os.environ[PASSWORD]
+    stable_url_prop = os.environ[STABLE_URL_PROP]
+    catalog_prop = os.environ[CATALOG_PROP]
 
     login_instance = wbi_login.Login(user=username, pwd=password, use_clientlogin=True)
 
     source_instance_of = wbi_core.ItemID(
         prop_nr=os.environ[INSTANCE_PROP], value=os.environ[GTFS_SCHEDULE_SOURCE_CODE]
     )
-    source_stable_url = wbi_core.String(
-        value=stable_url, prop_nr=os.environ[STABLE_URL_PROP]
-    )
+    source_stable_url = wbi_core.Url(value=stable_url, prop_nr=stable_url_prop)
     source_catalog_ref = wbi_core.ItemID(
-        prop_nr=os.environ[CATALOG_PROP],
+        prop_nr=catalog_prop,
         value=os.environ[GTFS_CATALOG_OF_SOURCES_CODE],  # fix this
     )
     source_catalog_entity = wbi_core.ItemEngine(
@@ -178,12 +183,16 @@ def add_source_in_db(source_name, stable_url, username=None, password=None):
 
     source_data = [source_instance_of, source_stable_url, source_catalog_ref]
 
-    source_entity = wbi_core.ItemEngine()
+    source_entity = wbi_core.ItemEngine(
+        data=source_data, core_props={stable_url_prop, catalog_prop}
+    )
+    if source_entity.item_id:
+        raise SourceAlreadyExistException(stable_url=stable_url)
+
     source_entity.set_label(
         f"{source_name}'s {source_catalog_entity[LABELS][ENGLISH][VALUE]}"
     )
 
-    source_entity.data = source_data
     source_entity_id = source_entity.write(login=login_instance)
 
     return source_entity_id
