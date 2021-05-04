@@ -12,7 +12,7 @@
        "--service-account=database-interface-sa@top-glass-307718.iam.gserviceaccount.com",
        "--trigger-topic=before-new-source-${_ENV}",
        "--timeout=540",
-       "--set-env-vars=ENV=${_ENV},GOOGLE_CLOUD_PROJECT=$PROJECT_ID,SECRET_PATH=${_SECRET_PATH}"
+       "--set-env-vars=ENV=${_ENV},GOOGLE_CLOUD_PROJECT=$PROJECT_ID,SECRET_PATH=${_SECRET_PATH},TOPIC_DISPATCHER=before-dispatcher-${_ENV}"
      ]
    }
   ]
