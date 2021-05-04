@@ -211,7 +211,7 @@ def create_dataset_entity_for_gtfs_metadata(
     if not username:
         username = os.environ[USERNAME]
     if not password:
-        spassword = os.environ[PASSWORD]
+        password = os.environ[PASSWORD]
     metadata.dataset_version_entity_code = import_entity(
         username, password, dataset_data, version_name_label
     )
