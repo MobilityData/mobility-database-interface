@@ -10,6 +10,7 @@
        "--entry-point=add_dataset_to_source_cf",
        "--runtime=python39",
        "--trigger-topic=before-new-dataset-${_ENV}",
+       "--service-account=database-interface-sa@top-glass-307718.iam.gserviceaccount.com",
        "--timeout=540",
        "--set-env-vars=ENV=${_ENV},GOOGLE_CLOUD_PROJECT=$PROJECT_ID,TOPIC_DISPATCHER=before-dispatcher-interface-${_ENV},LOCATION_ID=us-central1,SECRET_PATH=${_SECRET_PATH}"
      ]
