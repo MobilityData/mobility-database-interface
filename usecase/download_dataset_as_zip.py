@@ -29,7 +29,7 @@ def download_datasets_as_zip(path_to_data, datasets_infos):
 def download_dataset_as_zip(path_to_data, dataset_infos):
     url = dataset_infos.url
     entity_code = dataset_infos.entity_code
-    print(f"--------------- Downloading URL : {url} ---------------\n")
+    # print(f"--------------- Downloading URL : {url} ---------------\n")
     slash_index = url.rfind("/")
     zip_name = url[slash_index + 1 :]
     zip_path = os.path.join(path_to_data, f"{entity_code}_{zip_name}")
@@ -50,5 +50,5 @@ def download_dataset_as_zip(path_to_data, dataset_infos):
 
     dataset_infos.zip_path = zip_path
     dataset_infos.download_date = date.today().strftime("%Y-%m-%d")
-    print(f"Success : {entity_code}_{zip_name} downloaded in {path_to_data}\n")
+    # print(f"Success : {entity_code}_{zip_name} downloaded in {path_to_data}\n")
     return dataset_infos

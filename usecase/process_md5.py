@@ -9,7 +9,7 @@ def process_md5(dataset_infos):
     path_to_dataset = dataset_infos.zip_path
     previous_md5_hashes = dataset_infos.previous_md5_hashes
 
-    print(f"--------------- Processing MD5 : {path_to_dataset} ---------------\n")
+    # print(f"--------------- Processing MD5 : {path_to_dataset} ---------------\n")
     try:
         with open(path_to_dataset, "rb") as f:
             while data := f.read(DATA_CHUNK_BYTE_SIZE):
@@ -22,9 +22,9 @@ def process_md5(dataset_infos):
     md5_hash = md5_hash.hexdigest()
     if md5_hash not in previous_md5_hashes:
         dataset_infos.md5_hash = md5_hash
-        print(
-            f"Success : new MD5 hash {md5_hash} for {path_to_dataset}, dataset kept for further processing\n"
-        )
+        # print(
+        #     f"Success : new MD5 hash {md5_hash} for {path_to_dataset}, dataset kept for further processing\n"
+        # )
         return dataset_infos
     else:
         print(

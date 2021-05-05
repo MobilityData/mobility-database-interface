@@ -21,7 +21,8 @@ class GtfsRepresentation:
 
     def print_representation(self):
         """Print the representation of the GTFS dataset."""
-        print("--------------- Metadata ---------------\n")
-        print(str(self.metadata))
-        print("\n--------------- Dataset ---------------\n")
-        print(self.dataset)
+        pass
+        # print("--------------- Metadata ---------------\n")
+        # print(str(self.metadata))
+        # print("\n--------------- Dataset ---------------\n")
+        # print(self.dataset)

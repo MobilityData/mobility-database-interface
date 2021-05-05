@@ -29,9 +29,9 @@ def load_datasets(data_repository, datasets_infos, dataset_type):
 
 
 def load_dataset(data_repository, dataset_infos, dataset_type):
-    print(
-        f"--------------- Loading dataset : {dataset_infos.zip_path} ---------------\n"
-    )
+    # print(
+    #     f"--------------- Loading dataset : {dataset_infos.zip_path} ---------------\n"
+    # )
     dataset_representation = build_representation(dataset_type, dataset_infos)
     # TODO modify dataset key in data repository
     data_repository.add_dataset_representation(
