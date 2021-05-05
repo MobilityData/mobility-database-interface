@@ -1,5 +1,5 @@
 import os
-from wikibaseintegrator import wbi_core
+from wikibaseintegrator import wbi_core, wbi_login
 from utilities.request_utils import import_entity
 from utilities.constants import (
     NORMAL,
@@ -34,6 +34,7 @@ from utilities.constants import (
     ROUTE_TYPE_PROP,
     USERNAME,
     PASSWORD,
+    ENGLISH,
 )
 from utilities.validators import validate_gtfs_representation, validate_api_url
 
@@ -212,9 +213,11 @@ def create_dataset_entity_for_gtfs_metadata(
         username = os.environ[USERNAME]
     if not password:
         password = os.environ[PASSWORD]
-    metadata.dataset_version_entity_code = import_entity(
-        username, password, dataset_data, version_name_label
-    )
+    login_instance = wbi_login.Login(user=username, pwd=password, use_clientlogin=True)
+    dataset_entity = wbi_core.ItemEngine(data=dataset_data)
+    dataset_entity.set_label(version_name_label, ENGLISH)
+    dataset_entity_id = dataset_entity.write(login_instance)
+    metadata.dataset_version_entity_code = dataset_entity_id
 
     version_prop = wbi_core.ItemID(
         value=metadata.dataset_version_entity_code,
@@ -222,11 +225,8 @@ def create_dataset_entity_for_gtfs_metadata(
         if_exists=APPEND,
     )
     source_data = [version_prop]
-    metadata.source_entity_code = import_entity(
-        os.environ[USERNAME],
-        os.environ[PASSWORD],
-        source_data,
-        item_id=metadata.source_entity_code,
-    )
+    source_entity = wbi_core.ItemEngine(item_id=metadata.source_entity_code)
+    source_entity.update(source_data)
+    metadata.source_entity_code = source_entity.item_id
 
     return gtfs_representation

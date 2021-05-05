@@ -36,16 +36,15 @@ class TestCreateDatasetEntity(TestCase):
             STAGING_API_URL,
         )
 
+    @mock.patch("usecase.create_dataset_entity_for_gtfs_metadata.wbi_login")
     @mock.patch("usecase.create_dataset_entity_for_gtfs_metadata.os.environ")
     @mock.patch("usecase.create_dataset_entity_for_gtfs_metadata.wbi_core")
-    @mock.patch("usecase.create_dataset_entity_for_gtfs_metadata.import_entity")
     def test_create_dataset_entity_with_valid_parameter(
-        self, mock_importer, mock_wbi_core, mock_env
+        self, mock_wbi_core, mock_env, mock_wbi_login
     ):
-        mock_importer.side_effect = [
-            "test_dataset_version_code",
-            "test_source_entity_code",
-        ]
+        mock_wbi_core.ItemEngine.return_value.write.return_value = (
+            "test_dataset_version_code"
+        )
 
         mock_gtfs_representation = MagicMock()
         mock_gtfs_representation.__class__ = GtfsRepresentation
@@ -59,7 +58,4 @@ class TestCreateDatasetEntity(TestCase):
         self.assertEqual(under_test, mock_gtfs_representation)
         self.assertEqual(
             under_test.metadata.dataset_version_entity_code, "test_dataset_version_code"
-        )
-        self.assertEqual(
-            under_test.metadata.source_entity_code, "test_source_entity_code"
         )

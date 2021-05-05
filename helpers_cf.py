@@ -115,6 +115,7 @@ def add_dataset_to_source(
         dataset_representation = process_end_service_date_for_gtfs_metadata(
             dataset_representation
         )
+        # TODO: fix the actual issue. might be taken care of once validator is deployed.
         try:
             dataset_representation = process_start_timestamp_for_gtfs_metadata(
                 dataset_representation
