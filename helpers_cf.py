@@ -1,6 +1,7 @@
 import base64
 import json
 import os
+import sys
 
 from google import pubsub_v1
 from google.pubsub_v1 import PubsubMessage
@@ -114,12 +115,24 @@ def add_dataset_to_source(
         dataset_representation = process_end_service_date_for_gtfs_metadata(
             dataset_representation
         )
-        dataset_representation = process_start_timestamp_for_gtfs_metadata(
-            dataset_representation
-        )
-        dataset_representation = process_end_timestamp_for_gtfs_metadata(
-            dataset_representation
-        )
+        try:
+            dataset_representation = process_start_timestamp_for_gtfs_metadata(
+                dataset_representation
+            )
+        except TypeError as te:
+            print(
+                f"process_start_timestamp_for_gtfs_metadata for source {source_name}, dataset {dataset_url} raised: \n {te}",
+                file=sys.stderr,
+            )
+        try:
+            dataset_representation = process_end_timestamp_for_gtfs_metadata(
+                dataset_representation
+            )
+        except TypeError as te:
+            print(
+                f"process_end_timestamp_for_gtfs_metadata for source {source_name}, dataset {dataset_url} raised: \n {te}",
+                file=sys.stderr,
+            )
         dataset_representation = process_main_language_code_for_gtfs_metadata(
             dataset_representation
         )
