@@ -60,3 +60,106 @@ class TestProcessStartTimestampForGtfsMetadata(TestCase):
         under_test = process_start_timestamp_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
         self.assertEqual(mock_metadata.start_timestamp, "2020-10-10T05:00:00-05:00")
+
+    @mock.patch("usecase.process_timestamp_for_gtfs_metadata.get_gtfs_dates_by_type")
+    @mock.patch(
+        "usecase.process_timestamp_for_gtfs_metadata.get_gtfs_timezone_utc_offset"
+    )
+    @mock.patch(
+        "usecase.process_timestamp_for_gtfs_metadata.get_gtfs_stop_times_for_date"
+    )
+    def test_process_start_timestamp_execution_with_empty_dates_by_type(
+        self, mock_stop_times_for_date, mock_utc_offset, mock_dates_by_type
+    ):
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
+        mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
+        mock_stop_times_for_date.return_value = pd.DataFrame(
+            {"trip_id": ["test_trip_id"], "arrival_time": ["05:00:00"]}
+        )
+
+        mock_dates_by_type.return_value = pd.DataFrame({"service_id": [], "date": []})
+
+        mock_utc_offset.return_value = "-05:00"
+
+        under_test = process_start_timestamp_for_gtfs_metadata(mock_gtfs_representation)
+        self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_metadata.start_timestamp.assert_not_called()
+
+    @mock.patch("usecase.process_timestamp_for_gtfs_metadata.get_gtfs_dates_by_type")
+    @mock.patch(
+        "usecase.process_timestamp_for_gtfs_metadata.get_gtfs_timezone_utc_offset"
+    )
+    @mock.patch(
+        "usecase.process_timestamp_for_gtfs_metadata.get_gtfs_stop_times_for_date"
+    )
+    def test_process_start_timestamp_with_empty_stop_times_for_date(
+        self, mock_stop_times_for_date, mock_utc_offset, mock_dates_by_type
+    ):
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
+        mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
+        mock_stop_times_for_date.return_value = pd.DataFrame(
+            {"trip_id": [], "arrival_time": []}
+        )
+
+        mock_dates_by_type.return_value = pd.DataFrame(
+            {"service_id": ["test_service_id"], "date": ["20201010"]}
+        )
+
+        mock_utc_offset.return_value = "-05:00"
+
+        under_test = process_start_timestamp_for_gtfs_metadata(mock_gtfs_representation)
+        self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_metadata.start_timestamp.assert_not_called()
+
+    @mock.patch("usecase.process_timestamp_for_gtfs_metadata.get_gtfs_dates_by_type")
+    @mock.patch(
+        "usecase.process_timestamp_for_gtfs_metadata.get_gtfs_timezone_utc_offset"
+    )
+    @mock.patch(
+        "usecase.process_timestamp_for_gtfs_metadata.get_gtfs_stop_times_for_date"
+    )
+    def test_process_start_timestamp_execution_should_set_start_timestamp_metadata(
+        self, mock_stop_times_for_date, mock_utc_offset, mock_dates_by_type
+    ):
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
+        mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
+        mock_stop_times_for_date.return_value = pd.DataFrame(
+            {"trip_id": ["test_trip_id"], "arrival_time": ["05:00:00"]}
+        )
+
+        mock_dates_by_type.return_value = pd.DataFrame(
+            {"service_id": ["test_service_id"], "date": ["20201010"]}
+        )
+
+        mock_utc_offset.return_value = ""
+
+        under_test = process_start_timestamp_for_gtfs_metadata(mock_gtfs_representation)
+        self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_metadata.start_timestamp.assert_not_called()

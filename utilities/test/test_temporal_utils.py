@@ -498,6 +498,10 @@ class TestTemporalUtils(TestCase):
     def test_gtfs_stop_times_for_date_with_valid_parameters_should_return_stop_times_dataframe(
         self, mock_dataset
     ):
+        test_stop_times_trip_ids = ["test_trip_id"]
+        test_stop_times_departure_time = ["05:00:00"]
+        test_stop_time_key = "departure_time"
+
         mock_trips = PropertyMock(
             return_value=pd.DataFrame(
                 {"service_id": ["test_service_id"], "trip_id": ["test_trip_id"]}
@@ -546,11 +550,8 @@ class TestTemporalUtils(TestCase):
         mock_date_to_look_up.__class__ = datetime
         mock_date_to_look_up.strftime.return_value = "20201010"
 
-        test_stop_times_trip_ids = ["test_trip_id"]
-        test_stop_times_departure_time = ["05:00:00"]
-
         under_test = get_gtfs_stop_times_for_date(
-            mock_dataset, mock_dataset_dates, mock_date_to_look_up
+            mock_dataset, mock_dataset_dates, mock_date_to_look_up, test_stop_time_key
         )
         self.assertIsInstance(under_test, pd.DataFrame)
         self.assertTrue("trip_id" in under_test.columns)
