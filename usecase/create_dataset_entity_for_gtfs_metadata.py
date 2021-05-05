@@ -227,6 +227,7 @@ def create_dataset_entity_for_gtfs_metadata(
     source_data = [version_prop]
     source_entity = wbi_core.ItemEngine(item_id=metadata.source_entity_code)
     source_entity.update(source_data)
+    source_entity.write(login_instance)
     metadata.source_entity_code = source_entity.item_id
 
     return gtfs_representation
