@@ -94,7 +94,7 @@ def add_dataset_to_source(
     dataset_infos.url = dataset_url
     dataset_infos.entity_code = source_entity_id
     # Download datasets zip file
-    dataset_infos = download_dataset_as_zip(f"./tmp/{source_name}", dataset_infos)
+    dataset_infos = download_dataset_as_zip(f"/tmp/{source_name}", dataset_infos)
 
     # Process the MD5 hash
     dataset_infos = process_md5(dataset_infos)
