@@ -74,6 +74,10 @@ def process_timestamp_for_gtfs_metadata(gtfs_representation, timestamp_map):
     # Get first arrival time of the first start service date with min()
     # or
     # Get last departure time of the last end service date with max()
+    print(
+        f"stop_times_for_date[timestamp_map[STOP_TIME_KEY]]: {stop_times_for_date[timestamp_map[STOP_TIME_KEY]]}"
+    )
+    print(f"timestamp_map[MIN_MAX_ATTR]: {timestamp_map[MIN_MAX_ATTR]}")
     stop_time = getattr(
         stop_times_for_date[timestamp_map[STOP_TIME_KEY]], timestamp_map[MIN_MAX_ATTR]
     )()
