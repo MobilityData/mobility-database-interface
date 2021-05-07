@@ -28,12 +28,8 @@ class TestProcessSha1(TestCase):
         mock_dataset_infos.__class__ = DatasetInfos
         type(mock_dataset_infos).zip_path = test_zip_path
         type(mock_dataset_infos).previous_sha1_hashes = test_previous_sha1_hashes
-        mock_datasets_infos = [mock_dataset_infos]
 
-        under_test = process_sha1(mock_datasets_infos)
-        self.assertEqual(len(under_test), 1)
-
-        under_test_dataset_info = under_test[0]
+        under_test_dataset_info = process_sha1(mock_dataset_infos)
         self.assertEqual(under_test_dataset_info.sha1_hash, test_sha1_hash)
 
     def test_process_sha1_with_dataset_sha1_existing_in_sha1_hashes_should_discard_dataset(
@@ -46,7 +42,6 @@ class TestProcessSha1(TestCase):
         mock_dataset_infos.__class__ = DatasetInfos
         type(mock_dataset_infos).zip_path = test_zip_path
         type(mock_dataset_infos).previous_sha1_hashes = test_previous_sha1_hashes
-        mock_datasets_infos = [mock_dataset_infos]
 
-        under_test = process_sha1(mock_datasets_infos)
-        self.assertEqual(len(under_test), 0)
+        under_test = process_sha1(mock_dataset_infos)
+        self.assertIsInstance(under_test, DatasetInfos)
