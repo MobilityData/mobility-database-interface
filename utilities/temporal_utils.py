@@ -2,27 +2,37 @@ import operator
 from datetime import datetime, time, timedelta
 import pytz
 import pandas as pd
+from utilities.constants import (
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY,
+    START_DATE,
+    END_DATE,
+    DATE,
+    SERVICE_ID,
+    EXCEPTION_TYPE,
+    TRIP_ID,
+    AGENCY_TIMEZONE,
+)
 
 # Setting constants
 SECONDS_PER_HOUR = 3600
 MINUTES_PER_HOUR = 60
 UTC_THRESHOLD = 12
-START_DATE = "start_date"
-END_DATE = "end_date"
-DATE = "date"
-SERVICE_ID = "service_id"
-EXCEPTION_TYPE = "exception_type"
 WEEKDAYS = [
-    "monday",
-    "tuesday",
-    "wednesday",
-    "thursday",
-    "friday",
-    "saturday",
-    "sunday",
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY,
 ]
 DATE_FORMAT = "%Y%m%d"
-TRIP_ID = "trip_id"
 
 
 def get_gtfs_dates_by_type(dataset, date_type):
@@ -127,7 +137,7 @@ def get_gtfs_end_dates_from_calendar(dataset_calendar, dates_per_service_id_data
 
 def get_gtfs_timezone_utc_offset(dataset):
     # Extract agency timezone from dataset
-    agency_timezone = dataset.agency["agency_timezone"].iloc[0]
+    agency_timezone = dataset.agency[AGENCY_TIMEZONE].iloc[0]
 
     # Default timezone UTC offset is the empty string.
     # If the timezone is not recognized by pytz, then this value will be returned.

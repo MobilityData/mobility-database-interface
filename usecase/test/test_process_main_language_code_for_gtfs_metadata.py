@@ -6,6 +6,7 @@ from representation.gtfs_metadata import GtfsMetadata
 from representation.gtfs_representation import GtfsRepresentation
 from usecase.process_main_language_code_for_gtfs_metadata import (
     process_main_language_code_for_gtfs_metadata,
+    AGENCY_LANG,
 )
 
 
@@ -22,27 +23,74 @@ class TestProcessMainLanguageCodeForGtfsMetadata(TestCase):
             mock_gtfs_representation,
         )
 
-    @mock.patch("representation.gtfs_representation.GtfsRepresentation")
-    def test_process_main_language_code_with_valid_gtfs_representation_should_return_instance(
-        self, mock_gtfs_representation
-    ):
+    def test_process_main_language_code_with_missing_files(self):
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
         mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
         under_test = process_main_language_code_for_gtfs_metadata(
             mock_gtfs_representation
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_metadata.main_language_code.assert_not_called()
 
-    @mock.patch("representation.gtfs_representation.GtfsRepresentation")
-    @mock.patch("gtfs_kit.feed.Feed")
-    @mock.patch("representation.gtfs_metadata.GtfsMetadata")
-    def test_process_main_language_code(
-        self, mock_gtfs_representation, mock_dataset, mock_metadata
-    ):
-        mock_agency = PropertyMock(return_value=pd.DataFrame({"agency_lang": ["fr"]}))
+    def test_process_main_language_code_with_missing_fields(self):
+        mock_agency = PropertyMock(return_value=pd.DataFrame({}))
+        mock_dataset = MagicMock()
         mock_dataset.__class__ = Feed
         type(mock_dataset).agency = mock_agency
 
+        mock_metadata = MagicMock()
         mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
+        mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
+        under_test = process_main_language_code_for_gtfs_metadata(
+            mock_gtfs_representation
+        )
+        self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_metadata.main_language_code.assert_not_called()
+
+    def test_process_main_language_code_with_empty_file(self):
+        mock_agency = PropertyMock(return_value=pd.DataFrame({AGENCY_LANG: []}))
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+        type(mock_dataset).agency = mock_agency
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
+        mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
+        under_test = process_main_language_code_for_gtfs_metadata(
+            mock_gtfs_representation
+        )
+        self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_metadata.main_language_code.assert_not_called()
+
+    def test_process_main_language_code(self):
+        mock_agency = PropertyMock(return_value=pd.DataFrame({AGENCY_LANG: ["fr"]}))
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+        type(mock_dataset).agency = mock_agency
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
         mock_gtfs_representation.__class__ = GtfsRepresentation
         type(mock_gtfs_representation).dataset = mock_dataset
         type(mock_gtfs_representation).metadata = mock_metadata
@@ -52,5 +100,4 @@ class TestProcessMainLanguageCodeForGtfsMetadata(TestCase):
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_agency.assert_called()
-        self.assertEqual(mock_agency.call_count, 1)
         self.assertEqual(mock_metadata.main_language_code, "fr")

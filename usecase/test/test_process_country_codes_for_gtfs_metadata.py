@@ -47,7 +47,7 @@ class TestProcessCountryCodesForGtfsMetadata(TestCase):
         under_test = process_country_codes_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_rg.assert_not_called()
-        self.assertEqual(mock_metadata.country_codes, set())
+        mock_metadata.country_codes.assert_not_called()
 
     @mock.patch("usecase.process_country_codes_for_gtfs_metadata.rg.search")
     def test_process_country_codes_with_invalid_lat_lon(self, mock_rg):
@@ -68,7 +68,7 @@ class TestProcessCountryCodesForGtfsMetadata(TestCase):
 
         under_test = process_country_codes_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.country_codes, set())
+        mock_metadata.country_codes.assert_not_called()
 
     @mock.patch("usecase.process_country_codes_for_gtfs_metadata.rg.search")
     def test_process_country_codes_with_lat_lon(self, mock_rg):
@@ -91,7 +91,7 @@ class TestProcessCountryCodesForGtfsMetadata(TestCase):
 
         under_test = process_country_codes_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.country_codes, {"CA"})
+        self.assertEqual(mock_metadata.country_codes, ["CA"])
 
         mock_stops = PropertyMock(
             return_value=pd.DataFrame(
@@ -117,4 +117,4 @@ class TestProcessCountryCodesForGtfsMetadata(TestCase):
 
         under_test = process_country_codes_for_gtfs_metadata(mock_gtfs_representation)
         self.assertIsInstance(under_test, GtfsRepresentation)
-        self.assertEqual(mock_metadata.country_codes, {"CA", "US"})
+        self.assertEqual(mock_metadata.country_codes, ["CA", "US"])

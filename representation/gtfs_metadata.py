@@ -13,27 +13,27 @@ class GtfsMetadata:
             raise TypeError("Dataset infos must be a valid DatasetInfos.")
 
         self.source_entity_code = dataset_infos.entity_code
-        self.dataset_version_entity_code = ""
+        self.dataset_version_entity_code = None
         self.sha1_hash = dataset_infos.sha1_hash
         self.dataset_version_name = self.create_dataset_version_name(
             dataset_infos.source_name,
             dataset_infos.download_date,
             dataset_infos.sha1_hash,
         )
-        self.main_timezone = ""
-        self.other_timezones = []
-        self.country_codes = set()
-        self.main_language_code = ""
-        self.start_service_date = ""
-        self.end_service_date = ""
-        self.start_timestamp = ""
-        self.end_timestamp = ""
-        self.bounding_box = {}
-        self.bounding_octagon = {}
-        self.agencies_count = 0
-        self.routes_count_by_type = {}
-        self.stops_count_by_type = {}
-        self.stable_url = ""
+        self.main_timezone = None
+        self.other_timezones = None
+        self.country_codes = None
+        self.main_language_code = None
+        self.start_service_date = None
+        self.end_service_date = None
+        self.start_timestamp = None
+        self.end_timestamp = None
+        self.bounding_box = None
+        self.bounding_octagon = None
+        self.agencies_count = None
+        self.routes_count_by_type = None
+        self.stops_count_by_type = None
+        self.stable_url = None
 
     def create_dataset_version_name(self, source_name, download_date, sha1_hash):
         """Create the dataset version name from the source name, download date and SHA-1 hash.
@@ -67,7 +67,7 @@ class GtfsMetadata:
         return (
             f"Dataset version name: {self.dataset_version_name}\n"
             f"Main timezone: {self.main_timezone}\n"
-            f"Other timezones: {', '.join(self.other_timezones)}\n"
+            f"Other timezones: {self.other_timezones}\n"
             f"Country codes: {self.country_codes}\n"
             f"Main language code: {self.main_language_code}\n"
             f"Start service date: {self.start_service_date}\n"
