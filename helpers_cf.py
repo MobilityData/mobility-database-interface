@@ -208,7 +208,7 @@ def add_source_in_db(source_name, stable_url, username=None, password=None):
     )
 
     source_entity_id = source_entity.write(login=login_instance)
-    source_entity_prop = wbi_core.ItemEngine(item_id=source_entity_id)
+    source_entity_prop = wbi_core.ItemID(item_id=source_entity_id)
     catalog_data = [source_entity_prop]
     source_catalog_entity.update(catalog_data)
     source_catalog_entity.write(login_instance)
