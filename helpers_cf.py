@@ -193,7 +193,8 @@ def add_source_in_db(source_name, stable_url, username=None, password=None):
     )
     source_catalog_entity = wbi_core.ItemEngine(
         item_id=os.environ[GTFS_CATALOG_OF_SOURCES_CODE]
-    ).get_json_representation()
+    )
+    source_catalog_entity_json = source_catalog_entity.get_json_representation()
 
     source_data = [source_instance_of, source_stable_url, source_catalog_ref]
     source_entity = wbi_core.ItemEngine(data=source_data, core_props={stable_url_prop})
@@ -203,10 +204,14 @@ def add_source_in_db(source_name, stable_url, username=None, password=None):
     #     raise SourceAlreadyExistException(stable_url=stable_url)
 
     source_entity.set_label(
-        f"{source_name}'s {source_catalog_entity[LABELS][ENGLISH][VALUE]}"
+        f"{source_name}'s {source_catalog_entity_json[LABELS][ENGLISH][VALUE]}"
     )
 
     source_entity_id = source_entity.write(login=login_instance)
+
+    catalog_data = [source_entity]
+    source_catalog_entity.update(catalog_data)
+    source_catalog_entity.write(login_instance)
 
     return source_entity_id
 
