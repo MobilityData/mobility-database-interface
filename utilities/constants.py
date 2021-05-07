@@ -21,18 +21,29 @@ LON = "longitude"
 REPLACE = "REPLACE"
 APPEND = "APPEND"
 
-STOP_LAT = "stop_lat"
-STOP_LON = "stop_lon"
 IS_ADDITION = "is_addition"
 IS_MAXIMUM = "is_maximum"
 
-STOP_KEY = "stop"
-STATION_KEY = "station"
-ENTRANCE_KEY = "entrance"
-STOP = 0
-STATION = 1
-ENTRANCE = 2
-LOCATION_TYPE = "location_type"
+SPARQL_A = "a"
+SVC_PROP_URL_PATH = "/prop/statement/"
+SVC_ENTITY_URL_PATH = "/entity/"
+SVC_URL = "http://wikibase.svc"
+
+# GTFS columns constants
+
+DATE = "date"
+SERVICE_ID = "service_id"
+EXCEPTION_TYPE = "exception_type"
+
+MONDAY = "monday"
+TUESDAY = "tuesday"
+WEDNESDAY = "wednesday"
+THURSDAY = "thursday"
+FRIDAY = "friday"
+SATURDAY = "saturday"
+SUNDAY = "sunday"
+START_DATE = "start_date"
+END_DATE = "end_date"
 
 TRAM = 0
 SUBWAY = 1
@@ -46,10 +57,23 @@ TROLLEY_BUS = 11
 MONORAIL = 12
 ROUTE_TYPE = "route_type"
 
-SPARQL_A = "a"
-SVC_PROP_URL_PATH = "/prop/statement/"
-SVC_ENTITY_URL_PATH = "/entity/"
-SVC_URL = "http://wikibase.svc"
+AGENCY_NAME = "agency_name"
+AGENCY_LANG = "agency_lang"
+AGENCY_TIMEZONE = "agency_timezone"
+
+STOP_KEY = "stop"
+STATION_KEY = "station"
+ENTRANCE_KEY = "entrance"
+STOP = 0
+STATION = 1
+ENTRANCE = 2
+LOCATION_TYPE = "location_type"
+
+STOP_LAT = "stop_lat"
+STOP_LON = "stop_lon"
+STOP_TIMEZONE = "stop_timezone"
+
+TRIP_ID = "trip_id"
 
 # Define regex pattern for dataset version entity code in response retrieved by SPARQL query
 SPARQL_ENTITY_CODE_REGEX = "/(Q.+?)-"

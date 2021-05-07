@@ -21,14 +21,14 @@ from usecase.process_routes_count_by_type_for_gtfs_metadata import (
 
 
 class TestProcessRoutesCountByTypeForGtfsMetadata(TestCase):
-    def test_process_routes_count_with_none_gtfs_representation_should_raise_exception(
+    def test_process_routes_count_with_none_gtfs_representation(
         self,
     ):
         self.assertRaises(
             TypeError, process_routes_count_by_type_for_gtfs_metadata, None
         )
 
-    def test_process_routes_count_with_invalid_gtfs_representation_should_raise_exception(
+    def test_process_routes_count_with_invalid_gtfs_representation(
         self,
     ):
         mock_gtfs_representation = MagicMock()
@@ -65,9 +65,49 @@ class TestProcessRoutesCountByTypeForGtfsMetadata(TestCase):
         self.assertIsInstance(under_test, GtfsRepresentation)
 
     @mock.patch("usecase.process_routes_count_by_type_for_gtfs_metadata.os.environ")
-    def test_process_routes_count_execution_should_set_start_agencies_count_metadata(
-        self, mock_env
-    ):
+    def test_process_routes_count_with_missing_files(self, mock_env):
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
+        mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
+        under_test = process_routes_count_by_type_for_gtfs_metadata(
+            mock_gtfs_representation
+        )
+        self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_env.assert_not_called()
+        mock_metadata.routes_count_by_type.assert_not_called()
+
+    @mock.patch("usecase.process_routes_count_by_type_for_gtfs_metadata.os.environ")
+    def test_process_routes_count_with_missing_fields(self, mock_env):
+        mock_routes = PropertyMock(return_value=pd.DataFrame({}))
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+        type(mock_dataset).routes = mock_routes
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
+        mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
+        under_test = process_routes_count_by_type_for_gtfs_metadata(
+            mock_gtfs_representation
+        )
+        self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_env.assert_not_called()
+        mock_metadata.routes_count_by_type.assert_not_called()
+
+    @mock.patch("usecase.process_routes_count_by_type_for_gtfs_metadata.os.environ")
+    def test_process_routes_count_by_type_with_some_routes(self, mock_env):
         test_env = {
             TRAM_CODE: "test_tram_code",
             SUBWAY_CODE: "test_subway_code",
@@ -85,7 +125,6 @@ class TestProcessRoutesCountByTypeForGtfsMetadata(TestCase):
         mock_routes = PropertyMock(
             return_value=pd.DataFrame({ROUTE_TYPE: [0, 2, 5, 0, 12, 1, 0, 0, 0]})
         )
-
         mock_dataset = MagicMock()
         mock_dataset.__class__ = Feed
         type(mock_dataset).routes = mock_routes
@@ -103,19 +142,88 @@ class TestProcessRoutesCountByTypeForGtfsMetadata(TestCase):
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_routes.assert_called()
-        self.assertEqual(mock_routes.call_count, 20)
         self.assertEqual(
             mock_metadata.routes_count_by_type,
             {
                 "test_tram_code": 5,
                 "test_subway_code": 1,
                 "test_rail_code": 1,
-                "test_bus_code": 0,
-                "test_ferry_code": 0,
                 "test_cable_tram_code": 1,
-                "test_aerial_lift_code": 0,
-                "test_funicular_code": 0,
-                "test_trolley_bus_code": 0,
                 "test_monorail_code": 1,
             },
         )
+
+    @mock.patch("usecase.process_routes_count_by_type_for_gtfs_metadata.os.environ")
+    def test_process_routes_count_by_type_with_every_route(self, mock_env):
+        test_env = {
+            TRAM_CODE: "test_tram_code",
+            SUBWAY_CODE: "test_subway_code",
+            RAIL_CODE: "test_rail_code",
+            BUS_CODE: "test_bus_code",
+            FERRY_CODE: "test_ferry_code",
+            CABLE_TRAM_CODE: "test_cable_tram_code",
+            AERIAL_LIFT_CODE: "test_aerial_lift_code",
+            FUNICULAR_CODE: "test_funicular_code",
+            TROLLEY_BUS_CODE: "test_trolley_bus_code",
+            MONORAIL_CODE: "test_monorail_code",
+        }
+        mock_env.__getitem__.side_effect = test_env.__getitem__
+
+        mock_routes = PropertyMock(
+            return_value=pd.DataFrame(
+                {ROUTE_TYPE: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}
+            )
+        )
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+        type(mock_dataset).routes = mock_routes
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
+        mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
+        under_test = process_routes_count_by_type_for_gtfs_metadata(
+            mock_gtfs_representation
+        )
+        self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_routes.assert_called()
+        self.assertEqual(
+            mock_metadata.routes_count_by_type,
+            {
+                "test_tram_code": 1,
+                "test_subway_code": 1,
+                "test_rail_code": 1,
+                "test_bus_code": 1,
+                "test_ferry_code": 1,
+                "test_cable_tram_code": 1,
+                "test_aerial_lift_code": 1,
+                "test_funicular_code": 1,
+                "test_trolley_bus_code": 1,
+                "test_monorail_code": 1,
+            },
+        )
+
+    @mock.patch("usecase.process_routes_count_by_type_for_gtfs_metadata.os.environ")
+    def test_process_routes_count_by_type_with_no_routes(self, mock_env):
+        mock_routes = PropertyMock(return_value=pd.DataFrame({ROUTE_TYPE: []}))
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+        type(mock_dataset).routes = mock_routes
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
+        mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
+        under_test = process_routes_count_by_type_for_gtfs_metadata(
+            mock_gtfs_representation
+        )
+        self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_metadata.routes_count_by_type.assert_not_called()

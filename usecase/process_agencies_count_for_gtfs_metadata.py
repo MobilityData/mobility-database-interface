@@ -1,6 +1,5 @@
 from utilities.validators import validate_gtfs_representation
-
-AGENCY_NAME_KEY = "agency_name"
+from utilities.constants import AGENCY_NAME
 
 
 def process_agencies_count_for_gtfs_metadata(gtfs_representation):
@@ -13,10 +12,17 @@ def process_agencies_count_for_gtfs_metadata(gtfs_representation):
     dataset = gtfs_representation.dataset
     metadata = gtfs_representation.metadata
 
-    # Count agencies
-    agencies_count = dataset.agency[AGENCY_NAME_KEY].size
+    agency_is_present = (
+        dataset.agency is not None and AGENCY_NAME in dataset.agency.columns
+    )
 
-    # Set the main timezone in the GTFS representation
-    metadata.agencies_count = agencies_count
+    if agency_is_present:
+        # Count agencies
+        agencies_count = dataset.agency[AGENCY_NAME].size
+
+        # Set the main timezone in the GTFS representation
+        # if there is one agency or more
+        if agencies_count > 0:
+            metadata.agencies_count = agencies_count
 
     return gtfs_representation
