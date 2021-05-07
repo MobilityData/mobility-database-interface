@@ -10,6 +10,7 @@ from wikibaseintegrator.wbi_config import config as wbi_config
 
 from repository.data_repository import DataRepository
 from representation.dataset_infos import DatasetInfos
+from representation.dataset_representation_factory import GTFS_TYPE
 from usecase.create_dataset_entity_for_gtfs_metadata import (
     create_dataset_entity_for_gtfs_metadata,
 )
@@ -204,10 +205,8 @@ def add_source_in_db(source_name, stable_url, username=None, password=None):
     # TODO: uncomment this
     # if source_entity.item_id:
     #     raise SourceAlreadyExistException(stable_url=stable_url)
-
-    source_entity.set_label(
-        f"{source_name}'s {source_catalog_entity_json[LABELS][ENGLISH][VALUE]}"
-    )
+    cleaned_source_name = source_name.replace(GTFS_TYPE, "").strip()
+    source_entity.set_label(cleaned_source_name)
 
     source_entity_id = source_entity.write(login=login_instance)
     source_entity_prop = wbi_core.ItemID(

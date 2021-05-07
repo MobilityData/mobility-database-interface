@@ -172,15 +172,14 @@ class AddSourceTestCase(unittest.TestCase):
         mock_wbi_core.ItemEngine.return_value.write.return_value = "Q1"
         mock_wbi_core.ItemEngine.return_value.item_id = ""
 
-        source_name = "source name"
+        source_name = "source name GTFS"
         stable_url = "stable://url"
         source_entity_id = add_source_in_db(source_name, stable_url)
         self.assertEqual("Q1", source_entity_id)
         self.assertEqual(1, mock_wbi_login.Login.call_count)
-        self.assertTrue(
-            mock_wbi_core.ItemEngine.return_value.set_label.call_args_list[0]
-            .args[0]
-            .startswith("source name's")
+        self.assertEqual(
+            "source name",
+            mock_wbi_core.ItemEngine.return_value.set_label.call_args_list[0].args[0],
         )
 
         del os.environ[API_URL]
