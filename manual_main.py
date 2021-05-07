@@ -1,24 +1,20 @@
 import argparse
-import json
-import os
-
 from dotenv import load_dotenv
+import json
 from guppy import hpy
+import os
 from wikibaseintegrator.wbi_config import config as wbi_config
-
 from repository.data_repository import DataRepository
-from usecase.create_dataset_entity_for_gtfs_metadata import (
-    create_dataset_entity_for_gtfs_metadata,
-)
-from usecase.download_dataset_as_zip import (
-    download_datasets_as_zip,
+from usecase.download_dataset_as_zip import download_dataset_as_zip_for_cron_job
+from usecase.process_agencies_count_for_gtfs_metadata import (
+    process_agencies_count_for_gtfs_metadata,
 )
 from usecase.extract_datasets_infos_from_database import (
     extract_gtfs_datasets_infos_from_database,
 )
-from usecase.load_dataset import load_datasets
-from usecase.process_agencies_count_for_gtfs_metadata import (
-    process_agencies_count_for_gtfs_metadata,
+from usecase.load_dataset import load_dataset
+from usecase.process_timezones_for_gtfs_metadata import (
+    process_timezones_for_gtfs_metadata,
 )
 from usecase.process_geopraphical_boundaries_for_gtfs_metadata import (
     process_bounding_box_for_gtfs_metadata,
@@ -27,7 +23,7 @@ from usecase.process_geopraphical_boundaries_for_gtfs_metadata import (
 from usecase.process_main_language_code_for_gtfs_metadata import (
     process_main_language_code_for_gtfs_metadata,
 )
-from usecase.process_md5 import process_datasets_md5
+from usecase.process_sha1 import process_sha1
 from usecase.process_routes_count_by_type_for_gtfs_metadata import (
     process_routes_count_by_type_for_gtfs_metadata,
 )
@@ -42,17 +38,21 @@ from usecase.process_timestamp_for_gtfs_metadata import (
     process_start_timestamp_for_gtfs_metadata,
     process_end_timestamp_for_gtfs_metadata,
 )
-from usecase.process_timezones_for_gtfs_metadata import (
-    process_timezones_for_gtfs_metadata,
+from usecase.create_dataset_entity_for_gtfs_metadata import (
+    create_dataset_entity_for_gtfs_metadata,
+)
+from usecase.process_country_codes_for_gtfs_metadata import (
+    process_country_codes_for_gtfs_metadata,
 )
 from utilities.constants import (
-    SPARQL_URL,
     API_URL,
     SPARQL_BIGDATA_URL,
     SVC_URL,
     USERNAME,
     PASSWORD,
 )
+from utilities.validators import validate_api_url, validate_sparql_bigdata_url
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="MobilityDatabase Interface Script")
@@ -90,13 +90,17 @@ if __name__ == "__main__":
     os.environ[USERNAME] = credentials.get(USERNAME)
     os.environ[PASSWORD] = credentials.get(PASSWORD)
 
-    # Get environment variables
-    sparql_url = os.environ.get(SPARQL_URL)
-    api_url = os.environ.get(API_URL)
+    # Assign the environment API and SPARQL URLs
+    api_url = os.environ[API_URL]
+    sparql_bigdata_url = os.environ[SPARQL_BIGDATA_URL]
+
+    # Validate API and SPARQL url
+    validate_api_url(api_url)
+    validate_sparql_bigdata_url(sparql_bigdata_url)
 
     # Load Wikibase Integrator config with the environment
-    wbi_config["MEDIAWIKI_API_URL"] = os.environ[API_URL]
-    wbi_config["SPARQL_ENDPOINT_URL"] = os.environ[SPARQL_BIGDATA_URL]
+    wbi_config["MEDIAWIKI_API_URL"] = api_url
+    wbi_config["SPARQL_ENDPOINT_URL"] = sparql_bigdata_url
     wbi_config["WIKIBASE_URL"] = SVC_URL
 
     # Initialize DataRepository
@@ -104,25 +108,27 @@ if __name__ == "__main__":
 
     # Process data
     # Download datasets zip files
-    datasets_infos = extract_gtfs_datasets_infos_from_database(
-        api_url,
-        sparql_url,
-    )
+    datasets_infos = extract_gtfs_datasets_infos_from_database()
 
     # Download datasets zip files
-    datasets_infos = download_datasets_as_zip(args.path_to_tmp_data, datasets_infos)
+    datasets_infos = download_dataset_as_zip_for_cron_job(
+        args.path_to_tmp_data, datasets_infos
+    )
 
-    # Process the MD5 hashes
-    datasets_infos = process_datasets_md5(datasets_infos)
+    # Process the SHA-1 hashes
+    datasets_infos = process_sha1(datasets_infos)
 
     # Load the datasets in memory in the data repository
-    data_repository = load_datasets(data_repository, datasets_infos, args.data_type)
+    data_repository = load_dataset(data_repository, datasets_infos, args.data_type)
 
     # Process each dataset representation in the data_repository
     for (
         dataset_key,
         dataset_representation,
     ) in data_repository.get_dataset_representations().items():
+        dataset_representation = process_country_codes_for_gtfs_metadata(
+            dataset_representation
+        )
         dataset_representation = process_start_service_date_for_gtfs_metadata(
             dataset_representation
         )

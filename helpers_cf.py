@@ -25,7 +25,6 @@ from usecase.process_geopraphical_boundaries_for_gtfs_metadata import (
 from usecase.process_main_language_code_for_gtfs_metadata import (
     process_main_language_code_for_gtfs_metadata,
 )
-from usecase.process_md5 import process_md5
 from usecase.process_routes_count_by_type_for_gtfs_metadata import (
     process_routes_count_by_type_for_gtfs_metadata,
 )
@@ -33,6 +32,7 @@ from usecase.process_service_date_for_gtfs_metadata import (
     process_start_service_date_for_gtfs_metadata,
     process_end_service_date_for_gtfs_metadata,
 )
+from usecase.process_sha1 import process_sha1
 from usecase.process_stops_count_by_type_for_gtfs_metadata import (
     process_stops_count_by_type_for_gtfs_metadata,
 )
@@ -98,7 +98,7 @@ def add_dataset_to_source(
     dataset_infos = download_dataset_as_zip(f"/tmp/{source_name}", dataset_infos)
 
     # Process the MD5 hash
-    dataset_infos = process_md5(dataset_infos)
+    dataset_infos = process_sha1(dataset_infos)
 
     # Load the datasets in memory in the data repository
     data_repository = load_dataset(data_repository, dataset_infos, data_type)

@@ -5,21 +5,38 @@ from utilities.temporal_utils import (
     get_gtfs_timezone_utc_offset,
     get_gtfs_stop_times_for_date,
 )
+from utilities.constants import (
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY,
+    DATE,
+    SERVICE_ID,
+    EXCEPTION_TYPE,
+    TRIP_ID,
+    AGENCY_TIMEZONE,
+)
+
 
 PD_DATE_FORMAT = "%Y%m%d"
 TIMESTAMP_FORMAT = "%Y-%m-%d"
-DATE = "date"
+DATE_KEY = "date"
 
 DATASET_DATE_TYPE = "dataset_date_type"
 STOP_TIME_KEY = "stop_time_key"
 MIN_MAX_ATTR = "min_max_attr"
 TIMESTAMP_ATTR = "timestamp_setter"
+CALENDAR_DATE_KEY = "calendar_date_key"
 
 START_TIMESTAMP_MAP = {
     DATASET_DATE_TYPE: "start_date",
     STOP_TIME_KEY: "arrival_time",
     MIN_MAX_ATTR: "min",
     TIMESTAMP_ATTR: "start_timestamp",
+    CALENDAR_DATE_KEY: "start_date",
 }
 
 END_TIMESTAMP_MAP = {
@@ -27,6 +44,24 @@ END_TIMESTAMP_MAP = {
     STOP_TIME_KEY: "departure_time",
     MIN_MAX_ATTR: "max",
     TIMESTAMP_ATTR: "end_timestamp",
+    CALENDAR_DATE_KEY: "end_date",
+}
+
+CALENDAR_DATES_REQUIRED_COLUMNS = {
+    DATE,
+    SERVICE_ID,
+    EXCEPTION_TYPE,
+}
+
+CALENDAR_REQUIRED_COLUMNS = {
+    MONDAY,
+    TUESDAY,
+    WEDNESDAY,
+    THURSDAY,
+    FRIDAY,
+    SATURDAY,
+    SUNDAY,
+    SERVICE_ID,
 }
 
 
@@ -51,40 +86,77 @@ def process_timestamp_for_gtfs_metadata(gtfs_representation, timestamp_map):
     dataset = gtfs_representation.dataset
     metadata = gtfs_representation.metadata
 
-    # Extract the start dates in the dataset representation
-    # or
-    # Extract the end dates in the dataset representation
-    dataset_dates = get_gtfs_dates_by_type(
-        dataset, date_type=timestamp_map[DATASET_DATE_TYPE]
+    calendar_required_columns = CALENDAR_REQUIRED_COLUMNS.union(
+        {timestamp_map[CALENDAR_DATE_KEY]}
     )
-    dates = pd.to_datetime(dataset_dates[DATE], format=PD_DATE_FORMAT)
+    stop_times_required_columns = {TRIP_ID, timestamp_map[STOP_TIME_KEY]}
 
-    # Get first start service date with min()
-    # or
-    # Get last end service date with max()
-    service_date = getattr(dates, timestamp_map[MIN_MAX_ATTR])()
-
-    # Get every stop time of the dataset for the start service date
-    # or
-    # Get every stop time of the dataset for the end service date
-    stop_times_for_date = get_gtfs_stop_times_for_date(
-        dataset, dataset_dates, service_date
+    calendar_is_present = (
+        dataset.calendar is not None
+        and calendar_required_columns.issubset(dataset.calendar.columns)
+    )
+    calendar_dates_are_present = (
+        dataset.calendar_dates is not None
+        and CALENDAR_DATES_REQUIRED_COLUMNS.issubset(dataset.calendar_dates.columns)
+    )
+    trips_are_present = (
+        dataset.trips is not None and SERVICE_ID in dataset.trips.columns
+    )
+    stop_times_are_present = (
+        dataset.stop_times is not None
+        and stop_times_required_columns.issubset(dataset.stop_times.columns)
+    )
+    agency_is_present = (
+        dataset.agency is not None and AGENCY_TIMEZONE in dataset.agency.columns
     )
 
-    # Get first arrival time of the first start service date with min()
-    # or
-    # Get last departure time of the last end service date with max()
-    stop_time = getattr(
-        stop_times_for_date[timestamp_map[STOP_TIME_KEY]], timestamp_map[MIN_MAX_ATTR]
-    )()
+    if (
+        (calendar_is_present or calendar_dates_are_present)
+        and trips_are_present
+        and stop_times_are_present
+        and agency_is_present
+    ):
+        # Extract the start dates in the dataset representation
+        # or
+        # Extract the end dates in the dataset representation
+        dataset_dates = get_gtfs_dates_by_type(
+            dataset, date_type=timestamp_map[DATASET_DATE_TYPE]
+        )
+        dates = pd.to_datetime(dataset_dates[DATE_KEY], format=PD_DATE_FORMAT)
 
-    # Compute UTC offset for the GTFS dataset
-    timezone_offset = get_gtfs_timezone_utc_offset(dataset)
+        # Get first start service date with min()
+        # or
+        # Get last end service date with max()
+        service_date = getattr(dates, timestamp_map[MIN_MAX_ATTR])()
 
-    # Build and set timestamp string in ISO 8601 YYYY-MM-DDThh:mm:ss±hh:mm format
-    timestamp = (
-        f"{service_date.strftime(TIMESTAMP_FORMAT)}T{stop_time}{timezone_offset}"
-    )
-    setattr(metadata, timestamp_map[TIMESTAMP_ATTR], timestamp)
+        # Continue only if the dataset dates is not an empty dataframe and service date found is not null
+        if not dataset_dates.empty and pd.notna(service_date):
+            # Get every stop time of the dataset for the start service date
+            # or
+            # Get every stop time of the dataset for the end service date
+            stop_times_for_date = get_gtfs_stop_times_for_date(
+                dataset, dataset_dates, service_date, timestamp_map[STOP_TIME_KEY]
+            )
+
+            # Get first arrival time of the first start service date with min()
+            # or
+            # Get last departure time of the last end service date with max()
+            stop_time = getattr(
+                stop_times_for_date[timestamp_map[STOP_TIME_KEY]],
+                timestamp_map[MIN_MAX_ATTR],
+            )()
+
+            # Continue only if the stop time found is not null
+            if pd.notna(stop_time):
+                # Compute UTC offset for the GTFS dataset
+                timezone_offset = get_gtfs_timezone_utc_offset(dataset)
+
+            # Continue if the timezone offset is not empty
+            if len(timezone_offset) != 0:
+                # Build and set timestamp string in ISO 8601 YYYY-MM-DDThh:mm:ss±hh:mm format
+                timestamp = f"{service_date.strftime(TIMESTAMP_FORMAT)}T{stop_time}{timezone_offset}"
+                # Set timestamp if the string is not empty
+                if len(timestamp) != 0:
+                    setattr(metadata, timestamp_map[TIMESTAMP_ATTR], timestamp)
 
     return gtfs_representation

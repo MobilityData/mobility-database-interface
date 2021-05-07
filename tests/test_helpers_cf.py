@@ -253,7 +253,7 @@ class DecodeMessageTestCase(unittest.TestCase):
 
 class AddDatasetTestCase(unittest.TestCase):
     @patch("helpers_cf.load_dataset")
-    @patch("helpers_cf.process_md5")
+    @patch("helpers_cf.process_sha1")
     @patch("helpers_cf.download_dataset_as_zip")
     def test_add_dataset_to_source(
         self, mock_download_dataset_as_zip, mock_process_md5, mock_load_dataset

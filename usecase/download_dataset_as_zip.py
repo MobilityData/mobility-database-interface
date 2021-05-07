@@ -1,17 +1,40 @@
-from datetime import date
+from datetime import date, datetime
 import os
 from pathlib import Path
 
+import re
 import requests
 from requests import HTTPError
 from requests.exceptions import SSLError
 from utilities.validators import validate_datasets_infos
+
+OMD_URL_DOWNLOAD_DATE_REGEX = r"(?<=/)\w+(?=/download)"
+OMD_URL_DOWNLOAD_DATE_FORMAT = "%Y%m%d"
+METADATA_DOWNLOAD_DATE_FORMAT = "%Y-%m-%d"
+
+
+def add_download_date_for_omd_harvesting(dataset_infos):
+    date_string = re.search(OMD_URL_DOWNLOAD_DATE_REGEX, dataset_infos.url)
+    date_string = date_string.group(0)
+    date_string = (
+        datetime.strptime(date_string, OMD_URL_DOWNLOAD_DATE_FORMAT)
+        .date()
+        .strftime(METADATA_DOWNLOAD_DATE_FORMAT)
+    )
+    dataset_infos.download_date = date_string
+    return dataset_infos
+
+
+def add_download_date_for_cron_job(dataset_infos):
+    dataset_infos.download_date = date.today().strftime(METADATA_DOWNLOAD_DATE_FORMAT)
+    return dataset_infos
 
 
 def download_datasets_as_zip(path_to_data, datasets_infos):
     """Download datasets as zip for the given urls.
     :param path_to_data: The path to the folder where to store the dataset zip files.
     :param datasets_infos: The datasets infos from which to take the urls.
+    :param download_date_func: The function to add the download date to a dataset infos.
     :return: A list of DatasetInfos for which the datasets zip file have been downloaded.
     """
     if not os.path.isdir(path_to_data):
@@ -49,6 +72,11 @@ def download_dataset_as_zip(path_to_data, dataset_infos):
         file.write(zip_file)
 
     dataset_infos.zip_path = zip_path
-    dataset_infos.download_date = date.today().strftime("%Y-%m-%d")
-    # print(f"Success : {entity_code}_{zip_name} downloaded in {path_to_data}\n")
+    try:
+        dataset_infos = add_download_date_for_omd_harvesting(dataset_infos)
+    except AttributeError:
+        dataset_infos = add_download_date_for_cron_job(dataset_infos)
+
+    print(f"Success : {entity_code}_{zip_name} downloaded in {path_to_data}\n")
+
     return dataset_infos

@@ -9,6 +9,5 @@ mobility-database-interface
    manual_main
    repository
    representation
-   request_manager
    usecase
    utilities

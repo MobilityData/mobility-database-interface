@@ -1,7 +1,7 @@
 from representation.dataset_infos import DatasetInfos
 
 SOURCE = "source"
-SHORTEN_MD5_HASH_LEN = 6
+SHORTEN_SHA1_HASH_LEN = 6
 
 
 class GtfsMetadata:
@@ -13,32 +13,31 @@ class GtfsMetadata:
             raise TypeError("Dataset infos must be a valid DatasetInfos.")
 
         self.source_entity_code = dataset_infos.entity_code
-        self.dataset_version_entity_code = ""
-        self.md5_hash = dataset_infos.md5_hash
+        self.dataset_version_entity_code = None
+        self.sha1_hash = dataset_infos.sha1_hash
         self.dataset_version_name = self.create_dataset_version_name(
             dataset_infos.source_name,
             dataset_infos.download_date,
-            dataset_infos.md5_hash,
+            dataset_infos.sha1_hash,
         )
-        self.main_timezone = ""
-        self.other_timezones = []
-        self.country_code = ""
-        self.sub_country_code = ""
-        self.main_language_code = ""
-        self.start_service_date = ""
-        self.end_service_date = ""
-        self.start_timestamp = ""
-        self.end_timestamp = ""
-        self.bounding_box = {}
-        self.bounding_octagon = {}
-        self.agencies_count = 0
-        self.routes_count_by_type = {}
-        self.stops_count_by_type = {}
-        self.stable_url = ""
+        self.main_timezone = None
+        self.other_timezones = None
+        self.country_codes = None
+        self.main_language_code = None
+        self.start_service_date = None
+        self.end_service_date = None
+        self.start_timestamp = None
+        self.end_timestamp = None
+        self.bounding_box = None
+        self.bounding_octagon = None
+        self.agencies_count = None
+        self.routes_count_by_type = None
+        self.stops_count_by_type = None
+        self.stable_url = None
 
-    def create_dataset_version_name(self, source_name, download_date, md5_hash):
-        """Create the dataset version name from the source name, download date and MD5 hash.
-        :param md5_hash: The MD5 hash of the dataset version.
+    def create_dataset_version_name(self, source_name, download_date, sha1_hash):
+        """Create the dataset version name from the source name, download date and SHA-1 hash.
+        :param sha1_hash: The SHA-1 hash of the dataset version.
         :param source_name: The name of the source of the dataset.
         :param download_date: The date when the dataset version was downloaded.
         :return: The dataset version name of the dataset version.
@@ -53,12 +52,12 @@ class GtfsMetadata:
         else:
             dataset_name = source_name
 
-        # Select a substring from the MD5 hash create unique identifier for the dataset name
-        shorten_md5_hash = md5_hash[:SHORTEN_MD5_HASH_LEN]
+        # Select a substring from the SHA-1 hash create unique identifier for the dataset name
+        shorten_sha1_hash = sha1_hash[:SHORTEN_SHA1_HASH_LEN]
 
         # Create the full dataset version name
         dataset_version_name = (
-            f"{download_date}'s {dataset_name} dataset #{shorten_md5_hash}"
+            f"{download_date}'s {dataset_name} dataset #{shorten_sha1_hash}"
         )
 
         return dataset_version_name
@@ -68,9 +67,8 @@ class GtfsMetadata:
         return (
             f"Dataset version name: {self.dataset_version_name}\n"
             f"Main timezone: {self.main_timezone}\n"
-            f"Other timezones: {', '.join(self.other_timezones)}\n"
-            f"Country code: {self.country_code}\n"
-            f"Sub country code: {self.sub_country_code}\n"
+            f"Other timezones: {self.other_timezones}\n"
+            f"Country codes: {self.country_codes}\n"
             f"Main language code: {self.main_language_code}\n"
             f"Start service date: {self.start_service_date}\n"
             f"End service date: {self.end_service_date}\n"
@@ -82,5 +80,5 @@ class GtfsMetadata:
             f"Routes count by type: {self.routes_count_by_type}\n"
             f"Stops count by type: {self.stops_count_by_type}\n"
             f"Stable url: {self.stable_url}\n"
-            f"MD5 hash: {self.md5_hash}"
+            f"SHA-1 hash: {self.sha1_hash}"
         )

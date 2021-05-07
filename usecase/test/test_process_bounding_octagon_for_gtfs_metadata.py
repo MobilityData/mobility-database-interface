@@ -1,11 +1,13 @@
 import pandas as pd
-from unittest import TestCase, mock
+from unittest import TestCase
 from unittest.mock import MagicMock, PropertyMock
 from gtfs_kit.feed import Feed
 from representation.gtfs_metadata import GtfsMetadata
 from representation.gtfs_representation import GtfsRepresentation
 from usecase.process_geopraphical_boundaries_for_gtfs_metadata import (
     process_bounding_octagon_for_gtfs_metadata,
+    STOP_LAT,
+    STOP_LON,
 )
 from utilities.geographical_utils import LAT, LON
 
@@ -27,24 +29,61 @@ class TestProcessBoundingOctagonForGtfsMetadata(TestCase):
             mock_gtfs_representation,
         )
 
-    @mock.patch("representation.gtfs_representation.GtfsRepresentation")
-    @mock.patch("gtfs_kit.feed.Feed")
-    @mock.patch("representation.gtfs_metadata.GtfsMetadata")
-    def test_process_bounding_octagon_execution_should_set_bounding_box_metadata(
-        self, mock_gtfs_representation, mock_dataset, mock_metadata
-    ):
-        mock_stops = PropertyMock(
-            return_value=pd.DataFrame(
-                {
-                    "stop_lat": [3, -3, 0, 0, 2, -2, 2, -2],
-                    "stop_lon": [0, 0, 3, -3, 2, 2, -2, -2],
-                }
-            )
+    def test_process_bounding_octagon_execution_with_missing_files(self):
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
+        mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
+        under_test = process_bounding_octagon_for_gtfs_metadata(
+            mock_gtfs_representation
         )
+        self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_metadata.bounding_octagon.assert_not_called()
+
+    def test_process_bounding_octagon_execution_with_missing_fields(self):
+        mock_stops = PropertyMock(return_value=pd.DataFrame({}))
+        mock_dataset = MagicMock()
         mock_dataset.__class__ = Feed
         type(mock_dataset).stops = mock_stops
 
+        mock_metadata = MagicMock()
         mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
+        mock_gtfs_representation.__class__ = GtfsRepresentation
+        type(mock_gtfs_representation).dataset = mock_dataset
+        type(mock_gtfs_representation).metadata = mock_metadata
+
+        under_test = process_bounding_octagon_for_gtfs_metadata(
+            mock_gtfs_representation
+        )
+        self.assertIsInstance(under_test, GtfsRepresentation)
+        mock_metadata.bounding_octagon.assert_not_called()
+
+    def test_process_bounding_octagon_execution(self):
+        mock_stops = PropertyMock(
+            return_value=pd.DataFrame(
+                {
+                    STOP_LAT: [3, -3, 0, 0, 2, -2, 2, -2],
+                    STOP_LON: [0, 0, 3, -3, 2, 2, -2, -2],
+                }
+            )
+        )
+        mock_dataset = MagicMock()
+        mock_dataset.__class__ = Feed
+        type(mock_dataset).stops = mock_stops
+
+        mock_metadata = MagicMock()
+        mock_metadata.__class__ = GtfsMetadata
+
+        mock_gtfs_representation = MagicMock()
         mock_gtfs_representation.__class__ = GtfsRepresentation
         type(mock_gtfs_representation).dataset = mock_dataset
         type(mock_gtfs_representation).metadata = mock_metadata
@@ -54,7 +93,6 @@ class TestProcessBoundingOctagonForGtfsMetadata(TestCase):
         )
         self.assertIsInstance(under_test, GtfsRepresentation)
         mock_stops.assert_called()
-        self.assertEqual(mock_stops.call_count, 5)
         self.assertEqual(
             mock_metadata.bounding_octagon,
             {
