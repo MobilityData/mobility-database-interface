@@ -31,6 +31,7 @@ from utilities.constants import (
     CATALOG_PROP,
     GTFS_CATALOG_OF_SOURCES_CODE,
     DATASET_URL,
+    SOURCE_ENTITY_PROP,
 )
 
 
@@ -166,6 +167,7 @@ class AddSourceTestCase(unittest.TestCase):
         os.environ[STABLE_URL_PROP] = "gtfsschedprop"
         os.environ[CATALOG_PROP] = "gtfsschedprop"
         os.environ[GTFS_CATALOG_OF_SOURCES_CODE] = "gtfsschedprop"
+        os.environ[SOURCE_ENTITY_PROP] = "sourceentityprop"
 
         mock_wbi_core.ItemEngine.return_value.write.return_value = "Q1"
         mock_wbi_core.ItemEngine.return_value.item_id = ""
