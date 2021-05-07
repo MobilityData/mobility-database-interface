@@ -129,31 +129,34 @@ def process_timestamp_for_gtfs_metadata(gtfs_representation, timestamp_map):
         # Get last end service date with max()
         service_date = getattr(dates, timestamp_map[MIN_MAX_ATTR])()
 
-        # Get every stop time of the dataset for the start service date
-        # or
-        # Get every stop time of the dataset for the end service date
-        stop_times_for_date = get_gtfs_stop_times_for_date(
-            dataset, dataset_dates, service_date
-        )
+        # Continue only if the dataset dates is not an empty dataframe and service date found is not null
+        if not dataset_dates.empty and pd.notna(service_date):
+            # Get every stop time of the dataset for the start service date
+            # or
+            # Get every stop time of the dataset for the end service date
+            stop_times_for_date = get_gtfs_stop_times_for_date(
+                dataset, dataset_dates, service_date, timestamp_map[STOP_TIME_KEY]
+            )
 
-        # Get first arrival time of the first start service date with min()
-        # or
-        # Get last departure time of the last end service date with max()
-        stop_time = getattr(
-            stop_times_for_date[timestamp_map[STOP_TIME_KEY]],
-            timestamp_map[MIN_MAX_ATTR],
-        )()
+            # Get first arrival time of the first start service date with min()
+            # or
+            # Get last departure time of the last end service date with max()
+            stop_time = getattr(
+                stop_times_for_date[timestamp_map[STOP_TIME_KEY]],
+                timestamp_map[MIN_MAX_ATTR],
+            )()
 
-        # Compute UTC offset for the GTFS dataset
-        timezone_offset = get_gtfs_timezone_utc_offset(dataset)
+            # Continue only if the stop time found is not null
+            if pd.notna(stop_time):
+                # Compute UTC offset for the GTFS dataset
+                timezone_offset = get_gtfs_timezone_utc_offset(dataset)
 
-        # Build timestamp in ISO 8601 YYYY-MM-DDThh:mm:ss±hh:mm format
-        timestamp = (
-            f"{service_date.strftime(TIMESTAMP_FORMAT)}T{stop_time}{timezone_offset}"
-        )
-
-        # Set timestamp if the string is not empty
-        if len(timestamp) != 0:
-            setattr(metadata, timestamp_map[TIMESTAMP_ATTR], timestamp)
+            # Continue if the timezone offset is not empty
+            if len(timezone_offset) != 0:
+                # Build and set timestamp string in ISO 8601 YYYY-MM-DDThh:mm:ss±hh:mm format
+                timestamp = f"{service_date.strftime(TIMESTAMP_FORMAT)}T{stop_time}{timezone_offset}"
+                # Set timestamp if the string is not empty
+                if len(timestamp) != 0:
+                    setattr(metadata, timestamp_map[TIMESTAMP_ATTR], timestamp)
 
     return gtfs_representation

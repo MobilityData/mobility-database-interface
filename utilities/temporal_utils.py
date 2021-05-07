@@ -116,6 +116,12 @@ def get_gtfs_dates_from_calendar(
                 ]
             day_offset_to_monday = timedelta_operator(day_offset_to_monday, 1) % 7
 
+    # Make sure service_id and date are present for each row of the dataframe before returning it
+    dates_per_service_id_dataframe = dates_per_service_id_dataframe.loc[
+        dates_per_service_id_dataframe[SERVICE_ID].notna()
+        & dates_per_service_id_dataframe[DATE].notna()
+    ]
+
     return dates_per_service_id_dataframe
 
 
@@ -170,21 +176,28 @@ def get_gtfs_timezone_utc_offset(dataset):
     return timezone_offset
 
 
-def get_gtfs_stop_times_for_date(dataset, dataset_dates, date_to_look_up):
+def get_gtfs_stop_times_for_date(
+    dataset, dataset_dates, date_to_look_up, arrival_or_departure_time_key
+):
     # Extract the list of every service ID with date equal to the date to look up
     service_dates = dataset_dates.loc[
         dataset_dates[DATE] == date_to_look_up.strftime(DATE_FORMAT)
     ]
+    service_dates = service_dates.loc[service_dates[SERVICE_ID].notna()]
     service_ids_for_date = service_dates[SERVICE_ID].tolist()
 
     # Extract the list of every trip ID with service ID in the list of service IDs previously extracted
     trips_for_date = dataset.trips.loc[
         dataset.trips[SERVICE_ID].isin(service_ids_for_date)
     ]
+    trips_for_date = trips_for_date.loc[trips_for_date[TRIP_ID].notna()]
     trip_ids_for_date = trips_for_date[TRIP_ID].tolist()
 
     # Extract the stop times with trip ID in the list of trip IDs previously extracted
     stop_times_for_date = dataset.stop_times.loc[
         dataset.stop_times[TRIP_ID].isin(trip_ids_for_date)
+    ]
+    stop_times_for_date = stop_times_for_date.loc[
+        stop_times_for_date[arrival_or_departure_time_key].notna()
     ]
     return stop_times_for_date
