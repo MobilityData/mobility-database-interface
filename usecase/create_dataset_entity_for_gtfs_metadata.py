@@ -36,6 +36,7 @@ from utilities.constants import (
     USERNAME,
     PASSWORD,
     ENGLISH,
+    DOWNLOAD_DATE_PROP,
 )
 from utilities.validators import (
     validate_gtfs_representation,
@@ -231,6 +232,14 @@ def create_dataset_entity_for_gtfs_metadata(
             )
         )
 
+    if is_valid_instance(metadata.download_date, str):
+        dataset_data.append(
+            wbi_core.String(
+                value=metadata.download_date,
+                prop_nr=os.environ[DOWNLOAD_DATE_PROP],
+            )
+        )
+
     # Number of routes property
     if is_valid_instance(metadata.routes_count_by_type, dict):
         for route_key, route_value in metadata.routes_count_by_type.items():
@@ -256,7 +265,10 @@ def create_dataset_entity_for_gtfs_metadata(
     if not password:
         password = os.environ[PASSWORD]
     login_instance = wbi_login.Login(user=username, pwd=password, use_clientlogin=True)
-    dataset_entity = wbi_core.ItemEngine(data=dataset_data)
+    dataset_entity = wbi_core.ItemEngine(
+        data=dataset_data,
+        core_props={os.environ[SHA1_HASH_PROP], os.environ[DOWNLOAD_DATE_PROP]},
+    )
     dataset_entity.set_label(version_name_label, ENGLISH)
     dataset_entity_id = dataset_entity.write(login_instance)
     metadata.dataset_version_entity_code = dataset_entity_id
