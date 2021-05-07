@@ -19,7 +19,7 @@ from utilities.constants import (
 
 
 def import_entity(username, password, data, label="", item_id=""):
-    login_instance = wbi_login.Login(user=username, pwd=password, use_clientlogin=True)
+    login_instance = wbi_login.Login(user=username, pwd=password)
 
     entity = wbi_core.ItemEngine(data=data, item_id=item_id)
     if label:

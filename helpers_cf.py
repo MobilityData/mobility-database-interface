@@ -184,7 +184,10 @@ def add_source_in_db(source_name, stable_url, username=None, password=None):
     stable_url_prop = os.environ[STABLE_URL_PROP]
     catalog_prop = os.environ[CATALOG_PROP]
 
-    login_instance = wbi_login.Login(user=username, pwd=password, use_clientlogin=True)
+    login_instance = wbi_login.Login(
+        user=username,
+        pwd=password,
+    )
 
     source_instance_of = wbi_core.ItemID(
         prop_nr=os.environ[INSTANCE_PROP], value=os.environ[GTFS_SCHEDULE_SOURCE_CODE]

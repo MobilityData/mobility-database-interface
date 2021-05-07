@@ -264,7 +264,7 @@ def create_dataset_entity_for_gtfs_metadata(
         username = os.environ[USERNAME]
     if not password:
         password = os.environ[PASSWORD]
-    login_instance = wbi_login.Login(user=username, pwd=password, use_clientlogin=True)
+    login_instance = wbi_login.Login(user=username, pwd=password)
     dataset_entity = wbi_core.ItemEngine(
         data=dataset_data,
         core_props={os.environ[SHA1_HASH_PROP], os.environ[DOWNLOAD_DATE_PROP]},
